@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "669badae23389c95a5f7e1890b965ae9",
+    "content-hash": "90ac6e5d42a74298df6565de4577ff26",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -544,6 +544,112 @@
                 "source": "https://github.com/fideloper/TrustedProxy/tree/4.4.1"
             },
             "time": "2020-10-22T13:48:01+00:00"
+        },
+        {
+            "name": "forxer/gravatar",
+            "version": "2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/forxer/gravatar.git",
+                "reference": "5feb01c436cbd4569b8ea1a30558d1aee1924444"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/forxer/gravatar/zipball/5feb01c436cbd4569b8ea1a30558d1aee1924444",
+                "reference": "5feb01c436cbd4569b8ea1a30558d1aee1924444",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "forxer\\Gravatar\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Vincent Garnier",
+                    "email": "forxer@gmail.org",
+                    "homepage": "http://forx.fr"
+                }
+            ],
+            "description": "A library providing easy gravatar integration.",
+            "keywords": [
+                "gravatar"
+            ],
+            "support": {
+                "email": "forxer@gmail.com",
+                "issues": "https://github.com/forxer/gravatar/issues",
+                "source": "https://github.com/forxer/gravatar/tree/master"
+            },
+            "time": "2017-08-31T19:57:40+00:00"
+        },
+        {
+            "name": "forxer/laravel-gravatar",
+            "version": "1.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/forxer/laravel-gravatar.git",
+                "reference": "185aacf3c5c77649fb88de8522d9d63f384514b8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/forxer/laravel-gravatar/zipball/185aacf3c5c77649fb88de8522d9d63f384514b8",
+                "reference": "185aacf3c5c77649fb88de8522d9d63f384514b8",
+                "shasum": ""
+            },
+            "require": {
+                "forxer/gravatar": "^2.0",
+                "illuminate/support": "^5.4|^6.0|^7.0|^8.0",
+                "php": ">=5.6.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "forxer\\LaravelGravatar\\ServiceProvider"
+                    ],
+                    "aliases": {
+                        "Gravatar": "forxer\\LaravelGravatar\\Facade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "forxer\\LaravelGravatar\\": "src"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Vincent Garnier",
+                    "email": "forxer@gmail.org",
+                    "homepage": "http://forx.fr"
+                }
+            ],
+            "description": "A library providing easy gravatar integration in Laravel.",
+            "keywords": [
+                "gravatar",
+                "laravel"
+            ],
+            "support": {
+                "email": "forxer@gmail.com",
+                "issues": "https://github.com/forxer/laravel-gravatar/issues",
+                "source": "https://github.com/forxer/laravel-gravatar/tree/1.7.0"
+            },
+            "time": "2020-09-20T08:37:37+00:00"
         },
         {
             "name": "fruitcake/laravel-cors",
@@ -5632,6 +5738,64 @@
                 "source": "https://github.com/hamcrest/hamcrest-php/tree/v2.0.1"
             },
             "time": "2020-07-09T08:09:16+00:00"
+        },
+        {
+            "name": "laracasts/generators",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laracasts/Laravel-5-Generators-Extended.git",
+                "reference": "0b8b3d300cc948217f7547502b6de5db6fbafa70"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laracasts/Laravel-5-Generators-Extended/zipball/0b8b3d300cc948217f7547502b6de5db6fbafa70",
+                "reference": "0b8b3d300cc948217f7547502b6de5db6fbafa70",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "~6.0|~7.0|~8.0"
+            },
+            "require-dev": {
+                "phpspec/phpspec": "~6.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Laracasts\\Generators\\GeneratorsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laracasts\\Generators\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeffrey Way",
+                    "email": "jeffrey@laracasts.com"
+                },
+                {
+                    "name": "Cristian Tabacitu",
+                    "email": "hello@tabaciu.ro"
+                }
+            ],
+            "description": "Advanced Laravel generators, that include schema information.",
+            "keywords": [
+                "generators",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/laracasts/Laravel-5-Generators-Extended/issues",
+                "source": "https://github.com/laracasts/Laravel-5-Generators-Extended/tree/2.0.0"
+            },
+            "time": "2020-09-10T13:49:13+00:00"
         },
         {
             "name": "laravel/sail",

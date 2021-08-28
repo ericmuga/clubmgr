@@ -10,8 +10,9 @@
         "ext-gd": "*",
         "fakerphp/faker": "^1.9.1",
         "fideloper/proxy": "^4.4",
+        "forxer/laravel-gravatar": "^1.7",
         "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^7.0.1",
+        "guzzlehttp/guzzle": "^7.3",
         "inertiajs/inertia-laravel": "^0.4",
         "laravel/framework": "^8.40",
         "laravel/tinker": "^2.5",
@@ -20,6 +21,7 @@
     },
     "require-dev": {
         "facade/ignition": "^2.5",
+        "laracasts/generators": "^2.0",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^5.0",

@@ -31,3 +31,13 @@
 [Wed Aug 25 03:57:19.008607 2021] [ssl:warn] [pid 25620:tid 640] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
 [Wed Aug 25 03:57:19.479378 2021] [ssl:warn] [pid 16860:tid 632] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
 [Wed Aug 25 03:57:19.539383 2021] [ssl:warn] [pid 16860:tid 632] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Aug 25 06:54:40.022235 2021] [ssl:warn] [pid 8460:tid 472] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Aug 25 06:54:40.066374 2021] [ssl:warn] [pid 8460:tid 472] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Aug 25 06:54:40.459059 2021] [ssl:warn] [pid 23564:tid 640] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Aug 25 06:54:40.490312 2021] [ssl:warn] [pid 23564:tid 640] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Aug 25 10:06:14.679724 2021] [php:error] [pid 23564:tid 1936] [client 127.0.0.1:63179] PHP Fatal error:  Cannot use Illuminate\\Support\\Facades\\Request as Request because the name is already in use in H:\\code\\ClubManager\\app\\Http\\Controllers\\MemberController.php on line 10
+[Wed Aug 25 11:33:20.650346 2021] [php:error] [pid 23564:tid 1928] [client 127.0.0.1:52660] PHP Fatal error:  Trait "App\\Models\\SoftDeletes" not found in H:\\code\\ClubManager\\app\\Models\\Member.php on line 8
+[Fri Aug 27 11:10:41.253048 2021] [ssl:warn] [pid 15880:tid 612] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Fri Aug 27 11:10:41.310794 2021] [ssl:warn] [pid 15880:tid 612] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Fri Aug 27 11:10:42.174726 2021] [ssl:warn] [pid 3312:tid 620] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Fri Aug 27 11:10:42.231477 2021] [ssl:warn] [pid 3312:tid 620] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name

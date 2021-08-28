@@ -6,6 +6,11 @@ use App\Models\Account;
 use App\Models\Contact;
 use App\Models\Organization;
 use App\Models\User;
+use App\Models\Member;
+use App\Models\Type;
+use App\Models\Affiliation;
+use Illuminate\Support\Facades\DB;
+
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,7 +22,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $account = Account::create(['name' => 'Acme Corporation']);
+             
+ 
+
+        $account = Account::create(['name' => 'Rotary Club Langata']);
 
         User::factory()->create([
             'account_id' => $account->id,
@@ -37,5 +45,24 @@ class DatabaseSeeder extends Seeder
             ->each(function ($contact) use ($organizations) {
                 $contact->update(['organization_id' => $organizations->random()->id]);
             });
+
+             $this->call([
+                            TypeSeeder::class,
+                            AffiliationSeeder::class 
+                        ]);
+              
+        Member::factory(120)->create(); 
+        
+       
+        $members=Member::all();
+        foreach ($members as $member ) 
+        {
+             DB::table('affiliation_member')->insert(["affiliation_id"=>$member->affiliation_id,"member_id"=>$member->id]);
+             DB::table('member_type')->insert(['type_id'=>$member->type_id,"member_id"=>$member->id]);
+         } 
+
+
     }
+
+
 }

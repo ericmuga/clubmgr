@@ -7,6 +7,7 @@ use App\Http\Controllers\ImagesController;
 use App\Http\Controllers\OrganizationsController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\MemberController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,11 +34,6 @@ Route::post('login', [AuthenticatedSessionController::class, 'store'])
 Route::delete('logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
 
-// Dashboard
-
-Route::get('/', [DashboardController::class, 'index'])
-    ->name('dashboard')
-    ->middleware('auth');
 
 // Users
 
@@ -140,3 +136,41 @@ Route::get('reports', [ReportsController::class, 'index'])
 Route::get('/img/{path}', [ImagesController::class, 'show'])
     ->where('path', '.*')
     ->name('image');
+
+// Members
+Route::get('members', [MemberController::class, 'index'])
+    ->name('members')
+    ->middleware('auth');
+
+Route::get('members/create', [MemberController::class, 'create'])
+    ->name('members.create')
+    ->middleware('auth');
+
+Route::post('members/store', [MemberController::class, 'store'])
+    ->name('members.store')
+    ->middleware('auth');
+
+Route::get('members/{member}/edit', [MemberController::class, 'edit'])
+->name('members.edit')
+->middleware('auth');
+
+Route::put('members/{member}', [MemberController::class, 'update'])
+    ->name('members.update')
+    ->middleware('auth');
+
+
+    //zoom
+// Dashboard
+
+Route::get('/', [DashboardController::class, 'index'])
+    ->name('dashboard')
+    ->middleware('auth');
+
+
+Route::get('/show/{code?}/{state?}', [DashboardController::class, 'show'])
+    ->name('show')
+    ->middleware('auth');
+
+    //authorize
+
+
