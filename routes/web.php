@@ -8,6 +8,7 @@ use App\Http\Controllers\OrganizationsController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\ZoomController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -171,6 +172,29 @@ Route::get('/show/{code?}/{state?}', [DashboardController::class, 'show'])
     ->name('show')
     ->middleware('auth');
 
+
+ //Zoom setups
+
+Route::get('/zoom', [ZoomController::class, 'index'])
+    ->name('setup')
+    ->middleware('auth');
+
+Route::post('/zoom', [ZoomController::class, 'create'])
+    ->name('setup.create')
+    ->middleware('auth');
+
+Route::get('/zoom/{setup}/edit', [ZoomController::class, 'edit'])
+    ->name('setup.edit')
+    ->middleware('auth');
+
+
+Route::put('/zoom/{setup}', [ZoomController::class, 'update'])
+    ->name('setup.update')
+    ->middleware('auth');
+
+Route::delete('/zoom/{setup}', [ZoomController::class, 'destroy'])
+        ->name('setup.delete')
+        ->middleware('auth');
     //authorize
 
 

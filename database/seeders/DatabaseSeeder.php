@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Member;
 use App\Models\Type;
 use App\Models\Affiliation;
+use App\Models\Setup;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Database\Seeder;
@@ -48,7 +49,8 @@ class DatabaseSeeder extends Seeder
 
              $this->call([
                             TypeSeeder::class,
-                            AffiliationSeeder::class 
+                            AffiliationSeeder::class,
+                            SetupSeeder::class, 
                         ]);
               
         Member::factory(120)->create(); 

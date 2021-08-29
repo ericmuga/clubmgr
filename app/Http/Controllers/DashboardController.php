@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-use Redirect;
+//use Redirect;
+use App\Models\Setup;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Http\RedirectResponse;
 
 class DashboardController extends Controller
 {
@@ -30,9 +33,20 @@ class DashboardController extends Controller
 
     public function show(Request $request)
     {
-         //dd($request->code);
-           $ZOOM_TOKENS=[]; 
-           $string=env('ZOOM_CLIENT_ID','').":".env('ZOOM_CLIENT_SECRET','');
+         $setup=Setup::where('current',true)
+                      ->where('client_id','<>','')
+                      ->where('client_secret','<>','')
+                      ->where('callback_url','<>','')->get();
+         
+       $count=$setup->count();
+       if (!$count=1) 
+        {
+            return redirect()->route('dashboard')->with('error', 'Your Zoom setup is incorrect'); 
+        }
+         
+
+
+          $string=$setup[0]->client_id.":".$setup[0]->client_secret;
 
     
  // $response =
@@ -43,7 +57,7 @@ class DashboardController extends Controller
 
                                                 'grant_type'   =>'authorization_code',
                                                 'code'         =>$request->code,
-                                                'redirect_uri' =>env('ZOOM_CALLBACK','')
+                                                'redirect_uri' =>$setup[0]->callback_url
                                              ]);
 
 
