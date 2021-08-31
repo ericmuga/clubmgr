@@ -24,10 +24,14 @@ class DashboardController extends Controller
           //prefetch zoom users in case of changes
         
           
+          $setup=$this->getSetup();
 
           
 
-          return Inertia::render('Dashboard/Index');
+          return Inertia::render('Dashboard/Index',[ "client_id"=>$setup->client_id,
+                                                     "callback_url"=>$setup->callback_url
+
+                                                    ]);
 
          // <a href="https://zoom.us/oauth/authorize?response_type=code&client_id=88qbzpueTkGI66J9dKWd1g&redirect_uri=https://localhost/show&state={userState}">Check Meetings</a>
 

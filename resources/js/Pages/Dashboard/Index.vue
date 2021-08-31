@@ -5,7 +5,7 @@
 
            class="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded-full"
            style="background-color:#606d9e"
-            href="https://zoom.us/oauth/authorize?response_type=code&client_id=88qbzpueTkGI66J9dKWd1g&redirect_uri=https://localhost/show&state={userState}">
+            :href=url>
               Zoom Auth
          </a>
 
@@ -23,7 +23,7 @@
       
     </div>
 
-    <div class="bg-white rounded-md shadow overflow-hidden max-w-3xl flex-2 mt-6 h-1/5" >
+    <div class="bg-white rounded-md shadow overflow-hidden max-w-3xl flex-2 mt-6 h-1/2" >
      
         <Chart></Chart>
      
@@ -49,7 +49,15 @@ export default {
     Chart
   },
   props: {
-          response:Array
+          response:Array,
+          client_id:'',
+          callback_url:''
+  },
+
+  data(){
+        return {
+          url:"https://zoom.us/oauth/authorize?response_type=code&client_id="+this.client_id+"&redirect_uri="+this.callback_url+"&state={userState}"
+          } 
   }
 
 }
