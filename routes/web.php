@@ -9,6 +9,8 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ZoomController;
+use App\Http\Controllers\MeetingController;
+use App\Http\Controllers\MakeupController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -195,6 +197,61 @@ Route::put('/zoom/{setup}', [ZoomController::class, 'update'])
 Route::delete('/zoom/{setup}', [ZoomController::class, 'destroy'])
         ->name('setup.delete')
         ->middleware('auth');
+    
+ Route::get('/zoom/refresh', [DashboardController::class, 'refreshUsers'])
+        ->name('zoom.refresh')
+        ->middleware('auth');
+
+Route::get('/zoom/meetings', [DashboardController::class, 'meetings'])
+        ->name('zoom.meetings')
+        ->middleware('auth');
+
+Route::get('/zoom/account', [DashboardController::class, 'participants'])
+        ->name('zoom.accounts')
+        ->middleware('auth');
+
+//meetings
+
+Route::get('/meetings', [MeetingController::class, 'index'])
+        ->name('meetings')
+        ->middleware('auth');
+
+Route::get('/meetings/create', [MeetingController::class, 'create'])
+        ->name('meetings.create')
+        ->middleware('auth');
+
+ Route::get('/meetings/{meeting}/edit', [MeetingController::class, 'edit'])
+        ->name('meetings.edit')
+        ->middleware('auth');
+
+Route::post('/meetings', [MeetingController::class, 'store'])
+        ->name('meetings.store')
+        ->middleware('auth');
+
+Route::put('/meetings/{meeting}', [MeetingController::class, 'update'])
+        ->name('meetings.update')
+        ->middleware('auth');
+
+Route::delete('/meetings/{meeting}', [MeetingController::class, 'destroy'])
+        ->name('meetings.destroy')
+        ->middleware('auth');
     //authorize
+
+Route::get('/makeups', [MakeupController::class, 'index'])
+        ->name('makeups')
+        ->middleware('auth');
+
+
+
+Route::get('/makeups/create', [MakeupController::class, 'create'])
+        ->name('makeups.create');
+
+Route::post('/makeups', [MakeupController::class, 'store'])
+        ->name('makeups.store');
+
+Route::get('/makeups/{makeup}/edit', [MakeupController::class, 'edit'])
+        ->name('makeups.edit')
+        ->middleware('auth');
+        
 
 

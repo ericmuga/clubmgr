@@ -16,6 +16,8 @@
           <text-input v-model="form.client_secret" :error="form.errors.client_secret" class="pr-6 pb-8 w-full lg:w-1/2" label="Client Secret" />
          
           <text-input v-model="form.environment" :error="form.errors.environment" class="pr-6 pb-8 w-full lg:w-1/2" label="Environment" />
+
+           <text-input v-model="form.callback_url" :error="form.errors.callback_url" class="pr-6 pb-8 w-full lg:w-1/2" label="Callback URL" />
           
           
 

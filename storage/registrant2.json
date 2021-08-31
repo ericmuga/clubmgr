@@ -1,0 +1,53 @@
+{
+  "page_count": 2,
+  "page_number": 2,
+  "page_size": 1,
+  "total_records": 4,
+  "next_page_token":"",
+  "registrants": [
+    {
+      "email": "example1@example.com",
+      "first_name": "Tim1",
+      "last_name": "S.1",
+      "category": "Rotarian",
+      "club_name":"RCL-Langata",
+      "invited_by":"Ngina Kabicho",
+      "classification":"member",
+      "create_time": "2012-04-14T16:55:30.232Z"
+      
+    },
+    {
+      "email": "eric1@example.com",
+      "first_name": "Eric1",
+      "last_name": "Muga1",
+      "category": "Rotarian",
+      "club_name":"RCL-Langata",
+      "invited_by":"Ngina Kabicho",
+      "classification":"member",
+      "create_time": "2012-04-14T16:54:30.233Z"
+      
+    },
+    {
+      "email": "eric.muga1@example.com",
+      "first_name": "Eric",
+      "last_name": "James",
+      "category": "Rotaractor",
+      "club_name":"RCL-Langata",
+      "invited_by":"Ngina Kabicho",
+      "classification":"member",
+      "create_time": "2012-04-14T16:53:30.234Z"
+      
+    },
+    {
+      "email": "mthiriku1@gmail.com",
+      "first_name": "Michael",
+      "last_name": "Major",
+      "category": "guest",
+      "club_name":"RCL-Langata",
+      "invited_by":"Ngina Kabicho",
+      "classification":"active",
+      "create_time": "2012-04-14T15:53:30.235Z"
+      
+    }
+  ]
+}

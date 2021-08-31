@@ -37,6 +37,11 @@ class Member extends Model
     }
 
 
+    public function makeups ()
+    {
+        return $this->hasMany(Makeup::class,'email','email');
+    }
+
 
      public function resolveRouteBinding($value, $field = null)
     {
