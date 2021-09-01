@@ -35,7 +35,7 @@ class Registrant extends Model
 
     protected $fillable=[
                   'meeting_id',
-                  'emai',
+                  'email',
                   'first_name',
                   'last_name',
                   'category',
@@ -43,11 +43,43 @@ class Registrant extends Model
                   'invited_by',
                   'classification',
                   'create_time'
-       ];
+                ];
 
     public function meeting()
     {
-        return $this->belongsTo(Meeting::class);
+        return $this->belongsTo(Meeting::class ,'meeting_id');
+    }
+
+
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('meeting_id', 'like', '%'.$search.'%')
+                      ->orWhere('email', 'like', '%'.$search.'%')
+                      ->orWhere('first_name', 'like', '%'.$search.'%')
+                      ->orWhere('last_name', 'like', '%'.$search.'%')
+                      ->orWhere('category', 'like', '%'.$search.'%')
+                      ->orWhere('club_name', 'like', '%'.$search.'%')
+                      ->orWhere('invited_by', 'like', '%'.$search.'%')
+                      ->orWhere('classification', 'like', '%'.$search.'%')
+                      ->orWhere('create_time', 'like', '%'.$search.'%')
+                      ->orWhereHas('meeting', function ($query) use ($search) {
+                                $query->where('meeting_id', 'like', '%'.$search.'%');
+                            });
+                      // ->orWhereHas('types', function ($query) use ($search) {
+                      //           $query->where('code', 'like', '%'.$search.'%');
+                      //      });
+            });
+        
+        })->when($filters['trashed'] ?? null, function ($query, $trashed) {
+            if ($trashed === 'with') {
+                $query->withTrashed();
+            } elseif ($trashed === 'only') {
+                $query->onlyTrashed();
+            }
+        });
     }
     
 }

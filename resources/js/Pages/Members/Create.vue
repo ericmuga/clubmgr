@@ -37,7 +37,7 @@
           <file-input v-model="form.photo" :error="form.errors.photo" class="pr-6 pb-8 w-full lg:w-1/2" type="file" accept="image/*" label="Photo" />-->
         </div> 
         <div class="px-8 py-4 bg-gray-50 border-t border-gray-100 flex justify-end items-center">
-          <loading-button :loading="form.processing" class="btn-indigo" type="submit">Create User</loading-button>
+          <loading-button :loading="form.processing" class="btn-indigo" type="submit">Create</loading-button>
         </div>
       </form>
     </div>

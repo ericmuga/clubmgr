@@ -22,9 +22,10 @@ class MemberFactory extends Factory
     public function definition()
     {
         
-        return [
+        return [ 
+                 'member_id'=>$this->faker->unique()->safeEmail,
                  'name'=>$this->faker->name(),
-                 'email'=>$this->faker->email(),
+                 'email'=>$this->faker->unique()->safeEmail,
                  'phone'=>$this->faker->phoneNumber(),
                  'affiliation_id'=>$this->faker->numberBetween(1,3),
                  'type_id'=>$this->faker->numberBetween(1,2)

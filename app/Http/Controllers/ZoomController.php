@@ -84,7 +84,7 @@ class ZoomController extends Controller
     {
        // dd($setup->current);
         return Inertia::render('Zoom/Edit',
-                ['setup'=>[   'id'=>$setup->id,
+                ['setup'=>[  'id'=>$setup->id,
                              'client_id'=>$setup->client_id,
                              'client_secret'=>$setup->client_secret,
                              'environment'=>$setup->environment,

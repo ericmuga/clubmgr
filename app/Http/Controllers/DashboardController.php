@@ -105,7 +105,7 @@ class DashboardController extends Controller
           
            if ($counter<=0) 
              {
-                return redirect()->route('dashboard')->with('error', 'No users were found in your Zoom Account');
+                return redirect()->route('meetings')->with('error', 'No users were found in your Zoom Account');
              }
 
 

@@ -7,10 +7,13 @@ use App\Models\Contact;
 use App\Models\Organization;
 use App\Models\User;
 use App\Models\Member;
+use App\Models\Meeting;
+use App\Models\Registrant;
 use App\Models\Type;
 use App\Models\Affiliation;
 use App\Models\Setup;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 use Illuminate\Database\Seeder;
 
@@ -62,6 +65,21 @@ class DatabaseSeeder extends Seeder
              DB::table('affiliation_member')->insert(["affiliation_id"=>$member->affiliation_id,"member_id"=>$member->id]);
              DB::table('member_type')->insert(['type_id'=>$member->type_id,"member_id"=>$member->id]);
          } 
+
+         Meeting::factory(12)->create();
+         $meetings= Meeting::where('meeting_type',"Physical")->get();
+
+         foreach($meetings as $meeting )
+         {
+            Registrant::factory(20)->create(['meeting_id'=>$meeting->id]);
+         }
+
+         // $meetings= Meeting::where('meeting_type',"Physical")->get();
+
+         // foreach($meetings as $meeting )
+         // {
+         //    Registrant::factory(120)->create(['meeting_id'=>$meeting->meeting_id]);
+         // }
 
 
     }

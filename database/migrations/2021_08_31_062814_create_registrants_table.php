@@ -15,9 +15,9 @@ class CreateRegistrantsTable extends Migration
     {
         Schema::create('registrants', function (Blueprint $table) {
             $table->id();
-            $table->integer('meeting_id')
+            $table->string('meeting_id')
                   ->foreign()
-                  ->references('id')
+                  ->references('meeting_id')
                   ->on('meetings')
                   ->onDelete('cascade');
             $table->string('email')->unique();

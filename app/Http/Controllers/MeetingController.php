@@ -26,7 +26,7 @@ class MeetingController extends Controller
                                 'meetings' => Meeting::with('registrants')
                                 ->orderByDesc('start_time')
                                   ->filter($request->only('search', 'trashed'))
-                                                     ->paginate(5)
+                                                     ->paginate(30)
                                                      ->withQueryString()
                                                      ->through(fn($meeting)=>([
                                                                                 'id'=>$meeting->id,

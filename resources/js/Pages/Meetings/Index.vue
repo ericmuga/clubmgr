@@ -78,7 +78,7 @@
           </td>
            <td class="border-t">
             <inertia-link class="px-6 py-4 flex items-center" :href="route('meetings.edit', meeting.id)" tabindex="-1">
-              {{meeting.registrants}}
+              {{0}}
             </inertia-link>
                
 

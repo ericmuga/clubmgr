@@ -24,43 +24,38 @@
       fillData () {
         this.datacollection = {
          labels: [
-          "8th Aug 2021",
-          "10th Aug 2021",
-          "17th Aug 2021",
-          "19th Aug 2021",
-          "25th Aug 2021",
-          "28th Aug 2021",
-          "30th Aug 2021",
-          "31th Aug 2021",
-          
-        ],
+          "August 2021",
+         ],
+         gridLines: {
+          display: false
+        },
           datasets: [
           {
-            data: [40, 45, 80, 76, 60, 111, 100, 90],
+            data: [40],
             label: "Cyber Security Meeting",
-            borderColor: "#3e95cd",
+            color: "#3e95cd",
             fill: false,
           },
           {
-            data: [60, 49, 83, 70, 60, 110, 80, 90],
+            data: [60],
             label: "Health Talk",
             borderColor: "#8e5ea2",
             fill: false,
           },
           {
-            data: [70, 65, 80, 76, 60, 23, 78, 90],
+            data: [70],
             label: "Environment",
             borderColor: "#3cba9f",
             fill: false,
           },
           {
-            data: [80, 50, 80, 76, 60, 30, 25, 80],
+            data: [80],
             label: "Governance",
             borderColor: "#e8c3b9",
             fill: false,
           },
           {
-            data: [90, 45, 80, 76, 67, 34, 100, 40],
+            data: [120],
             label: "Finance",
             borderColor: "#c45850",
             fill: false,

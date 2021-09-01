@@ -11,6 +11,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ZoomController;
 use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\MakeupController;
+use App\Http\Controllers\RegistrantController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -252,6 +253,31 @@ Route::post('/makeups', [MakeupController::class, 'store'])
 Route::get('/makeups/{makeup}/edit', [MakeupController::class, 'edit'])
         ->name('makeups.edit')
         ->middleware('auth');
+
+Route::get('/registrants', [RegistrantController::class, 'index'])
+        ->name('registrants')
+        ->middleware('auth');
+
+Route::get('/registrants/{registrant}/edit', [RegistrantController::class, 'edit'])
+        ->name('registrants.edit')
+        ->middleware('auth');
+
+Route::post('/registrants', [RegistrantController::class, 'store'])
+        ->name('registrants.store')
+        ->middleware('auth');
+
+Route::put('/registrants/{registrant}', [RegistrantController::class, 'update'])
+        ->name('registrants.update')
+        ->middleware('auth');
+
+Route::delete('/registrants/{registrant}', [RegistrantController::class, 'destroy'])
+        ->name('registrants.destroy')
+        ->middleware('auth');
+
+Route::get('/registrants/create', [RegistrantController::class, 'create'])
+        ->name('registrants.create')
+        ->middleware('auth');
+
         
 
 
