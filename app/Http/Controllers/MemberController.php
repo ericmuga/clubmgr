@@ -47,6 +47,7 @@ class MemberController extends Controller
                                                      ->paginate(10)
                                                      ->withQueryString()
                                                      ->through(fn($member)=>([
+                                                         'member_id'=>$member->member_id,
                                                          'id'=>$member->id,
                                                         'name'=>$member->name,
                                                         'email'=>$member->email,

@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <h1 class="mb-8 font-bold text-3xl">Zoom/Setup</h1>
-    <div class="mb-6 flex justify-between items-center">
-      
-     <search-filter v-model="form.search" class="w-full max-w-md mr-4" @reset="reset">
+<div>
+  <div class="flex items-center justify-center">
+  <div class="container">
+    <div class="mb-4 py-5 flex justify-between items-center">
+          <search-filter v-model="form.search" class="w-full max-w-md mr-4" @reset="reset">
             <label class="block text-gray-700">Trashed:</label>
             <select v-model="form.trashed" class="mt-1 w-full form-select">
               <option :value="null" />
@@ -11,95 +11,82 @@
               <option value="only">Only Trashed</option>
             </select>
           </search-filter>
-      <inertia-link class="btn-indigo" :href="route('setup.create')">
-        <span>Create</span>
-        <span class="hidden md:inline">Setup</span>
-      </inertia-link>
-
-    </div>
-
-
-    <div class="bg-white rounded-md shadow overflow-x-auto">
-      <table class="w-full whitespace-nowrap">
-        <tr class="text-left font-bold">
-          <th class="px-6 pt-6 pb-4">Client ID</th>
-          <th class="px-6 pt-6 pb-4">Client Secret</th>
-          <th class="px-6 pt-6 pb-4">Call Back URL</th>
-          <th class="px-6 pt-6 pb-4">Environment</th>
-          <th class="px-6 pt-6 pb-4">Current</th>
-        </tr>
-        <tr v-for="setup in setups.data" :key="setup.id" class="hover:bg-gray-100 focus-within:bg-gray-100">
-          <td class="border-t">
-            <inertia-link class="px-6 py-4 flex items-center focus:text-indigo-500" :href="route('setup.edit', setup.id)">
-              {{ setup.client_id }}
-             
+          <inertia-link class="btn-indigo bg-indigo-800" :href="route('setup.create')">
+              <span>Refresh</span>
+              
+          </inertia-link>
+        </div>
+    <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
+      <thead class="text-white">
+        <tr v-for="setup in setups.data" :key="setup.id" class="bg-indigo-800 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
+          <th class="p-3 text-left">Setup No.</th>
+          <th class="p-3 text-left">Client ID</th>
+          <th class="p-3 text-left">Client Secret</th>
+          <th class="p-3 text-left">Call back URL</th>
+            <th class="p-3 text-left">Environment</th>
+          <th class="p-3 text-left">Current</th>
+          
+          
+         </tr>
+        
+      </thead>
+      <tbody class="flex-1 sm:flex-none">
+        <tr class="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0"  v-for="setup in setups.data" :key="setup.id">
+          <td class="border-grey-light border hover:bg-gray-100 p-3"> 
+           <inertia-link class="text-indigo-400" :href="route('setup.edit',setup.id)" tabindex="-1">
+              {{ setup.id }}
             </inertia-link>
-          </td>
-          <td class="border-t">
-            <inertia-link class="px-6 py-4 flex items-center" :href="route('setup.edit', setup.id)" tabindex="-1">
-              {{ setup.client_secret }}
-            </inertia-link>
-          </td>
 
-          <td class="border-t">
-            <inertia-link class="px-6 py-4 flex items-center" :href="route('setup.edit', setup.id)" tabindex="-1">
-              {{ setup.callback_url }}
-            </inertia-link>
           </td>
-          <td class="border-t">
-            <inertia-link class="px-6 py-4 flex items-center" :href="route('setup.edit', setup.id)" tabindex="-1">
-              {{ setup.environment }}
-            </inertia-link>
-          </td>
-
-          <td class="border-t">
-            <inertia-link class="px-6 py-4 flex items-center" :href="route('setup.edit', setup.id)" tabindex="-1">
-              {{ setup.current }}
-            </inertia-link>
-          </td>
-
-          <td class="border-t w-px">
-            <inertia-link class="px-4 flex items-center" :href="route('setup.edit', setup.id)" tabindex="-1">
-              <icon name="cheveron-right" class="block w-6 h-6 fill-gray-400" />
-            </inertia-link>
-          </td>
-
-        </tr>
+          <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ setup.client_id }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ setup.client_secret }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ setup.callback_url }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ setup.environment }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ setup.current}}</td>
+          
+          
+           
+         
         <tr v-if="setups.data.length === 0">
-          <td class="border-t px-6 py-4" colspan="4">No Setups found .</td>
+          <td class="border-t px-2 py-4" colspan="4">No setups found.</td>
         </tr>
-      </table>
-    </div>
-    <pagination class="mt-6" :links="setups.links" />
+      </tbody>
+    </table>
+    <pagination class="mt-4" :links="setups.links" />
   </div>
+
+</div>
+</div>
 </template>
 
 <script>
+
+import Layout from '@/Shared/Layout'
+// import SetupStats from './SetupStats'
 import Icon from '@/Shared/Icon'
 import pickBy from 'lodash/pickBy'
-import Layout from '@/Shared/Layout'
 import throttle from 'lodash/throttle'
 import mapValues from 'lodash/mapValues'
 import Pagination from '@/Shared/Pagination'
 import SearchFilter from '@/Shared/SearchFilter'
 
 export default {
-  metaInfo: { title: 'Zoom Setup' },
-  
-  // mounted(){
-  // 	console.log(setups);
-  // }
 
-  components: {
-    Icon,
+  name: 'Index',
+  components:{
+    // SetupStats,
+      Icon,
     Pagination,
     SearchFilter,
   },
+  
+   props:{
+    setups:null,
+    filters:Object
+   },
+
+ metaInfo: { title: 'Setups' },
   layout: Layout,
-  props: {
-    filters: Object,
-    setups: Object,
-  },
   data() {
     return {
       form: {
@@ -112,7 +99,7 @@ export default {
     form: {
       deep: true,
       handler: throttle(function() {
-        this.$inertia.get(this.route('setup'), pickBy(this.form), { preserveState: true })
+        this.$inertia.get(this.route('setups'), pickBy(this.form), { preserveState: true })
       }, 150),
     },
   },
@@ -120,6 +107,32 @@ export default {
     reset() {
       this.form = mapValues(this.form, () => null)
     },
-  },
+  }
 }
 </script>
+
+<style lang="css" scoped>
+</style>
+
+
+
+<style>
+  
+  @media (min-width: 640px) {
+    table {
+      display: inline-table !important;
+    }
+
+    thead tr:not(:first-child) {
+      display: none;
+    }
+  }
+
+  td:not(:last-child) {
+    border-bottom: 0;
+  }
+
+  th:not(:last-child) {
+    border-bottom: 2px solid rgba(0, 0, 0, .1);
+  }
+</style>

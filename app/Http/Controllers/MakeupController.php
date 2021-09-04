@@ -19,7 +19,7 @@ class MakeupController extends Controller
      */
     public function index(Request $request)
     {
-        return Inertia::render('Makeups/Index', [
+        return Inertia::render('Makeups/Index2', [
                         'filters' =>$request->all('search','trashed'),
                                 'makeups' => Makeup::orderByDesc('makeup_date')
                                                      ->filter($request->only('search', 'trashed'))

@@ -42,7 +42,8 @@ class RegistrantController extends Controller
                                                         'email'=>$registrant->email,
                                                         'category'=>$registrant->category,
                                                         'classification'=>$registrant->classification,
-                                                        'meeting_id'=>Meeting::find($registrant->meeting_id)->meeting_id,
+                                                        'meeting_id'=>$registrant->meeting_id,
+                                                        'mid'=>Meeting::where('meeting_id',$registrant->meeting_id)->first()->id,
                                                         // 'create_time'=>Carbon::parse($registrant->create_time)->toDayDateTimeString(),
                                                         'invited_by'=>$registrant->invited_by,
                                                         'club_name'=>$registrant->club_name

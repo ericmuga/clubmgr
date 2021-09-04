@@ -29,9 +29,14 @@ class Meeting extends Model
    
     public function registrants()
     {
-       return $this->hasMany(Registrant::class,'meeting_id'); 
+       return $this->hasMany(Registrant::class,'meeting_id','meeting_id'); 
     }
 
+  public function participants()
+    {
+       return $this->hasMany(Participant::class,'meeting_id','meeting_id'); 
+    }
+ 
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {

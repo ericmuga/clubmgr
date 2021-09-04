@@ -2,6 +2,7 @@
 
   
 
+ <!-- <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4"> -->
   <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
   <div
     class="min-w-0 rounded-lg shadow-xs overflow-hidden bg-white dark:bg-gray-800"

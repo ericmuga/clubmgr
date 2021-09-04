@@ -36,80 +36,15 @@
         </div>
 
       </form>
-
-       </div>
-          <div class="flex p-3 ml-2 flex-1 bg-white rounded-md shadow overflow-hidden max-w-3xl">
-        <div>
-          <h1 class="text-indigo-400 ">
-            Meeting Statistics
-          </h1>
-        </div>
-          
+      </div>
         
-          
-        <hr>
-      <table class="w-full whitespace-nowrap">
-        <tr class="text-left font-bold">
-          <th class="">Item</th>
-          <th class="">Value</th>
-          
-        </tr>
-        <tr  class="hover:bg-gray-100 focus-within:bg-gray-100">
-          <td class="border-t">
-            Duration
-          </td>
-          <td class="border-t">
-           40 Mins
-          </td>
-      </tr>
-
-       <tr  class="hover:bg-gray-100 focus-within:bg-gray-100">
-          <td class="border-t">
-            Registrants
-          </td>
-          <td class="border-t">
-           12
-          </td>
-      </tr>
-
-       <tr  class="hover:bg-gray-100 focus-within:bg-gray-100">
-          <td class="border-t">
-            Participants
-          </td>
-          <td class="border-t">
-           10
-          </td>
-      </tr>
-
-      <tr  class="hover:bg-gray-100 focus-within:bg-gray-100">
-          <td class="border-t">
-            Rotarians
-          </td>
-          <td class="border-t">
-           8
-          </td>
-      </tr>
+      <div class="  w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-shrink sm:shadow-lg my-5" >
+         
+      </div>
+      
+         
 
 
-      <tr  class="hover:bg-gray-100 focus-within:bg-gray-100">
-          <td class="border-t">
-            Rotaractors
-          </td>
-          <td class="border-t">
-           1
-          </td>
-      </tr>
-
-
-      <tr  class="hover:bg-gray-100 focus-within:bg-gray-100">
-          <td class="border-t">
-            Guest
-          </td>
-          <td class="border-t">
-           1
-          </td>
-      </tr>
-    </table>
   
 
     </div>

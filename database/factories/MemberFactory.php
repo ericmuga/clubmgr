@@ -23,7 +23,7 @@ class MemberFactory extends Factory
     {
         
         return [ 
-                 'member_id'=>$this->faker->unique()->safeEmail,
+                 'member_id'=>'RCL'.$this->faker->numberBetween(10000,1000000),
                  'name'=>$this->faker->name(),
                  'email'=>$this->faker->unique()->safeEmail,
                  'phone'=>$this->faker->phoneNumber(),

@@ -26,14 +26,15 @@ class MeetingController extends Controller
                                 'meetings' => Meeting::with('registrants')
                                 ->orderByDesc('start_time')
                                   ->filter($request->only('search', 'trashed'))
-                                                     ->paginate(30)
+                                                     ->paginate(10)
                                                      ->withQueryString()
                                                      ->through(fn($meeting)=>([
                                                                                 'id'=>$meeting->id,
                                                                                 'meeting_id'=>$meeting->meeting_id,
                                                                                 'meeting_type'=>$meeting->meeting_type,
                                                                                  'registrants'=>$meeting->registrants()->count(),
-                                                                                'start_time'=>Carbon::parse($meeting->start_time)->toDayDateTimeString(),
+                                                                                 'participants'=>$meeting->participants()->count(),
+                                                                                'start_time'=>Carbon::parse($meeting->start_time)->toDateTimeString(),
                                                                                 'topic'=>$meeting->topic
                                                                                     ]))
   
@@ -47,7 +48,7 @@ class MeetingController extends Controller
      */
     public function create()
     {
-        //
+        return Redirect::back()->with('error','this function is under construction');
     }
 
     /**
