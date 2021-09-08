@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Meeting;
+use App\Models\Setup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Carbon\Carbon;
 
@@ -38,10 +39,15 @@ class MeetingFactory extends Factory
 
 
           $startDate=Carbon::now();
+          $setup= Setup::where('current',true)->first();
+          $setup->last_meeting_no++;
+          $setup->save();
 
         return [
                     "uuid"=>$this->faker->uuid(),
-                    "meeting_id"=>'P'.strval($this->faker->numberBetween(1000,1000000000)),
+                    // "uuid"=>$this->faker->uuid(),
+                    // "meeting_id"=>'P'.strval($this->faker->numberBetween(1000,1000000000)),
+                    "meeting_id"=>$setup->meeting_prefix.$setup->last_meeting_no,
                     "host_id"=>$this->faker->slug(),
                     "topic"=>$this->faker->word(),
                     "type"=>1,
@@ -50,6 +56,7 @@ class MeetingFactory extends Factory
                     "timezone"=>'Africa/Nairobi',
                    "created_at"=>$this->faker->dateTimeInInterval($startDate= '+0 years', $interval = '-'.$this->faker->numberBetween(1,5).' days', $timezone = 'Africa/Nairobi'),
                    "join_url"=>'',
-                    "meeting_type"=>'Physical'              ];
+                   "guest_speaker"=>$this->faker->title().' '.$this->faker->name(),
+                    "meeting_type"=>"Physical"              ];
     }
 }

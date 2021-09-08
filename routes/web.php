@@ -172,7 +172,7 @@ Route::get('/', [DashboardController::class, 'index'])
     ->middleware('auth');
 
 
-Route::get('/show/{code?}/{state?}', [DashboardController::class, 'show'])
+Route::get('/show/{code?}/{state?}', [MeetingController::class, 'show'])
     ->name('show')
     ->middleware('auth');
 
@@ -200,11 +200,11 @@ Route::delete('/zoom/{setup}', [ZoomController::class, 'destroy'])
         ->name('setup.delete')
         ->middleware('auth');
     
- Route::get('/zoom/refresh', [DashboardController::class, 'refreshUsers'])
+ Route::get('/zoom/refresh', [MeetingController::class, 'refreshUsers'])
         ->name('zoom.refresh')
         ->middleware('auth');
 
-Route::get('/zoom/meetings', [DashboardController::class, 'meetings'])
+Route::get('/zoom/meetings', [MeetingController::class, 'meetings'])
         ->name('zoom.meetings')
         ->middleware('auth');
 
@@ -239,12 +239,11 @@ Route::delete('/meetings/{meeting}', [MeetingController::class, 'destroy'])
         ->middleware('auth');
     //authorize
 
+
+
 Route::get('/makeups', [MakeupController::class, 'index'])
         ->name('makeups')
         ->middleware('auth');
-
-
-
 Route::get('/makeups/create', [MakeupController::class, 'create'])
         ->name('makeups.create');
 
@@ -254,6 +253,15 @@ Route::post('/makeups', [MakeupController::class, 'store'])
 Route::get('/makeups/{makeup}/edit', [MakeupController::class, 'edit'])
         ->name('makeups.edit')
         ->middleware('auth');
+
+Route::put('/makeups/{makeup}', [MakeupController::class, 'update'])
+        ->name('makeups.update')
+        ->middleware('auth');
+
+Route::delete('/makeups/{makeup}', [MakeupController::class, 'destroy'])
+        ->name('makeups.destroy')
+        ->middleware('auth');
+
 
 
 //registrants
@@ -307,6 +315,14 @@ Route::put('/participants/{registrant}', [ParticipantController::class, 'update'
 Route::delete('/participants/{registrant}', [ParticipantController::class, 'destroy'])
         ->name('participants.destroy')
         ->middleware('auth');
+
+Route::get('ap/members',[MemberController::class, 'api'])
+       ->name('ap.members')
+       ->middleware('auth');
+
+
+
+
 
 
 

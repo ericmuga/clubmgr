@@ -22,6 +22,7 @@
     <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
       <thead class="text-white">
         <tr v-for="makeup in makeups.data" :key="makeup.id" class="bg-indigo-800 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
+          <th class="p-3 text-left">ID</th>
           <th class="p-3 text-left">Email</th>
           <th class="p-3 text-left">Name</th>
           <th class="p-3 text-left">Make Up Date</th>
@@ -36,6 +37,11 @@
       <tbody class="flex-1 sm:flex-none">
         <tr class="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0"  v-for="makeup in makeups.data" :key="makeup.id">
           
+          <td class="border-grey-light border hover:bg-gray-100 p-3">  
+            <inertia-link  :href="route('makeups.edit',makeup.id)">
+             
+             {{ makeup.id }}
+          </inertia-link></td>
           <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ makeup.email }}</td>
          
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ makeup.name }}</td>

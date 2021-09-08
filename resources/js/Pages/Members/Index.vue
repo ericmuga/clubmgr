@@ -1,11 +1,15 @@
 <template>
 <div>
+
+
    <h1 class="mb-8 font-bold text-3xl">
       <inertia-link class="text-indigo-400 hover:text-indigo-600" :href="route('members')">Members</inertia-link>
     </h1>
   <div class="flex items-center justify-center">
   <div class="container">
     <member-stats></member-stats>
+    <advanced-filter @set-advanced-filters="setFilters"></advanced-filter>
+
     <div class="mb-4 py-5 flex justify-between items-center">
           <search-filter v-model="form.search" class="w-full max-w-md mr-4" @reset="reset">
             <label class="block text-gray-700">Trashed:</label>
@@ -15,8 +19,10 @@
               <option value="only">Only Trashed</option>
             </select>
           </search-filter>
+            
+
           <inertia-link class="btn-indigo bg-indigo-800" :href="route('members.create')">
-              <span>Refresh</span>
+              <span>Create</span>
               
           </inertia-link>
         </div>
@@ -61,12 +67,14 @@
 
 import Layout from '@/Shared/Layout'
 import MemberStats from './MemberStats'
+import AdvancedFilter from './AdvancedFilter'
 import Icon from '@/Shared/Icon'
 import pickBy from 'lodash/pickBy'
 import throttle from 'lodash/throttle'
 import mapValues from 'lodash/mapValues'
 import Pagination from '@/Shared/Pagination'
 import SearchFilter from '@/Shared/SearchFilter'
+import Accordion from '@/Shared/Accordion'
 
 export default {
 
@@ -76,6 +84,7 @@ export default {
       Icon,
     Pagination,
     SearchFilter,
+    AdvancedFilter,
   },
   
    props:{
@@ -91,6 +100,7 @@ export default {
         search: this.filters.search,
         trashed: this.filters.trashed,
       },
+      advdata:Object
     }
   },
   watch: {
@@ -105,6 +115,11 @@ export default {
     reset() {
       this.form = mapValues(this.form, () => null)
     },
+    setFilters(data)
+    {
+        this.advdata=data;
+        alert(this.advdata._email);
+    }
   }
 }
 </script>

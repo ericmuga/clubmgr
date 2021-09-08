@@ -30,6 +30,7 @@
          <div class="bg-white rounded-md shadow overflow-x-auto">
       <table class="w-full whitespace-nowrap">
         <tr class="text-left font-bold">
+          <th class="px-6 pt-6 pb-4">ID</th>
           <th class="px-6 pt-6 pb-4">Email</th>
           <th class="px-6 pt-6 pb-4">Name</th>
           <th class="px-6 pt-6 pb-4">Makeup Date</th>
@@ -40,8 +41,12 @@
         <tr v-for="makeup in makeups.data" :key="makeup.id" class="hover:bg-gray-100 focus-within:bg-gray-100">
           <td class="border-t">
             <inertia-link class="px-6 py-4 flex items-center focus:text-indigo-500" :href="route('makeups.edit', makeup.id)">
+              {{ makeup.id }}
+            </inertia-link>
+          </td>
+          <td class="border-t">
+            <inertia-link class="px-6 py-4 flex items-center focus:text-indigo-500" :href="route('makeups.edit', makeup.id)">
               {{ makeup.email }}
-              <icon v-if="makeup.deleted_at" name="trash" class="flex-shrink-0 w-3 h-3 fill-gray-400 ml-2" />
             </inertia-link>
           </td>
           <!-- <td class="border-t">

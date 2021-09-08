@@ -8,7 +8,7 @@ use Inertia\Inertia;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Redirect;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Auth;
 
 class MakeupController extends Controller
 {
@@ -33,7 +33,7 @@ class MakeupController extends Controller
                                                         'description'=>$makeup->description,
                                                         'makeup_date'=>Carbon::parse($makeup->makeup_date)->diffForHumans(),
                                                         'approved_by'=>$makeup->approved_by,
-                                                        'approval_date'=>$makeup->approval_date
+                                                        'approval_date'=>($makeup->approval_date==null)?null:Carbon::parse($makeup->approval_date)->toDayDateTimeString()
                                                      ]))
                                     
                 ]);
@@ -77,11 +77,12 @@ class MakeupController extends Controller
             'email' => $request->email,
             'makeup_date'=>$request->makeup_date,
             'description'=>$request->description,
-            'status' => $request->status
+            'status' => $request->status,
+            'approval_date'=>null
             
         ]);
 
-        return Redirect::route('makeups')->with('success', 'Makeup created.');
+        return Redirect::route('makeups')->with('success', 'Makeup created. An email has been sent to your address.');
     }
 
     /**
@@ -103,7 +104,20 @@ class MakeupController extends Controller
      */
     public function edit(Makeup $makeup)
     {
-        //
+        return Inertia::render('Makeups/Edit', [
+                        
+                                'makeup' => [
+                                                         'id'=>$makeup->id,
+                                                        'name'=>$makeup->name,
+                                                        'email'=>$makeup->email,
+                                                        'status'=>$makeup->status,
+                                                        'description'=>$makeup->description,
+                                                        'makeup_date'=>Carbon::parse($makeup->makeup_date)->toDayDateTimeString(),
+                                                        'approved_by'=>$makeup->approved_by,
+                                                        'approval_date'=>Carbon::parse($makeup->approval_date)->diffForHumans()
+                                                     ]
+                                    
+                ]);
     }
 
     /**
@@ -115,7 +129,25 @@ class MakeupController extends Controller
      */
     public function update(Request $request, Makeup $makeup)
     {
-        //
+        $validated=$request->validate([
+                                         'name'=>['required'],
+                                         'email'=>['required','email:rfc,dns'],
+                                         'status'=>['required'],
+                                         'makeup_date'=>['required','date'],
+                                     ]);
+
+                    $makeup->update([
+                                     'id'=>$request->id,
+                                    'name'=>$request->name,
+                                    'email'=>$request->email,
+                                    'status'=>$request->status,
+                                    'description'=>$request->description,
+                                    'makeup_date'=>$request->makeup_date,
+                                    'approved_by'=> ($request->status==2)?Auth::user()->email:'',
+                                    'approval_date'=>($request->status==2)?Carbon::now()->diffForHumans():null
+        ]);
+
+       return redirect()->route('makeups')->with('success','makeup updated successfully');
     }
 
     /**
@@ -126,6 +158,9 @@ class MakeupController extends Controller
      */
     public function destroy(Makeup $makeup)
     {
-        //
+
+         // dd($makeup);
+        $makeup->delete();
+       return redirect()->route('makeups')->with('success','Makeup deleted successfully!');
     }
 }

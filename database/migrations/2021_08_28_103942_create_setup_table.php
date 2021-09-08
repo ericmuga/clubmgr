@@ -18,6 +18,8 @@ class CreateSetupTable extends Migration
             $table->string('client_secret');
             $table->string('callback_url');
             $table->string('environment');
+            $table->string('meeting_prefix');
+            $table->integer('last_meeting_no');
             $table->boolean('current');
             $table->timestamps();
         });

@@ -13,6 +13,8 @@ use Redirect;
 use Illuminate\Support\Facades\DB;
 use App\Models\Type;
 use App\Models\Affiliation;
+
+use App\Http\Resources\MemberCollection;
 class MemberController extends Controller
 {
     /**
@@ -64,7 +66,19 @@ class MemberController extends Controller
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
+     * 
+     * 
      */
+
+    public function api(Request $request)
+    {
+        $member = Member::where('id',1)->get();
+        return  new MemberCollection($member);
+    
+
+    }
+
+
     public function create()
     {
        return Inertia::render('Members/Create',[]);
@@ -157,7 +171,7 @@ class MemberController extends Controller
      */
     public function update(Request $request, Member $member)
     {
-       dd($member);
+       //dd($member);
        $validated=$request->validate([
             'name' => ['required', 'max:50'],
             'affiliation_id' => ['required', 'max:1'],

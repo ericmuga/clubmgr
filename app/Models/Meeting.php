@@ -32,6 +32,42 @@ class Meeting extends Model
        return $this->hasMany(Registrant::class,'meeting_id','meeting_id'); 
     }
 
+
+    public function getMeetingTypeAttribute($value)
+    {
+        switch ($value) {
+            case 1:return "Physical";
+                // code...
+                break;
+            case 2:return "Zoom";
+            // code...
+            break;
+            
+            default:return "Undefined";
+                // code...
+                break;
+            }
+   }
+
+
+   // public function setMeetingTypeAttribute($value)
+   //  {
+   //      switch ($value) {
+   //          case "Physical":$this->attributes['meeting_type'] = 1;
+   //              // code...
+   //              break;
+   //          case "Zoom":return $this->attributes['meeting_type'] = 2;
+   //          // code...
+   //          break;
+            
+   //          default:return 0 ;
+   //              // code...
+   //              break;
+   //          }
+   // }
+
+
+      
   public function participants()
     {
        return $this->hasMany(Participant::class,'meeting_id','meeting_id'); 
@@ -44,6 +80,7 @@ class Meeting extends Model
                 $query->where('uuid', 'like', '%'.$search.'%')
                 ->orWhere('meeting_id', 'like', '%'.$search.'%')
                     ->orWhere('start_time', 'like', '%'.$search.'%')
+                    ->orWhere('meeting_type', 'like', '%'.$search.'%')
                     ->orWhere('topic', 'like', '%'.$search.'%');
                     // ->orWhereHas('affiliations', function ($query) use ($search) {
                     //     $query->where('code', 'like', '%'.$search.'%');

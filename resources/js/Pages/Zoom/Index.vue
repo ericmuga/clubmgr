@@ -25,6 +25,8 @@
           <th class="p-3 text-left">Call back URL</th>
             <th class="p-3 text-left">Environment</th>
           <th class="p-3 text-left">Current</th>
+          <th class="p-3 text-left">Meeting Prefix</th>
+          <th class="p-3 text-left">Last Meeting No.</th>
           
           
          </tr>
@@ -43,6 +45,8 @@
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ setup.callback_url }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ setup.environment }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ setup.current}}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ setup.meeting_prefix}}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ setup.last_meeting_no}}</td>
           
           
            

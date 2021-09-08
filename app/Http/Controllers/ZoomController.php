@@ -35,7 +35,9 @@ class ZoomController extends Controller
                                                                                 'client_secret' => $setup->client_secret,
                                                                                 'callback_url' => $setup->callback_url,
                                                                                 'current' => $setup->current?'Yes':'No',
-                                                                                'environment' => $setup->environment
+                                                                                'environment' => $setup->environment,
+                                                                                'meeting_prefix' => $setup->meeting_prefix,
+                                                                                'last_meeting_no' => $setup->last_meeting_no,
                                                                                     ])
                                           ]);
 
@@ -82,16 +84,18 @@ class ZoomController extends Controller
      */
     public function edit(Setup $setup)
     {
-       // dd($setup->current);
+        // dd($setup);
         return Inertia::render('Zoom/Edit',
                 ['setup'=>[  'id'=>$setup->id,
                              'client_id'=>$setup->client_id,
                              'client_secret'=>$setup->client_secret,
                              'environment'=>$setup->environment,
                              'callback_url'=>$setup->callback_url,
-                             'current'=>$setup->current
+                             'current'=>$setup->current,
+                             'meeting_prefix' => $setup->meeting_prefix,
+                             'last_meeting_no' => $setup->last_meeting_no
                          ]
-             
+         
         ]);
     }
 

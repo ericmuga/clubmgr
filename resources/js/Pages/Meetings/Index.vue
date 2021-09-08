@@ -15,21 +15,45 @@
             </select>
           </search-filter>
           <inertia-link class="btn-indigo bg-indigo-800" :href="route('meetings.create')">
-              <span>Create </span>
+              <span>Create Physical Meeting </span>
           </inertia-link>
            <inertia-link class="btn-indigo bg-indigo-800" :href="route('zoom.meetings')">
-              <span>Zoom Load</span>
+              <span>Load Zoom Meetings</span>
               
           </inertia-link>
           <inertia-link class="btn-indigo bg-indigo-800 overflow-hidden" :href="route('zoom.refresh')">
-               <span class="hidden md:inline">Load Admins</span>
+               <span class="hidden md:inline">Load Zoom Admins</span>
           </inertia-link>
+
+           <div class="font-bold">
+          <a
+
+           class="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded-full"
+           style="background-color:#606d9e"
+            :href=url>
+              Zoom Auth
+         </a>
+
+        
+
+         <!--  <inertia-link class="btn-indigo" :href="route('zoom.meetings')">
+               <span class="hidden md:inline">Zoom Meetings</span>
+          </inertia-link> -->
+
+          <!-- <inertia-link class="btn-indigo" :href="route('zoom.accounts')">
+               <span class="hidden md:inline">Account</span>
+          </inertia-link> -->
+     
+     
+      
+    </div>
         </div>
     <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
       <thead class="text-white">
         <tr v-for="meeting in meetings.data" :key="meeting.id" class="bg-indigo-800 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
           <th class="p-3 text-left">ID</th>
           <th class="p-3 text-left">Topic</th>
+          <th class="p-3 text-left">Guest Speaker</th>
           <th class="p-3 text-left">Type</th>
           <th class="p-3 text-left">Start Time</th>
           <th class="p-3 text-left">Registrants</th>
@@ -43,7 +67,8 @@
               {{meeting.meeting_id}}
             </inertia-link></td></td>
           <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ meeting.topic }}</td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.topic }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ meeting.guest_speaker }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.meeting_type }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.start_time }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.registrants }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.participants }}</td>

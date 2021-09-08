@@ -10,7 +10,7 @@ class Setup extends Model
     use HasFactory;
 
     protected $table='setup';
-    protected $fillable=['client_id','client_secret','callback_url','environment','current'];
+    protected $fillable=['client_id','client_secret','callback_url','environment','current','meeting_prefix','last_meeting_no'];
 
 
 

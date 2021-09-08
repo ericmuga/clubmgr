@@ -18,6 +18,8 @@
           <text-input v-model="form.environment" :error="form.errors.environment" class="pr-6 pb-8 w-full lg:w-1/2" label="Environment" />
 
            <text-input v-model="form.callback_url" :error="form.errors.callback_url" class="pr-6 pb-8 w-full lg:w-1/2" label="Callback URL" />
+           <text-input v-model="form.meeting_prefix" :error="form.errors.meeting_prefix" class="pr-6 pb-8 w-full lg:w-1/2" label="Meeting Prefix" />
+           <text-input v-model="form.last_meeting_no" :error="form.errors.last_meeting_no" class="pr-6 pb-8 w-full lg:w-1/2" label="Last Meeting No." />
           
           
 
@@ -77,7 +79,9 @@ export default {
                                   client_secret: this.setup.client_secret,
                                   environment: this.setup.environment,
                                   callback_url: this.setup.callback_url,
-                                  current: this.setup.current?true:false,
+                                  meeting_prefix: this.setup.meeting_prefix,
+                                  last_meeting_no: this.setup.last_meeting_no,
+                                  current: this.setup.current?true:false
                                   
                                   
                               }),
