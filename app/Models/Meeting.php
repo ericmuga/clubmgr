@@ -73,6 +73,31 @@ class Meeting extends Model
        return $this->hasMany(Participant::class,'meeting_id','meeting_id'); 
     }
  
+
+
+    public static function filteredMeetings($searches)
+    {
+        return
+                     Meeting::where(function($q) use ($searches)
+                                                {
+                                                   foreach($searches as $key => $value)
+                                                   { 
+                                                      if ($key=="from")
+                                                        {
+                                                            $q->where("start_time", '>=', $value);
+                                                        }
+                                                       elseif ($key=="to") 
+                                                       {
+                                                          $q->where("start_time", '<=', $value); // code...
+                                                       }
+                                                       else
+                                                       {
+                                                          $q->where($key, 'like',"%". $value."%");
+                                                       }
+                                                   }
+                                                })->with ('registrants');
+    }
+
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {

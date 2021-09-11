@@ -218,6 +218,10 @@ Route::get('/meetings', [MeetingController::class, 'index'])
         ->name('meetings')
         ->middleware('auth');
 
+Route::get('/meetings/filtered', [MeetingController::class, 'filtered'])
+        ->name('meetings.filtered')
+        ->middleware('auth');
+
 Route::get('/meetings/create', [MeetingController::class, 'create'])
         ->name('meetings.create')
         ->middleware('auth');

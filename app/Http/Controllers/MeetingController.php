@@ -44,6 +44,37 @@ class MeetingController extends Controller
   
                                                 ]);
     }
+   
+
+
+    public function filtered(Request $request)
+    {
+        //dd($request->all());
+        
+        // $searches=collect($request->all());
+
+          $filteredMeetings=Meeting::filteredMeetings($request->all());
+        return Inertia::render('Meetings/Index',[
+                                 'filters' =>$request->all('search','trashed'),
+                                "zmeetings"=>Meeting::where('meeting_type','Zoom')->count(),
+                                'meetings' => Meeting::filteredMeetings($request->all())
+                                                       ->with('registrants')
+                                                       ->orderByDesc('start_time')
+                                                     ->paginate(10)
+                                                     ->withQueryString()
+                                                     ->through(fn($meeting)=>([
+                                                                                'id'=>$meeting->id,
+                                                                                'meeting_id'=>$meeting->meeting_id,
+                                                                                'meeting_type'=>$meeting->meeting_type,
+                                                                                'guest_speaker'=>$meeting->guest_speaker,
+                                                                                 'registrants'=>$meeting->registrants()->count(),
+                                                                                 'participants'=>$meeting->participants()->count(),
+                                                                                 'start_time'=>Carbon::parse($meeting->start_time)->toDateTimeString(),
+                                                                                'topic'=>$meeting->topic
+                                                                                    ]))
+  
+                                                ]);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -126,6 +157,7 @@ class MeetingController extends Controller
                                                       "uuid"=>$meeting->uuid,
                                                       "meeting_id"=>$meeting->meeting_id,
                                                       "meeting_type"=>$meeting->meeting_type,
+                                                      "guest_speaker"=>$meeting->guest_speaker,
                                                       "topic"=>$meeting->topic,
                                                       "start_time"=>Carbon::parse($meeting->start_time)->toDayDateTimeString(),
                                                       //"start_time"=>$meeting->start_time,

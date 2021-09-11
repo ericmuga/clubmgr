@@ -50,7 +50,24 @@ class ParticipantController extends Controller
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
-     */
+     * 
+     * 
+     * 
+    */
+
+    public function fetchParticipants()
+
+    {
+       //logic, this will fetch participants for a given range of meetings.
+
+       /*
+           Display meeting dates, start and end
+           filter this meetings and get the meeting ID
+           for each meeting, fetch participants
+       */
+               
+    }
+
     public function create()
     {
         return Redirect::back()->with('error','this function is under construction');

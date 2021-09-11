@@ -80,3 +80,4 @@
 [Tue Sep 07 05:34:52.923741 2021] [ssl:warn] [pid 16368:tid 628] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
 [Tue Sep 07 05:34:53.358880 2021] [ssl:warn] [pid 17264:tid 632] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
 [Tue Sep 07 05:34:53.398328 2021] [ssl:warn] [pid 17264:tid 632] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Sep 08 08:17:26.430989 2021] [php:error] [pid 17264:tid 1892] [client ::1:56660] PHP Fatal error:  Cannot redeclare App\\Http\\Controllers\\MeetingController::show() in H:\\code\\ClubManager\\app\\Http\\Controllers\\MeetingController.php on line 205, referer: https://localhost/

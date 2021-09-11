@@ -14,6 +14,7 @@
               <option value="only">Only Trashed</option>
             </select>
           </search-filter>
+
           <inertia-link class="btn-indigo bg-indigo-800" :href="route('meetings.create')">
               <span>Create Physical Meeting </span>
           </inertia-link>
@@ -48,6 +49,8 @@
       
     </div>
         </div>
+         <advanced-filter @set-advanced-filters="setFilters"></advanced-filter>
+   
     <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
       <thead class="text-white">
         <tr v-for="meeting in meetings.data" :key="meeting.id" class="bg-indigo-800 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
@@ -98,6 +101,7 @@ import throttle from 'lodash/throttle'
 import mapValues from 'lodash/mapValues'
 import Pagination from '@/Shared/Pagination'
 import SearchFilter from '@/Shared/SearchFilter'
+import AdvancedFilter from './AdvancedFilter'
 
 export default {
 
@@ -107,6 +111,7 @@ export default {
       Icon,
     Pagination,
     SearchFilter,
+    AdvancedFilter,
   },
   
    props:{
@@ -123,6 +128,8 @@ export default {
         search: this.filters.search,
         trashed: this.filters.trashed,
       },
+       url:"https://zoom.us/oauth/authorize?response_type=code&client_id="+this.client_id+"&redirect_uri="+this.callback_url+"&state={userState}"
+        
     }
   },
   watch: {
@@ -137,6 +144,13 @@ export default {
     reset() {
       this.form = mapValues(this.form, () => null)
     },
+    setFilters(data)
+    {
+        this.advdata=data;
+
+        this.$inertia.get(this.route('meetings.filtered'), pickBy(this.advdata), { preserveState: true })
+       //console.log(this.advdata);
+    }
   }
 }
 </script>

@@ -57,6 +57,7 @@ class MeetingFactory extends Factory
                    "created_at"=>$this->faker->dateTimeInInterval($startDate= '+0 years', $interval = '-'.$this->faker->numberBetween(1,5).' days', $timezone = 'Africa/Nairobi'),
                    "join_url"=>'',
                    "guest_speaker"=>$this->faker->title().' '.$this->faker->name(),
-                    "meeting_type"=>"Physical"              ];
+                    "meeting_type"=>1             
+               ];
     }
 }

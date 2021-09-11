@@ -33,6 +33,7 @@
              class="pr-6 pb-8 w-full lg:w-1/2" 
              label="Start Time"name="birthdaytime" :value="form.start_time"> -->
           <text-input v-model="form.topic" :error="form.errors.topic" class="pr-6 pb-8 w-full lg:w-1/2" label="Topic" />
+          
           <text-input v-model="form.guest_speaker" :error="form.errors.guest_speaker" class="pr-6 pb-8 w-full lg:w-1/2" label="Guest Speaker" />
           
           <select-input v-model="form.meeting_type" :error="form.errors.meeting_type" class="pr-6 pb-8 w-full lg:w-1/2" label="Meeting Type" >
@@ -47,13 +48,15 @@
              
           >Delete Meeting</button>
           <!-- :disabled=" form.meeting_type == 'Zoom'" -->
+
+          <button class="btn-indigo btn-indigo ml-auto" >Zoom Refresh</button>
           <loading-button :loading="form.processing" class="btn-indigo ml-auto" type="submit" >Update Meeting</loading-button>
         </div>
 
       </form>
       </div>
         
-      <div class="  w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-shrink sm:shadow-lg my-5" >
+      <div class=" bg-teal-300  w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-shrink sm:shadow-lg my-5 " >
          
       </div>
       
@@ -102,6 +105,7 @@ export default {
                                   id:this.meeting.id,
                                   uuid: this.meeting.uuid,
                                   meeting_id: this.meeting.meeting_id,
+                                  guest_speaker: this.meeting.guest_speaker,
                                   topic: this.meeting.topic,
                                   start_time: this.meeting.start_time,
                                   meeting_type: this.meeting.meeting_type,

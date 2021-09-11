@@ -4,8 +4,10 @@
       <inertia-link class="text-indigo-400 hover:text-indigo-600" :href="route('participants')">Participants</inertia-link>
     </h1>
   <div class="flex items-center justify-center">
+  
+
   <div class="container">
-    <div class="mb-4 py-5 flex justify-between items-center">
+      <div class="mb-4 py-5 flex justify-between items-center">
           <search-filter v-model="form.search" class="w-full max-w-md mr-4" @reset="reset">
             <label class="block text-gray-700">Trashed:</label>
             <select v-model="form.trashed" class="mt-1 w-full form-select">
@@ -19,6 +21,8 @@
               
           </inertia-link>
         </div>
+        <advanced-filter @set-advanced-filters="setFilters"></advanced-filter>
+   
     <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
       <thead class="text-white">
         <tr v-for="participant in participants.data" :key="participant.id" class="bg-indigo-800 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
@@ -69,6 +73,7 @@ import throttle from 'lodash/throttle'
 import mapValues from 'lodash/mapValues'
 import Pagination from '@/Shared/Pagination'
 import SearchFilter from '@/Shared/SearchFilter'
+import AdvancedFilter from './AdvancedFilter'
 
 export default {
 
@@ -78,11 +83,13 @@ export default {
       Icon,
     Pagination,
     SearchFilter,
+    AdvancedFilter,
   },
   
    props:{
     participants:null,
-    filters:Object
+    filters:Object,
+    advdata:Object,
    },
 
  metaInfo: { title: 'Participants' },
@@ -107,6 +114,12 @@ export default {
     reset() {
       this.form = mapValues(this.form, () => null)
     },
+
+    setFilters(data)
+    {
+        this.advdata=data;
+        alert(this.advdata._to);
+    }
   }
 }
 </script>
