@@ -8,6 +8,7 @@ use App\Models\Instance;
 use App\Models\Meeting;
 use Carbon\Carbon;
 use App\Zoom;
+use App\Models\Registrant;
 
 class OccurrenceController extends Controller
 {

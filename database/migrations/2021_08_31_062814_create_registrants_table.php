@@ -33,7 +33,7 @@ class CreateRegistrantsTable extends Migration
             $table->dateTimeTz('create_time')->nullable();
             $table->softDeletes();
             $table->timestamps();
-            $table->unique(['meeting_id','email']);
+            $table->unique(['meeting_id','occurrence_id','email']);
         });
     }
 
