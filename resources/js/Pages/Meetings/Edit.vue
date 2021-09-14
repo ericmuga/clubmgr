@@ -3,7 +3,7 @@
     <h1 class="mb-8 font-bold text-3xl">
       <inertia-link class="text-indigo-400 hover:text-indigo-600" :href="route('meetings')">Meetings</inertia-link>
       <span class="text-indigo-400 font-medium">/</span>
-      {{ form.meeting_id }} / {{form.start_time}}
+      {{ form.meeting_id }} / {{form.topic}} 
       </h1>
       
      <div class="flex  justify-between">
@@ -19,14 +19,14 @@
          
           <text-input v-model="form.meeting_id" :error="form.errors.meeting_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Meeting ID" />
          
-          <text-input 
+         <!--  <text-input 
              type="datetime-local"
              v-model="form.start_time" 
              :error="form.errors.start_time" 
              class="pr-6 pb-8 w-full lg:w-1/2" 
              label="Start Time"
 
-             />
+             /> -->
 
            <!--   <label for="birthdaytime">Birthday (date and time):</label>
           <input type="datetime-local" id="birthdaytime"  :error="form.errors.start_time" 
@@ -34,7 +34,7 @@
              label="Start Time"name="birthdaytime" :value="form.start_time"> -->
           <text-input v-model="form.topic" :error="form.errors.topic" class="pr-6 pb-8 w-full lg:w-1/2" label="Topic" />
           
-          <text-input v-model="form.guest_speaker" :error="form.errors.guest_speaker" class="pr-6 pb-8 w-full lg:w-1/2" label="Guest Speaker" />
+          <!-- <text-input v-model="form.guest_speaker" :error="form.errors.guest_speaker" class="pr-6 pb-8 w-full lg:w-1/2" label="Guest Speaker" /> -->
           
           <select-input v-model="form.meeting_type" :error="form.errors.meeting_type" class="pr-6 pb-8 w-full lg:w-1/2" label="Meeting Type" >
               <option  value="Zoom"  >Zoom</option>
@@ -56,8 +56,44 @@
       </form>
       </div>
         
-      <div class=" bg-teal-300  w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-shrink sm:shadow-lg my-5 " >
-         
+      <div class=" bg-teal-300  w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-shrink sm:shadow-lg " >
+        <div class="flex flex-2 overflow-shrink sm:shadow-lg my-5 h-12">
+          <!-- <t-table
+
+            :headers="['Participants', 'Registrants']"
+            :responsive=true
+            :data=stats
+
+          ></t-table> 
+ -->       <div>
+            <label class="bg-indigo-400  w-full flex flex-row flex-no-wrap p-3"for="">Registrants </label>
+             <t-table
+                         
+                        :headers="['Category','No.']"
+                        :responsive=true
+                        :data=registrantsStats
+
+              >
+                
+              </t-table> 
+
+             </div> 
+
+          <div>
+            <label class="bg-teal-400  w-full flex flex-row flex-no-wrap p-3"for="">Participants </label>
+             <t-table
+                         
+                        :headers="['Category','No.']"
+                        :responsive=true
+                        :data=participantsStats
+
+              >
+                
+              </t-table> 
+
+             </div> 
+        </div>
+        
       </div>
       
          
@@ -66,8 +102,11 @@
   
 
     </div>
-    </div>
+    <!-- <meeting-instances :instances=instances></meeting-instances> -->
+    <meeting-occurrences :occurrences=occurrences></meeting-occurrences>
     
+    </div>
+  
   </div>
 </template>
 
@@ -77,6 +116,9 @@ import TextInput from '@/Shared/TextInput'
 import SelectInput from '@/Shared/SelectInput'
 import LoadingButton from '@/Shared/LoadingButton'
 import TrashedMessage from '@/Shared/TrashedMessage'
+ import TTable from 'vue-tailwind/dist/t-table'
+ import MeetingInstances from './MeetingInstances'
+ import MeetingOccurrences from './MeetingOccurrences'
 
 export default {
 
@@ -91,12 +133,22 @@ export default {
     SelectInput,
     TextInput,
     TrashedMessage,
+     TTable,
+     MeetingInstances,
+     MeetingOccurrences,
   },
   layout: Layout,
   props: {
-    meeting: Object
+    meeting: Object,
+    registrantsStats:Array,
+    participantsStats:Array,
+    instances:Object,
+    occurrences:Object,
    },
-
+ 
+ mounted(){
+   console.log(this.categories)
+ },
   remember: 'form',
   data() {
     return {

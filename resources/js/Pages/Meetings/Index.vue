@@ -59,8 +59,10 @@
           <th class="p-3 text-left">Guest Speaker</th>
           <th class="p-3 text-left">Type</th>
           <th class="p-3 text-left">Start Time</th>
-          <th class="p-3 text-left">Registrants</th>
-          <th class="p-3 text-left">Participants</th>
+          <th class="p-3 text-left">Meeting Day</th>
+          <th class="p-3 text-left">Occurences</th>
+         <!--  <th class="p-3 text-left">Registrants</th>
+          <th class="p-3 text-left">Participants</th> -->
          </tr>
         
       </thead>
@@ -73,8 +75,35 @@
           <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ meeting.guest_speaker }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.meeting_type }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.start_time }}</td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.registrants }}</td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.participants }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.meeting_day }}</td>
+
+         <!--  <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.registrants }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.registrants }}</td> -->
+          <!-- <td class="border-grey-light border hover:bg-gray-100 p-3 text-indigo-400 text-center">
+           <inertia-link class="" :href="route('meeting.instances',meeting.id)">
+               {{ meeting.instances }}
+          </inertia-link>
+         </td> -->
+         <td class="border-grey-light border hover:bg-gray-100 p-3 text-indigo-400 text-center">
+           <inertia-link class="" :href="route('meeting.occurrences',meeting.id)">
+               {{ meeting.occurrences }}
+          </inertia-link>
+         </td>
+<!-- 
+          <td class="border-grey-light border hover:bg-gray-100 p-3 text-indigo-400 text-center">
+           <inertia-link class="" :href="route('meeting.registrants',meeting.id)">
+              {{ meeting.registrants }}
+          </inertia-link>
+         </td>
+
+         <td class="border-grey-light border hover:bg-gray-100 p-3 text-indigo-400 text-center">
+           <inertia-link class="" :href="route('meeting.participants',meeting.id)">
+               {{ meeting.participants }}
+          </inertia-link>
+         </td> -->
+       
+
+          <!-- <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.participants }}</td> -->
           
            
           
@@ -117,18 +146,22 @@ export default {
    props:{
     meetings:null,
     zmeetings:0,
-    filters:Object
+    filters:Object,
+   url:""
    },
-
+  
  metaInfo: { title: 'Meetings' },
   layout: Layout,
+
+  
+
   data() {
     return {
       form: {
         search: this.filters.search,
         trashed: this.filters.trashed,
       },
-       url:"https://zoom.us/oauth/authorize?response_type=code&client_id="+this.client_id+"&redirect_uri="+this.callback_url+"&state={userState}"
+       
         
     }
   },
@@ -150,6 +183,10 @@ export default {
 
         this.$inertia.get(this.route('meetings.filtered'), pickBy(this.advdata), { preserveState: true })
        //console.log(this.advdata);
+    },
+    setUrl()
+    {
+      return 
     }
   }
 }

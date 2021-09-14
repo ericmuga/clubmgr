@@ -15,21 +15,25 @@ class CreateRegistrantsTable extends Migration
     {
         Schema::create('registrants', function (Blueprint $table) {
             $table->id();
+            $table->string("registrant_id")->nullable();
             $table->string('meeting_id')
                   ->foreign()
                   ->references('meeting_id')
                   ->on('meetings')
                   ->onDelete('cascade');
-            $table->string('email')->unique();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('category');
-            $table->string('club_name');
-            $table->string('invited_by');
-            $table->string('classification');
-            $table->dateTimeTz('create_time');
+            $table->string('uuid')->nullable();
+            $table->string('occurrence_id')->nullable();
+            $table->string('email');
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('category')->nullable();
+            $table->string('club_name')->nullable();
+            $table->string('invited_by')->nullable();
+            $table->string('classification')->nullable();
+            $table->dateTimeTz('create_time')->nullable();
             $table->softDeletes();
             $table->timestamps();
+            $table->unique(['meeting_id','email']);
         });
     }
 

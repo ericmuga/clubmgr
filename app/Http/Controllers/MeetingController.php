@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
 use App\Models\Setup;
 use App\Models\ZoomUser;
+use App\Models\Instance;
+use App\Models\Occurrence;
+use Illuminate\Support\Facades\DB;
+use App\Zoom;
 
 class MeetingController extends Controller
 {
@@ -25,7 +29,9 @@ class MeetingController extends Controller
         
         return Inertia::render('Meetings/Index',[
                                  'filters' =>$request->all('search','trashed'),
-                                "zmeetings"=>Meeting::where('meeting_type','Zoom')->count(),
+                                 "url"=>"https://zoom.us/oauth/authorize?response_type=code&client_id=".$this->getSetup()->client_id."&redirect_uri=".$this->getSetup()->callback_url."&state={userState}",
+                                 
+                                "zmeetings"=>Meeting::where('meeting_type',2)->count(),
                                 'meetings' => Meeting::with('registrants')
                                 ->orderByDesc('start_time')
                                   ->filter($request->only('search', 'trashed'))
@@ -36,10 +42,13 @@ class MeetingController extends Controller
                                                                                 'meeting_id'=>$meeting->meeting_id,
                                                                                 'meeting_type'=>$meeting->meeting_type,
                                                                                 'guest_speaker'=>$meeting->guest_speaker,
+                                                                                 'instances'=>$meeting->instances()->count(),
+                                                                                 'occurrences'=>$meeting->occurrences()->count(),
                                                                                  'registrants'=>$meeting->registrants()->count(),
                                                                                  'participants'=>$meeting->participants()->count(),
-                                                                                 'start_time'=>Carbon::parse($meeting->start_time)->toDateTimeString(),
-                                                                                'topic'=>$meeting->topic
+                                                                                  'start_time'=>Carbon::parse($meeting->start_time)->toDateTimeString(),
+                                                                                  'meeting_day'=>$meeting->meeting_day,
+                                                                                  'topic'=>$meeting->topic
                                                                                     ]))
   
                                                 ]);
@@ -56,7 +65,8 @@ class MeetingController extends Controller
           $filteredMeetings=Meeting::filteredMeetings($request->all());
         return Inertia::render('Meetings/Index',[
                                  'filters' =>$request->all('search','trashed'),
-                                "zmeetings"=>Meeting::where('meeting_type','Zoom')->count(),
+                                "zmeetings"=>Meeting::where('meeting_type',2)->count(),
+                                "url"=>"https://zoom.us/oauth/authorize?response_type=code&client_id=".$this->getSetup()->client_id."&redirect_uri=".$this->getSetup()->callback_url."&state={userState}",
                                 'meetings' => Meeting::filteredMeetings($request->all())
                                                        ->with('registrants')
                                                        ->orderByDesc('start_time')
@@ -67,8 +77,11 @@ class MeetingController extends Controller
                                                                                 'meeting_id'=>$meeting->meeting_id,
                                                                                 'meeting_type'=>$meeting->meeting_type,
                                                                                 'guest_speaker'=>$meeting->guest_speaker,
+                                                                                 'instances'=>$meeting->instances()->count(),
+                                                                                 'occurrences'=>$meeting->occurrences()->count(),
                                                                                  'registrants'=>$meeting->registrants()->count(),
                                                                                  'participants'=>$meeting->participants()->count(),
+                                                                                  'meeting_day'=>$meeting->meeting_day,
                                                                                  'start_time'=>Carbon::parse($meeting->start_time)->toDateTimeString(),
                                                                                 'topic'=>$meeting->topic
                                                                                     ]))
@@ -131,10 +144,36 @@ class MeetingController extends Controller
      * @param  \App\Models\Meeting  $meeting
      * @return \Illuminate\Http\Response
      */
-    public function getRegistrants(Request $request)
+    
+    public static function createZoomMeeting($item)
+    {
+        //$meeting_date=Carbon::parse($item["start_time"])->format('l');
+         if(!Meeting::where("uuid",$item["uuid"])->exists() &&(array_key_exists("start_time", $item)))
+                                        {
+                                            //create
+                                            Meeting::create([
+                                                        "uuid"=>$item["uuid"],
+                                                        "meeting_id"=>$item["id"],
+                                                        "host_id"=>$item["host_id"],
+                                                        "topic"=>$item["topic"],
+                                                        "type"=>$item["type"],
+                                                        "start_time"=>$item["start_time"],
+                                                        "duration"=>$item["duration"],
+                                                        "timezone"=>$item["timezone"],
+                                                        "created_at"=>$item["created_at"],
+                                                        "join_url"=>$item["join_url"],
+                                                        "meeting_type"=>2,
+                                                        "meeting_day"=>Carbon::parse($item["start_time"])->format('l')
+                                               ]);
+                                        }
+    }
+
+
+
+    public function getRegistrants(Request $request, Meeting $meeting)
     {
         
-        //fetch from zoom
+      
           
 
 
@@ -150,16 +189,49 @@ class MeetingController extends Controller
     public function edit(Meeting $meeting)
     {
         
+
+        
+        // $instances=Instance::where("meeting_id",$meeting->meeting_id)->paginate(20);
+        //      dd($instances);
+             //dd($categories->toArray());
+        
         return Inertia::render('Meetings/Edit',[
                                 
+                                      // "stats"=> [ $categories->toArray()],
+                                      "registrantsStats"=> $meeting->registrantsStats(),
+                                      "participantsStats"=> $meeting->participantsStats(),
+                                       "instances"=>Instance::where("meeting_id",$meeting->meeting_id)
+                                                              ->orderByDesc("start_time")
+                                                              ->paginate(10)
+                                                              ->through(fn($instance)=>([
+                                                                                          "start_time"=>Carbon::parse($instance->start_time)->toDateTimeString(),
+                                                                                           "uuid"=>$instance->uuid,
+                                                                                           "id"=>$instance->id,
+                                                                                           "meeting_id"=>$instance->meeting_id,
+                                                                                           "registrants"=>Registrant::where('meeting_id',$instance->meeting_id)->count()
+                                                                                      ])),
+                                        "occurrences"=>Occurrence::where("meeting_id",$meeting->meeting_id)
+                                                              ->orderByDesc("start_time")
+                                                              ->paginate(10)
+                                                              ->through(fn($occurrence)=>([
+                                                                                          "start_time"=>Carbon::parse($occurrence->start_time)->toDateTimeString(),
+                                                                                           "occurrence_id"=>$occurrence->occurrence_id,
+                                                                                           "id"=>$occurrence->id,
+                                                                                           "meeting_id"=>$occurrence->meeting_id,
+                                                                                           "registrants"=>Registrant::where('meeting_id',$occurrence->meeting_id)
+                                                                                                                      ->where('occurrence_id',$occurrence->occurrence_id)->count()
+                                                                                      ])),
+                                                    
                                       "meeting"=>[
-                                                      "id"=>$meeting->id,
+                                                      
+                                                     "id"=>$meeting->id,
                                                       "uuid"=>$meeting->uuid,
                                                       "meeting_id"=>$meeting->meeting_id,
                                                       "meeting_type"=>$meeting->meeting_type,
                                                       "guest_speaker"=>$meeting->guest_speaker,
                                                       "topic"=>$meeting->topic,
                                                       "start_time"=>Carbon::parse($meeting->start_time)->toDayDateTimeString(),
+                                                      
                                                       //"start_time"=>$meeting->start_time,
                                                     ]
                                             ]);
@@ -255,15 +327,18 @@ class MeetingController extends Controller
             
             $this->token=$token;
 
+
+
             $request->session()->put('z_tk', $token);
+            $request->session()->put('z_tk_time', Carbon::now());
 
 
-             return redirect()->route('meetings')->with('success', 'Request authentication successful');
+             return redirect()->back()->with('success', 'Request authentication successful');
        }
             
        public function refreshUsers(Request $request)
        {    
-             $token = $request->session()->get('z_tk');
+             $token = Zoom::getToken($request);
             
            
             $ZoomUsers=Http::withToken($token)->get('https://api.zoom.us/v2/users');
@@ -328,94 +403,244 @@ class MeetingController extends Controller
 
                   
             }
-             return redirect()->route('dashboard')->with('success', 'Zoom User List updated successfully');
+             return redirect()->route('meetings')->with('success', 'Zoom User List updated successfully');
            
     }
 
-    public function fetchUserMeetings($user,$page_meetings,$next,$token)
+
+    public function fetchParticipants()
+
     {
-         //$page_size=10;
-                   if($next=="")
-                       $meetings=Http::withToken($token)
-                                  ->get('https://api.zoom.us/v2/users/'.$user->user_id.'/meetings',['type'=>'scheduled','page_size'=>$page_meetings]);
-                   else
-                    $meetings=Http::withToken($token)
-                                  ->get('https://api.zoom.us/v2/users/'.$user->user_id.'/meetings',
-                                                       ['type'=>'scheduled',
-                                                        'page_size'=>$page_meetings,'next_page_token'=>$next]);
-
-                                                                                       
-                   $obj=collect($meetings->json());
-                  // dd($obj);
-                    //meetings within the API call
-                    if (collect($obj->values()[3])->count()<=0) 
-                    return "";
-
-                   $next_page=collect($obj->values()[2])->first();
-                   
-                    $api_meetings=collect($obj->values()[3]);
-                    foreach ($api_meetings as  $meeting) 
-                    {
-                        if(!Meeting::where("uuid",$meeting["uuid"])->exists() &&(array_key_exists("start_time", $meeting)))
-                        {
-                            //create
-                            Meeting::create([
-                                     "uuid"=>$meeting["uuid"],
-                                        "meeting_id"=>$meeting["id"],
-                                        "host_id"=>$meeting["host_id"],
-                                        "topic"=>$meeting["topic"],
-                                        "type"=>$meeting["type"],
-                                    "start_time"=>$meeting["start_time"],
-                                        "duration"=>$meeting["duration"],
-                                        "timezone"=>$meeting["timezone"],
-                                        "created_at"=>$meeting["created_at"],
-                                        "join_url"=>$meeting["join_url"],
-                                        "meeting_type"=>2
-                               ]);
-                        }
-                    }
-                    return $next_page;
+        //this function will attempt to get participants for all the meetings
+        foreach (Meeting::all() as $meeting) 
+        {
+            if ($meeting->participants()->count()==0){
+                $this->fetchMeetingParticipants($meeting);
+            }
+        }
 
     }
+
+
+    public function fetchRegistrants()
+
+    {
+        //this function will attempt to get registrants for all the meetings
+        foreach (Meeting::all() as $meeting) 
+        {
+            if ($meeting->registrants()->count()==0){
+                $this->fetchMeetingRegistrants($meeting);
+            }
+        }
+
+    }
+
+
+    public function fetchMeetingRegistrants(Request $request, Meeting $meeting)
+    {
+         $url="https://api.zoom.us/v2/meetings/".$meeting->meeting_id."/registrants";
+         $page_size=50;
+         $mode='registrants';
+         $valueKey=3;
+          $next_page=""; 
+          $next_page_key=2;
+          $qs=[];
+          if ($next_page=="")
+                {
+                     $t=Zoom::callZoom($request,$page_size,$next_page,$url,$mode,$meeting->meeting_id,$valueKey,$next_page_key,$qs);
+                    $next_page=$t;
+                }
+            while ($next_page!="") 
+            {
+                $t=Zoom::callZoom($request,$page_size,$next_page,$url,$mode,$meeting->meeting_id,$valueKey,$next_page_key,$qs);
+                 $next_page=$t;
+            }
+            return redirect()->back()->with('success', $mode.'Updated successfully!');       
+
+    }
+
+    public function fetchMeetingParticipants(Request $request, Meeting $meeting)
+    {
+
+         /// "https://api.zoom.us/v2/report/meetings/".$meeting->meeting_id."/participants"
+         $url="https://api.zoom.us/v2/report/meetings/".$meeting->meeting_id."/participants?include_fields=registrant_id";
+         $page_size=50;
+         $mode='participants';
+          $next_page=""; 
+          $valueKey=4;
+          $next_page_key=3;
+          $qs=[];
+          if ($next_page=="")
+                {
+                     $t=Zoom::callZoom($request,$page_size,$next_page,$url,$mode,$meeting->meeting_id,$valueKey,$next_page_key,$qs);
+                    $next_page=$t;
+                }
+            while ($next_page!="") 
+            {
+                $t=Zoom::callZoom($request,$page_size,$next_page,$url,$mode,$meeting->meeting_id,$valueKey,$next_page_key,$qs);
+                 $next_page=$t;
+            }
+            return redirect()->back()->with('success', $mode.'Updated successfully!');       
+
+    }
+
+
+    
+
+
+    
+   
+
+
 
 
     public function meetings(Request $request)
     {
-         
-        $token = $request->session()->get('z_tk');
-        if ($token='') return redirect()->route('meetings')->with('error','Request not authorized, please log in to zoom');
+         /*
+           {
+              "type": "object",
+              "properties": {
+                "occurrence_id": {
+                  "type": "string",
+                  "description": "Meeting Occurrence ID. Provide this field to view meeting details of a particular occurrence of the [recurring meeting](https://support.zoom.us/hc/en-us/articles/214973206-Scheduling-Recurring-Meetings)."
+                },
+                "show_previous_occurrences": {
+                  "type": "boolean",
+                  "description": "Set the value of this field to `true` if you would like to view meeting details of all previous occurrences of a [recurring meeting](https://support.zoom.us/hc/en-us/articles/214973206-Scheduling-Recurring-Meetings). "
+                }
+              },
+              "required": []
+            }
 
-        $z_users= ZoomUser::all();
-        
+         */
+       
+         $page_size=50;
+         $mode='meetings';
+         $valueKey=3;
+         $next_page_key=2;
+
+         $z_users= ZoomUser::all();
          if ($z_users->count()<=0) 
              {
                 return redirect()->route('meetings')->with('error', 'No users were found in your Zoom account, please reload zoom users');
              }
-
-
-        $next_page=""; 
+         $next_page=""; 
+         $qs=[];
         
-        foreach ($z_users as $user)
-        {  
-                //first time
-               if ($next_page=="")
-                {
-                     $t=$this->fetchUserMeetings($user,30,$next_page,$token);
-                     $next_page=$t;
-                }
-               while ($next_page!="") 
-                {
-                    $t=$this->fetchUserMeetings($user,30,$next_page,$token);
-                     $next_page=$t;
-                }
+            foreach ($z_users as $user)
+            {  
+                  $url='https://api.zoom.us/v2/users/'.$user->user_id.'/meetings?type=scheduled';
+           //first time
+                   if ($next_page=="")
+                    {
+                         $t=Zoom::callZoom($request,$page_size,$next_page,$url,$mode,'',$valueKey,$next_page_key,$qs);
+                         $next_page=$t;
+                    }
+                   while ($next_page!="") 
+                    {
+                        $t=Zoom::callZoom($request,$page_size,$next_page,$url,$mode,'',$valueKey,$next_page_key,$qs);
+                         $next_page=$t;
+                    }
+                
+                //after being done with one user
+                $next_page="";
+                   
+             }
             
-            //after being done with one user
-            $next_page="";
-               
-        }
-                 
-         return redirect()->back()->with('success', 'Meetings Updated successfully!');       
+
+
+
+
+
+                     
+             return redirect()->back()->with('success', $mode,' Updated successfully!');       
 
     
    }
+
+
+     public function fetchMeetingInstances(Request $request, Meeting $meeting)
+     {
+          ///past_meetings/{meetingId}/instances
+        //
+         $url="https://api.zoom.us/v2/past_meetings/".$meeting->meeting_id."/instances";
+         $token = Zoom::getToken($request);
+         $instances=Http::withToken($token)->get($url);
+         $mode="instances";
+
+            $obj=collect($instances->json());
+         
+            if (!array_key_exists("meetings",$obj->toArray()))
+                 return redirect()->back()->with('error',$mode.'No instance were found for that meeting');
+
+              $instances=$obj ["meetings"];
+              //dd($instances);
+            
+            foreach ($obj ["meetings"] as $instance) 
+            {  
+                if (!Instance::where('uuid',$instance["uuid"])->exists())
+                  {
+                     if(array_key_exists("start_time",$instance)) 
+                        {
+                            $st=Carbon::parse($instance["start_time"]);
+                    
+                           Instance::create([
+                                        "meeting_id"=>$meeting->meeting_id,
+                                        "uuid"=>$instance["uuid"],
+                                        "start_time"=>$st,
+                                      ]);
+                      }
+                  }
+         
+            }
+
+        return redirect()->back()->with('succecss',$mode.'imported Successfuly');
+    }
+
+
+
+
+
+     public function fetchMeetingOccurrences(Request $request, Meeting $meeting)
+     {
+          ///past_meetings/{meetingId}/instances
+        //
+         $url="https://api.zoom.us/v2/meetings/".$meeting->meeting_id."?show_previous_occurrences=true";
+         $token = Zoom::getToken($request);
+         $instances=Http::withToken($token)->get($url);
+         $mode="occurrences";
+
+            $obj=collect($instances->json());
+
+            //dd($obj["occurrences"]);
+         
+            // if (!array_key_exists("meetings",$obj->toArray()))
+            //      return redirect()->back()->with('error',$mode.'No instance were found for that meeting');
+
+            //   $instances=$obj ["meetings"];
+            //   //dd($instances);
+            
+            foreach ($obj ["occurrences"] as $occurrence) 
+            {  
+                if (!Occurrence::where('occurrence_id',$occurrence["occurrence_id"])
+                               ->where('meeting_id',$meeting->id)->exists())
+                  {
+                     if(array_key_exists("start_time",$occurrence)) 
+                        {
+                            $st=Carbon::parse($occurrence["start_time"]);
+                    
+                           Occurrence::create([
+                                        "meeting_id"=>$meeting->meeting_id,
+                                        "occurrence_id"=>$occurrence["occurrence_id"],
+                                        "duration"=>$occurrence["duration"],
+                                        "start_time"=>$st,
+                                      ]);
+                      }
+                  }
+         
+            }
+
+        return redirect()->back()->with('succecss',$mode.'imported Successfuly');
+    }
+
 }

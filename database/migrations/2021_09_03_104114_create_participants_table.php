@@ -17,7 +17,7 @@ class CreateParticipantsTable extends Migration
             $table->id();
             $table->string('meeting_id');
             $table->string('participant_id');
-            $table->string('user_id');
+            $table->string('user_id')->unique();
             $table->string('name');
             $table->string('user_email');
             $table->dateTimeTz('join_time');

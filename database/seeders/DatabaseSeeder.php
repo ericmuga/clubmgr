@@ -70,7 +70,7 @@ class DatabaseSeeder extends Seeder
          } 
 
          Meeting::factory(12)->create();
-         $meetings= Meeting::where('meeting_type',"Physical")->get();
+         $meetings= Meeting::where('meeting_type',1)->get();
 
 
 

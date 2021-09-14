@@ -13,28 +13,10 @@ class Registrant extends Model
 
     protected $table ='registrants';
 
-/*
- $table->integer('meeting_id')
-                  ->foreign()
-                  ->references('id')
-                  ->on('meetings')
-                  ->onDelete('cascade');
-            $table->string('email')->unique();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('category');
-            $table->string('club_name');
-            $table->string('invited_by');
-            $table->string('classification');
-            $table->dateTimeTz('create_time');
-            $table->softDeletes();
-            $table->timestamps();
-
-*/
-
-
     protected $fillable=[
                   'meeting_id',
+                  'uuid',
+                  'occurrence_id',
                   'email',
                   'first_name',
                   'last_name',
@@ -44,6 +26,8 @@ class Registrant extends Model
                   'classification',
                   'create_time'
                 ];
+
+   protected $dates=["create_time","created_at","deleted_at","updated_at"];
 
     public function meeting()
     {

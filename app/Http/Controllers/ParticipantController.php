@@ -55,6 +55,34 @@ class ParticipantController extends Controller
      * 
     */
 
+   public static function createZoomParticipant($meeting_id,$participant)
+    {  
+        $joinTime=Carbon::parse($participant["join_time"])->timezone('Africa/Nairobi');
+        $leaveTime=Carbon::parse($participant["leave_time"])->timezone('Africa/Nairobi');
+        $duration=$joinTime->diffInMinutes($leaveTime,true);
+            
+        if(!Participant::where("user_id",$participant["user_id"])->exists())
+        {
+            Participant::create([
+                                  'meeting_id'=>$meeting_id,
+                                  'user_id'=>array_key_exists("user_id", $participant)?$participant["user_id"]:"",
+                                  'participant_id'=>array_key_exists("id", $participant)?$participant["id"]:"",
+                                  'registrant_id'=>array_key_exists("registrant_id", $participant)?$participant["registrant_id"]:"",
+                                  'user_email'=>array_key_exists($participant["user_email"],$participant)?$participant["user_email"]:"",
+                                  'name'=>array_key_exists("name", $participant)?$participant["name"]:"",
+                                  'join_time'=>$joinTime,
+                                  'leave_time'=>$leaveTime,
+                                  //'duration'=>$participant["duration"]
+                                  'duration'=>$duration
+                             ]);
+        }
+
+
+
+
+    }
+
+
     public function fetchParticipants()
 
     {
@@ -65,7 +93,7 @@ class ParticipantController extends Controller
            filter this meetings and get the meeting ID
            for each meeting, fetch participants
        */
-               
+
     }
 
     public function create()

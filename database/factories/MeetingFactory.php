@@ -45,8 +45,6 @@ class MeetingFactory extends Factory
 
         return [
                     "uuid"=>$this->faker->uuid(),
-                    // "uuid"=>$this->faker->uuid(),
-                    // "meeting_id"=>'P'.strval($this->faker->numberBetween(1000,1000000000)),
                     "meeting_id"=>$setup->meeting_prefix.$setup->last_meeting_no,
                     "host_id"=>$this->faker->slug(),
                     "topic"=>$this->faker->word(),
@@ -57,7 +55,8 @@ class MeetingFactory extends Factory
                    "created_at"=>$this->faker->dateTimeInInterval($startDate= '+0 years', $interval = '-'.$this->faker->numberBetween(1,5).' days', $timezone = 'Africa/Nairobi'),
                    "join_url"=>'',
                    "guest_speaker"=>$this->faker->title().' '.$this->faker->name(),
-                    "meeting_type"=>1             
+                    "meeting_type"=>1,
+                    "meeting_day"=>Carbon::parse($startDate)->format('l')             
                ];
     }
 }

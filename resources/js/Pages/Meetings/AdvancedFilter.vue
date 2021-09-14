@@ -159,9 +159,7 @@
 
       name: 'Accordion',
 
-         mounted(){
-           
-         },
+         
 
          components:{
             LoadingButton,

@@ -37,7 +37,9 @@ class RegistrantFactory extends Factory
         $startDate=Carbon::now();
         //$meeting=Meeting::factory()->create();
         //dd($meeting->meeting_id);
-        return [ 'meeting_id'=>Meeting::factory(),
+        return [ 
+                'registrant_id'=>$this->faker->uuid,
+                 'meeting_id'=>Meeting::factory(),
                 'email'=>$this->faker->unique()->safeEmail,
                  'first_name'=>$this->faker->name(),
                  'last_name'=>$this->faker->name(),

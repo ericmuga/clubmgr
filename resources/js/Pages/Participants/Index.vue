@@ -106,7 +106,7 @@ export default {
     form: {
       deep: true,
       handler: throttle(function() {
-        this.$inertia.get(this.route('part'), pickBy(this.form), { preserveState: true })
+        this.$inertia.get(this.route('participants'), pickBy(this.form), { preserveState: true })
       }, 150),
     },
   },

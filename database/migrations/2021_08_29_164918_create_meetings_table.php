@@ -16,16 +16,21 @@ class CreateMeetingsTable extends Migration
         Schema::create('meetings', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique()->nullable();
-            $table->string('meeting_id')->unique();
+            $table->string('meeting_id');
             $table->string('host_id')->nullable();
+            $table->string('user_email')->nullable();
+            $table->string('user_name')->nullable();
+            $table->integer('participants_count')->nullable();
             $table->string('guest_speaker')->nullable();
             $table->string('topic');
             $table->integer('type')->nullable();
             $table->dateTimeTz('start_time');
+            $table->dateTimeTz('end_time')->nullable();
             $table->integer('duration')->nullable();
-            $table->string('timezone');
+            $table->string('timezone')->nullable()->default('Africa\Nairobi');
             $table->string('join_url')->nullable();
             $table->integer('meeting_type');
+            $table->string('meeting_day')->nullable();
             $table->timestamps();
         });
     }

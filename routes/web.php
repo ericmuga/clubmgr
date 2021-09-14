@@ -13,6 +13,8 @@ use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\MakeupController;
 use App\Http\Controllers\RegistrantController;
 use App\Http\Controllers\ParticipantController;
+use App\Http\Controllers\InstanceController;
+use App\Http\Controllers\OccurrenceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -241,9 +243,93 @@ Route::put('/meetings/{meeting}', [MeetingController::class, 'update'])
 Route::delete('/meetings/{meeting}', [MeetingController::class, 'destroy'])
         ->name('meetings.destroy')
         ->middleware('auth');
+
+
+ Route::get('/meetings/{meeting}/participants', [MeetingController::class, 'fetchMeetingParticipants'])
+        ->name('meeting.participants')
+        ->middleware('auth'); 
+
+
+ Route::get('/meetings/{meeting}/registrants', [MeetingController::class, 'fetchMeetingRegistrants'])
+        ->name('meeting.registrants')
+        ->middleware('auth'); 
+
+ Route::get('/meetings/{meeting}/instances', [MeetingController::class, 'fetchMeetingInstances'])
+        ->name('meeting.instances')
+        ->middleware('auth');  
+
+
+ Route::get('/meetings/{meeting}/occurrences', [MeetingController::class, 'fetchMeetingOccurrences'])
+        ->name('meeting.occurrences')
+        ->middleware('auth');     
+    //authorize            
+    //authorize      
     //authorize
 
+///instances 
+Route::get('/instances', [InstanceController::class, 'index'])
+        ->name('instances')
+        ->middleware('auth');
+Route::get('/instances/create', [InstanceController::class, 'create'])
+        ->name('instances.create');
 
+Route::post('/instances', [InstanceController::class, 'store'])
+        ->name('instances.store');
+
+Route::get('/instances/{instance}/edit', [InstanceController::class, 'edit'])
+        ->name('instances.edit')
+        ->middleware('auth');
+
+Route::put('/instances/{instance}', [InstanceController::class, 'update'])
+        ->name('instances.update')
+        ->middleware('auth');
+
+Route::delete('/instances/{instance}', [InstanceController::class, 'destroy'])
+        ->name('instances.destroy')
+        ->middleware('auth');
+
+Route::get('/instance/{instance}/registrants', [InstanceController::class, 'fetchInstanceRegistrants'])
+        ->name('instance.registrants')
+        ->middleware('auth');
+
+Route::get('/instance/{instance}/participants', [InstanceController::class, 'fetchInstanceParticipants'])
+        ->name('instance.participants')
+        ->middleware('auth');
+
+
+
+//occurrences
+Route::get('/occurs', [OccurrenceController::class, 'index'])
+        ->name('occurs')
+        ->middleware('auth');
+Route::get('/occurs/create', [OccurrenceController::class, 'create'])
+        ->name('occurs.create');
+
+Route::post('/occurs', [OccurrenceController::class, 'store'])
+        ->name('occurs.store');
+
+Route::get('/occurs/{occur}/edit', [OccurrenceController::class, 'edit'])
+        ->name('occurs.edit')
+        ->middleware('auth');
+
+Route::put('/occurs/{occur}', [OccurrenceController::class, 'update'])
+        ->name('occurs.update')
+        ->middleware('auth');
+
+Route::delete('/occurs/{occur}', [OccurrenceController::class, 'destroy'])
+        ->name('occurs.destroy')
+        ->middleware('auth');
+
+Route::get('/occurrence/{occurrence}/registrants', [OccurrenceController::class, 'fetchOccurrenceRegistrants'])
+        ->name('occs.registrants')
+        ->middleware('auth');
+
+Route::get('/occur/{occurrence}/participants', [OccurrenceController::class, 'fetchOccurrenceParticipants'])
+        ->name('occs.participants')
+        ->middleware('auth');
+
+
+      //makeups
 
 Route::get('/makeups', [MakeupController::class, 'index'])
         ->name('makeups')

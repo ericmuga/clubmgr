@@ -65,6 +65,33 @@ class RegistrantController extends Controller
         
     }
 
+
+
+    public static function createZoomRegistrant($meeting_id,$registrant)
+    {
+        if(!Registrant::where("email",$registrant["email"])
+                         ->where("meeting_id",$meeting_id)->exists())
+        {
+            $createTime=Carbon::parse($registrant["create_time"])->timezone('Africa/Nairobi');
+            Registrant::create([
+                                  'meeting_id'=>$meeting_id,
+                                  'registrant_id'=>$registrant["id"],
+                                  'email'=>$registrant["email"],
+                                  'first_name'=>array_key_exists("first_name", $registrant)?$registrant["first_name"]:"",
+                                  'last_name'=>array_key_exists("last_name", $registrant)?$registrant["last_name"]:"",
+                                  'category'=>$registrant["custom_questions"][0]["value"],
+                                  'club_name'=>$registrant["custom_questions"][1]["value"],
+                                  'invited_by'=>$registrant["custom_questions"][2]["value"],
+                                  'classification'=>array_key_exists(3, $registrant["custom_questions"])?$registrant["custom_questions"][3]["value"]:"",
+                                  'create_time'=>$createTime
+                             ]);
+        }
+
+
+
+
+    }
+
     /**
      * Store a newly created resource in storage.
      *

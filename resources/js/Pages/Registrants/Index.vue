@@ -6,7 +6,7 @@
    
   <div class="flex items-center justify-center">
   <div class="container">
-   <registrant-stats :rotarians=rotarians :rotaractors=rotaractors :guests=guests>
+   <registrant-stats :rotarians=rotarians :rotaractors=rotaractors :guests=guests :total=total>
      
    </registrant-stats>
     <div class="mb-4 py-5 flex justify-between items-center">
