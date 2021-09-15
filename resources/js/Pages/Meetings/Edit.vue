@@ -102,8 +102,8 @@
   
 
     </div>
-    <!-- <meeting-instances :instances=instances></meeting-instances> -->
-    <meeting-occurrences :occurrences=occurrences></meeting-occurrences>
+    <meeting-instances :instances=instances></meeting-instances>
+    <!-- <meeting-occurrences :occurrences=occurrences></meeting-occurrences> -->
     
     </div>
   

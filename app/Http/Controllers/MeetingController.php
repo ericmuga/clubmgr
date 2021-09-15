@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Meeting;
 use App\Models\Registrant;
+use App\Models\Participant;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
@@ -204,23 +205,27 @@ class MeetingController extends Controller
                                                               ->orderByDesc("start_time")
                                                               ->paginate(10)
                                                               ->through(fn($instance)=>([
-                                                                                          "start_time"=>Carbon::parse($instance->start_time)->toDateTimeString(),
+                                                                                          "start_time"=>Carbon::parse($instance->start_time)->diffForHumans(),
+                                                                                          "exact_time"=>Carbon::parse($instance->start_time)->toDayDateTimeString(),
                                                                                            "uuid"=>$instance->uuid,
                                                                                            "id"=>$instance->id,
                                                                                            "meeting_id"=>$instance->meeting_id,
-                                                                                           "registrants"=>Registrant::where('meeting_id',$instance->meeting_id)->count()
+                                                                                           // "registrants"=>Registrant::where('meeting_id',$instance->meeting_id)->count()
+                                                                                            "participants"=>Participant::where('meeting_id',$instance->meeting_id)
+                                                                                                                         ->where('instance_uuid',$instance->uuid)->count(),
+
                                                                                       ])),
-                                        "occurrences"=>Occurrence::where("meeting_id",$meeting->meeting_id)
-                                                              ->orderByDesc("start_time")
-                                                              ->paginate(10)
-                                                              ->through(fn($occurrence)=>([
-                                                                                          "start_time"=>Carbon::parse($occurrence->start_time)->toDateTimeString(),
-                                                                                           "occurrence_id"=>$occurrence->occurrence_id,
-                                                                                           "id"=>$occurrence->id,
-                                                                                           "meeting_id"=>$occurrence->meeting_id,
-                                                                                           "registrants"=>Registrant::where('meeting_id',$occurrence->meeting_id)
-                                                                                                                      ->where('occurrence_id',$occurrence->occurrence_id)->count()
-                                                                                      ])),
+                                        // "occurrences"=>Occurrence::where("meeting_id",$meeting->meeting_id)
+                                        //                       ->orderByDesc("start_time")
+                                        //                       ->paginate(10)
+                                        //                       ->through(fn($occurrence)=>([
+                                        //                                                   "start_time"=>Carbon::parse($occurrence->start_time)->toDateTimeString(),
+                                        //                                                    "occurrence_id"=>$occurrence->occurrence_id,
+                                        //                                                    "id"=>$occurrence->id,
+                                        //                                                    "meeting_id"=>$occurrence->meeting_id,
+                                        //                                                    "registrants"=>Registrant::where('meeting_id',$occurrence->meeting_id)
+                                        //                                                                               ->where('occurrence_id',$occurrence->occurrence_id)->count()
+                                        //                                               ])),
                                                     
                                       "meeting"=>[
                                                       
@@ -231,7 +236,7 @@ class MeetingController extends Controller
                                                       "guest_speaker"=>$meeting->guest_speaker,
                                                       "topic"=>$meeting->topic,
                                                       "start_time"=>Carbon::parse($meeting->start_time)->toDayDateTimeString(),
-                                                      
+                                                      "instances"=>$meeting->instances()->count()
                                                       //"start_time"=>$meeting->start_time,
                                                     ]
                                             ]);
@@ -571,7 +576,7 @@ class MeetingController extends Controller
             $obj=collect($instances->json());
          
             if (!array_key_exists("meetings",$obj->toArray()))
-                 return redirect()->back()->with('error',$mode.'No instance were found for that meeting');
+                 return redirect()->back()->with('error',$mode.'No instances were found for that meeting');
 
               $instances=$obj ["meetings"];
               //dd($instances);

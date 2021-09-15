@@ -27,11 +27,13 @@
       <thead class="text-white">
         <tr v-for="participant in participants.data" :key="participant.id" class="bg-indigo-800 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
           <th class="p-3 text-left">Name</th>
-          <th class="p-3 text-left">Email</th>
+          <!-- <th class="p-3 text-left">Email</th> -->
           <th class="p-3 text-left">Joined At</th>
           <th class="p-3 text-left">Left At</th>
           <th class="p-3 text-left">Duration</th>
           <th class="p-3 text-left">Meeting</th>
+          <th class="p-3 text-left">Instance</th>
+          <th class="p-3 text-left">Instance Start Time</th>
           <th class="p-3 text-left">Meeting Start Time</th>
          </tr>
         
@@ -39,7 +41,7 @@
       <tbody class="flex-1 sm:flex-none">
         <tr class="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0"  v-for="participant in participants.data" :key="participant.id">
           <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ participant.name }}</td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.email }}</td>
+          <!-- <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.email }}</td> -->
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.join_time }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.leave_time }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.duration }}</td>
@@ -49,7 +51,9 @@
             <inertia-link class="text-indigo-400" :href="route('meetings.edit',participant.mid)" tabindex="-1">
               {{participant.meeting_id}}
             </inertia-link></td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.start_time }}</td>
+          <!-- <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.start_time }}</td> -->
+          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.instance_uuid }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.instance_start_time }}</td>
          </tr>
         <tr v-if="participants.data.length === 0">
           <td class="border-t px-2 py-4" colspan="4">No participants found.</td>

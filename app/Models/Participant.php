@@ -26,6 +26,7 @@ class Participant extends Model
     protected $table='participants';
     protected $fillable=[ 
                           'meeting_id',
+                          'instance_uuid',
                           'participant_id',
                           'user_id',
                           'name',

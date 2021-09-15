@@ -40,7 +40,7 @@ Class Zoom {
           $token=Zoom::getToken($request);
 
 
-           // /dd($url);
+           //dd($url);
           if($next_page=="") $items=Http::withToken($token)
                                     ->get($url,['page_size'=>$page_size]);
            else
@@ -79,6 +79,10 @@ Class Zoom {
                        break;
 
                  case 'instanceRegistrants':Instance::createInstanceRegistrant($meeting_id,$item,$qs);                                      
+                       break;
+
+
+                 case 'instanceParticipants':Instance::createInstanceParticipant($meeting_id,$item,$qs);                                      
                        break;
 
                 case 'occurrenceRegistrants':Occurrence::createOccurrenceRegistrant($meeting_id,$item,$qs);                                      

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Participant;
 use App\Models\Meeting;
+use App\Models\Instance;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Carbon\Carbon;
@@ -35,8 +36,10 @@ class ParticipantController extends Controller
                                                         'email'=>$participant->user_email,
                                                         'join_time'=>Carbon::parse($participant->join_time)->toDateTimeString(),
                                                         'leave_time'=>Carbon::parse($participant->leave_time)->toDateTimeString(),
-                                                        'duration'=>$participant->duration,
+                                                        'duration'=>$participant->join_time->diffInMinutes($participant->leave_time),
                                                         'meeting_id'=>$participant->meeting_id,
+                                                        'instance_uuid'=>$participant->instance_uuid,
+                                                        'instance_start_time'=>Instance::firstWhere("uuid",$participant->instance_uuid)?Instance::firstWhere("uuid",$participant->instance_uuid)->start_time->toDateTimeString():"",
                                                         'mid'=>Meeting::where('meeting_id',$participant->meeting_id)->first()->id,
                                                         'start_time'=>Carbon::parse(Meeting::where('meeting_id',$participant->meeting_id)->first()->start_time)->toDateTimeString(),
                                                        

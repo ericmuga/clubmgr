@@ -61,8 +61,9 @@
           <th class="p-3 text-left">Start Time</th>
           <th class="p-3 text-left">Meeting Day</th>
           <th class="p-3 text-left">Occurences</th>
-         <!--  <th class="p-3 text-left">Registrants</th>
-          <th class="p-3 text-left">Participants</th> -->
+          <th class="p-3 text-left">Past Instances</th>
+          <th class="p-3 text-left">Registrants</th>
+          <!-- <th class="p-3 text-left">Participants</th> -->
          </tr>
         
       </thead>
@@ -79,24 +80,26 @@
 
          <!--  <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.registrants }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.registrants }}</td> -->
-          <!-- <td class="border-grey-light border hover:bg-gray-100 p-3 text-indigo-400 text-center">
-           <inertia-link class="" :href="route('meeting.instances',meeting.id)">
-               {{ meeting.instances }}
-          </inertia-link>
-         </td> -->
-         <td class="border-grey-light border hover:bg-gray-100 p-3 text-indigo-400 text-center">
+          
+          <td class="border-grey-light border hover:bg-gray-100 p-3 text-indigo-400 text-center">
            <inertia-link class="" :href="route('meeting.occurrences',meeting.id)">
                {{ meeting.occurrences }}
           </inertia-link>
          </td>
-<!-- 
+          <td class="border-grey-light border hover:bg-gray-100 p-3 text-indigo-400 text-center">
+           <inertia-link class="" :href="route('meeting.instances',meeting.id)">
+               {{ meeting.instances }}
+          </inertia-link>
+         </td>
+         
+
           <td class="border-grey-light border hover:bg-gray-100 p-3 text-indigo-400 text-center">
            <inertia-link class="" :href="route('meeting.registrants',meeting.id)">
               {{ meeting.registrants }}
           </inertia-link>
          </td>
 
-         <td class="border-grey-light border hover:bg-gray-100 p-3 text-indigo-400 text-center">
+        <!--  <td class="border-grey-light border hover:bg-gray-100 p-3 text-indigo-400 text-center">
            <inertia-link class="" :href="route('meeting.participants',meeting.id)">
                {{ meeting.participants }}
           </inertia-link>

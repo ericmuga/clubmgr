@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Instance;
 use App\Models\Meeting;
+use App\Models\Participant;
 use Carbon\Carbon;
 use App\Zoom;
 use Illuminate\Http\Request;
@@ -84,9 +85,73 @@ public static function createInstanceRegistrant($meeting_id,$registrant,$qs)
     }
 
 
-    public function fetchInstanceParticipants()
+
+
+   public static function createInstanceParticipant($meeting_id,$participant,$qs)
     {
-       dd('here'); 
+        if(!Participant::where("instance_uuid",$qs["instance_uuid"])
+                        ->where("meeting_id",$meeting_id)
+                        ->where("user_id",$participant["user_id"])->exists())
+        {
+            $joinTime=Carbon::parse($participant["join_time"])->timezone('Africa/Nairobi');
+            $leaveTime=Carbon::parse($participant["leave_time"])->timezone('Africa/Nairobi');
+            Participant::create([
+                                  'meeting_id'=>$meeting_id,
+                                  'instance_uuid'=>$qs["instance_uuid"],
+                                  'participant_id'=>$participant["id"],
+                                  'user_id'=>$participant["user_id"], //unique for every entry in the participants table for every meeting
+                                  'user_email'=>$participant["user_email"],
+                                  'duration'=>$participant["duration"],
+                                  'registrant_id'=>array_key_exists("registrant_id", $participant)?$participant["registrant_id"]:"",
+                                  'name'=>array_key_exists("name", $participant)?$participant["name"]:"",
+                                  'join_time'=>$joinTime,
+                                  'leave_time'=>$leaveTime
+                             ]);
+        }
+
+
+
+
+    }
+
+
+   
+
+    public function fetchInstanceParticipants(Request $request, Instance $instance)
+    {
+       ///report/meetings/{meetingId}/participants
+
+         if (!strpos($instance->uuid, "/"))
+            $uuid=$instance->uuid;
+        else {
+            $uuid=urlencode($instance->uuid);
+            $uuid=urlencode($uuid);
+        }
+
+        $meeting=Meeting::firstWhere('meeting_id',$instance->meeting_id);
+          
+         $url="https://api.zoom.us/v2/report/meetings/".$uuid."/participants/?include_fields=registrant_id";
+         $page_size=50;
+         $mode='instanceParticipants';
+         $valueKey=4;
+         $qs=["instance_uuid"=>$instance->uuid];
+
+          $next_page=""; 
+          $next_page_key=3;
+          if ($next_page=="")
+                {
+                     $t=Zoom::callZoom($request,$page_size,$next_page,$url,$mode,$meeting->meeting_id,$valueKey,$next_page_key,$qs);
+                    $next_page=$t;
+                }
+            while ($next_page!="") 
+            {
+                $t=Zoom::callZoom($request,$page_size,$next_page,$url,$mode,$meeting->meeting_id,$valueKey,$next_page_key,$qs);
+                 $next_page=$t;
+            }
+            return redirect()->back()->with('success', $mode.'Updated successfully!');   
+
+
+
     }
    
     public function create()

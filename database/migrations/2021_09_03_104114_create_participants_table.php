@@ -16,8 +16,9 @@ class CreateParticipantsTable extends Migration
         Schema::create('participants', function (Blueprint $table) {
             $table->id();
             $table->string('meeting_id');
-            $table->string('participant_id');
-            $table->string('user_id')->unique();
+            $table->string('instance_uuid')->nullable();
+            $table->string('participant_id')->nullable();
+            $table->string('user_id');
             $table->string('name');
             $table->string('user_email');
             $table->dateTimeTz('join_time');
@@ -26,6 +27,7 @@ class CreateParticipantsTable extends Migration
             $table->string('registrant_id');
             $table->softDeletes();
             $table->timestamps();
+            $table->unique(['meeting_id','instance_uuid','user_id']);
         });
     }
 
