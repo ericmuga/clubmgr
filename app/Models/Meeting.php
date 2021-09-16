@@ -108,11 +108,23 @@ class Meeting extends Model
      $registrants=$this->registrants()->count();
      if ($registrants==0)return [["No Registrant were found"]];
 
-    return DB::table('registrants')
+   $main=DB::table('registrants')
              ->where('meeting_id',$this->meeting_id)
-             ->select('category', DB::raw('count(*) as total'))
-             ->groupBy('category')->get()
-             ->push(["Total",$registrants]);
+             ->select('category', DB::raw('count(*) as Total'))
+             ->groupBy('category')
+             ->orderByDesc('Total')->get()
+             ->whereIn('category',['Rotarian','Rotaractor','Guest']);
+    $others=DB::table('registrants')
+             ->where('meeting_id',$this->meeting_id)
+             ->select('category', DB::raw('count(*) as Total'))
+             ->groupBy('category')
+             ->orderByDesc('Total')->get()
+             ->whereNotIn('category',['Rotarian','Rotaractor','Guest']);
+            
+   $merged=$main->push(['Others',$others->sum('Total')])->push(["Total",$registrants]);
+
+   return $merged;
+             //DB::raw('select category count(*) as total from registrants ')
  
  }
 

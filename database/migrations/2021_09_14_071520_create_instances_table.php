@@ -18,6 +18,8 @@ class CreateInstancesTable extends Migration
             $table->string('meeting_id');
             $table->string('uuid');
             $table->dateTimeTz('start_time');
+            $table->dateTimeTz('official_start_time')->nullable();
+            $table->dateTimeTz('official_end_time')->nullable();
             $table->timestamps();
         });
     }

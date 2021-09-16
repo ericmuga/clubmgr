@@ -134,7 +134,7 @@ class MeetingController extends Controller
 
                              ]);
 
-            Setup::firstWhere('current',true)->update(['last_meeting_no'=>$request->meeting_id]);
+            Setup::firstWhere('current',true)->update(['last_meeting_no'=>preg_replace( '/[^0-9]/', '', $request->meeting_id )]);
            // return Redirect::route('members')->with('success', 'Member created.');
          return Redirect::route('meetings')->with('success','Meeting created successfully!');
     }
@@ -628,7 +628,7 @@ class MeetingController extends Controller
             foreach ($obj ["occurrences"] as $occurrence) 
             {  
                 if (!Occurrence::where('occurrence_id',$occurrence["occurrence_id"])
-                               ->where('meeting_id',$meeting->id)->exists())
+                               ->where('meeting_id',$meeting->meeting_id)->exists())
                   {
                      if(array_key_exists("start_time",$occurrence)) 
                         {

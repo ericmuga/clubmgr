@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Instance;
 use App\Models\Meeting;
 use App\Models\Participant;
+use App\Models\Registrant;
 use Carbon\Carbon;
 use App\Zoom;
 use Illuminate\Http\Request;
+
+use Inertia\Inertia;
 
 class InstanceController extends Controller
 {
@@ -18,9 +21,38 @@ class InstanceController extends Controller
      */
     
 
-    public function index()
+    public function edit(Request $request, Instance $instance)
     {
-        //
+  
+
+            
+
+
+        return Inertia::render('Instances/Edit',[   "participants"=>$instance->participants()
+                                                                            ->orderBy("name")
+                                                                             ->paginate(10)
+                                                                             ->through(fn($participant)=>([
+                                                                                 "name"=>$participant->name, 
+                                                                                 "id"=>$participant->id, 
+                                                                                 "club_name"=>(Registrant::where('email',$participant->user_email)->first())?Registrant::where('email',$participant->user_email)->first()->category:"",
+                                                                                 "join_time"=>Carbon::parse($participant->join_time)->toDateTimeString(), 
+                                                                                 "official_start_time"=>($instance->official_end_time==null)?null:Carbon::parse($instance->official_start_time)->toDateTimeString(), 
+                                                                                 "official_end_time"=>($instance->official_end_time==null)?null:Carbon::parse($instance->official_end_time)->toDateTimeString(), 
+                                                                                 "leave_time"=>Carbon::parse($participant->leave_time)->toDateTimeString(), 
+                                                                                 "duration"=>Carbon::parse($participant->leave_time)->diffInMinutes(Carbon::parse($participant->join_time)),
+                                                                                 "time_credit"=>$participant->timeCredit()
+                                                                             ])),
+                                                   "instance"=>[
+                                                              "id"=>$instance->id,
+                                                              "uuid"=>$instance->uuid,
+                                                              "meeting_id"=>$instance->meeting_id,
+                                                              "topic"=>Meeting::firstWhere('meeting_id',$instance->meeting_id)->topic,
+                                                              "start_time"=>Carbon::parse($instance->start_time)->toDateTimeString(),
+                                                              "official_start_time"=>($instance->official_start_time==null)?null:$instance->official_start_time->toDateTimeString(),
+                                                              "official_end_time"=>($instance->official_end_time==null)?null:$instance->official_start_time->toDateTimeString(),
+                                                            ]
+
+                                                        ]);
     }
 
     /**
@@ -187,7 +219,7 @@ public static function createInstanceRegistrant($meeting_id,$registrant,$qs)
      * @param  \App\Models\Instance  $instance
      * @return \Illuminate\Http\Response
      */
-    public function edit(Instance $instance)
+    public function index(Instance $instance)
     {
         //
     }
@@ -201,7 +233,32 @@ public static function createInstanceRegistrant($meeting_id,$registrant,$qs)
      */
     public function update(Request $request, Instance $instance)
     {
-        //
+         
+         $validated=$request->validate([
+                                            "uuid"=>['required'],
+                                            "meeting_id"=>['required'],
+                                            "start_time"=>['required'],
+                                             "official_end_time"=>['required'],
+                                             "official_start_time"=>['required']
+
+
+ 
+                                                 ]);
+
+
+         $instance->update([ 
+
+                                            "uuid"=>$request->uuid,
+                                            "meeting_id"=>$request->meeting_id,
+                                            "start_time"=>$request->start_time,
+                                             "official_end_time"=>$request->official_end_time,
+                                             "official_start_time"=>$request->official_start_time
+
+
+
+                                 ]);
+
+         return redirect()->back()->with('success',"Instance Updated Successfully");
     }
 
     /**
