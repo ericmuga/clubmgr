@@ -11,7 +11,9 @@ use Inertia\Inertia;
 use Carbon\Carbon;
 use App\Models\GradingRule;
 use Illuminate\Support\Facades\Redirect;
-
+use App\Exports\ParticipantsExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Str;
 
 class ParticipantController extends Controller
 {
@@ -27,8 +29,22 @@ class ParticipantController extends Controller
 
     public function filteredParticipants(Request $request)
     {
-     dd($request->all());   
+    //  dd($request->all()); 
+              $request->validate([
+                                  '_from'=>['required'],
+                                  '_to'=>['required'],
+                                  'gradingrule_id'=>['required']
+                               ]);
+            
+            $slug = Str::of(Carbon::now()->todateTimeString())->slug('-');     
+       
+            Excel::store(new ParticipantsExport($request->all()), $slug.'.xlsx');
+            return redirect()->back()->with('success','download successful');
+       
+        
     }
+
+
     public function index(Request $request)
     {
 
