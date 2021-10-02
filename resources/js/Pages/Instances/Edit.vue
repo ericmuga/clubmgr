@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 class="mb-8 font-bold text-3xl">
-      <inertia-link class="text-indigo-400 hover:text-indigo-600" :href="route('instances')">Instances</inertia-link>
+      <inertia-link class="text-indigo-400 hover:text-indigo-600" :href="route('meetings.edit',instance.meeting)">Instances</inertia-link>
       <span class="text-indigo-400 font-medium">/</span>
       {{ form.id }} / {{form.uuid}} /{{form.topic}}
       </h1>
@@ -29,8 +29,8 @@
             
              v-model="form.official_start_time" 
              :error="form.errors.official_start_time" 
-             class="pr-6 pb-8 w-full lg:w-1/2" 
-             label="Official Start Time"
+              class="pr-6 pb-8 w-full lg:w-1/2" 
+              label="Official Start Time"
 
              />
 
@@ -42,29 +42,15 @@
              label="Official End Time"
 
              />
-
-              <!--   <label for="birthdaytime">Birthday (date and time):</label>
-          <input type="datetime-local" id="birthdaytime"  :error="form.errors.start_time" 
-             class="pr-6 pb-8 w-full lg:w-1/2" 
-             label="Start Time"name="birthdaytime" :value="form.start_time"> -->
-          <!-- <text-input v-model="form.topic" :error="form.errors.topic" class="pr-6 pb-8 w-full lg:w-1/2" label="Topic" /> -->
-          
-          <!-- <text-input v-model="form.guest_speaker" :error="form.errors.guest_speaker" class="pr-6 pb-8 w-full lg:w-1/2" label="Guest Speaker" /> -->
-          
-          <!-- <select-input v-model="form.instance_type" :error="form.errors.instance_type" class="pr-6 pb-8 w-full lg:w-1/2" label="Instance Type" >
-              <option  value="Zoom"  >Zoom</option>
-              <option  value="Physical" >Physical</option>
-          </select-input>
-           -->
+            <select-input v-model="form.grading_rule_id" :error="form.errors.grading_rule_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Grading Rule" >
+              <option v-for="gradingrule in gradingrules" :key="gradingrule.id" :value=gradingrule.id  >{{gradingrule.rule_name}}</option>
+            </select-input>
+             
+            
           
         </div>  
         <div class="px-8 py-4 bg-gray-50 border-t border-gray-100 flex items-center">
-        <!--   <button  class="text-red-600 hover:underline" tabindex="-1" type="button" @click="destroy"
-             
-          >Delete Instance</button> -->
-          <!-- :disabled=" form.instance_type == 'Zoom'" -->
-
-          <!-- <button class="btn-indigo btn-indigo ml-auto" >Zoom Refresh</button> -->
+        
           <loading-button :loading="form.processing" class="btn-indigo ml-auto" type="submit" >Update Instance</loading-button>
         </div>
 
@@ -73,56 +59,7 @@
         
       <div class=" bg-teal-300  w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-shrink sm:shadow-lg " >
         <div class="flex flex-2 overflow-shrink sm:shadow-lg my-5 h-12">
-          <!-- <t-table
-
-            :headers="['Participants', 'Registrants']"
-            :responsive=true
-            :data=stats
-
-          ></t-table> 
- -->       <!-- <div class="ml-3">
-            <label class="bg-indigo-400  w-full flex flex-row flex-no-wrap p-3"for="">Registrants </label>
-             <t-table
-                         
-                        :headers="['Category','No.']"
-                        :responsive=true
-                        :data=registrantsStats
-
-              >
-                
-              </t-table> 
-
-             </div> 
-            
-          <div>
-            <div class="ml-10">
-               <label class="bg-indigo-400  w-full flex flex-row flex-no-wrap p-3"for="">Occurrences </label>
-               <label class="bg-teal-400  w-full flex flex-row flex-no-wrap p-3 text-right">28 </label>
-            
-            </div>  
-          </div>
-          <div>
-            <div class="ml-10">
-              <label class="bg-indigo-400  w-full flex flex-row flex-no-wrap p-3"for="">Past Instances </label>
-               <label class="bg-teal-400  w-full flex flex-row flex-no-wrap p-3 text-right">16 </label>
-            </div>
-          </div> -->
-            
-             
-            
-           <!--  <label class="bg-teal-400  w-full flex flex-row flex-no-wrap p-3"for="">Participants </label>
-             <t-table
-                         
-                        :headers="['Category','No.']"
-                        :responsive=true
-                        :data=participantsStats
-
-              >
-                
-              </t-table>  -->
-
-           
-             <!-- <instance-stats></instance-stats> -->
+        <button class="bg-indigo-300 m2">Generate Summary</button> 
         </div>
         
       </div>
@@ -176,14 +113,14 @@ export default {
   props: {
     instance: Object,
     participants:Object,
-    // registrantsStats:Array,
+    gradingrules:Object,
     // participantsStats:Array,
     // instances:Object,
     // occurrences:Object,
    },
  
  mounted(){
-  // console.log(this.categories)
+  console.log(this.gradingrules)
  },
   remember: 'form',
   data() {
@@ -197,6 +134,7 @@ export default {
                                   start_time: this.instance.start_time,
                                   official_start_time: this.instance.official_start_time,
                                   official_end_time: this.instance.official_end_time,
+                                  grading_rule_id:this.grading_rule_id
                                   
                                   
                               }),

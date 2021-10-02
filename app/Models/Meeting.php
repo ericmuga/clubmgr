@@ -44,10 +44,10 @@ class Meeting extends Model
     public function getMeetingTypeAttribute($value)
     {
         switch ($value) {
-            case 1:return "Physical";
+            case 2:return "Physical";
                 // code...
                 break;
-            case 2:return "Zoom";
+            case 1:return "Zoom";
             // code...
             break;
             
@@ -57,7 +57,10 @@ class Meeting extends Model
             }
    }
 
-
+    public function recordings()
+    {
+        return $this->hasMany(Recording::class,'meeting_id','meeting_id');
+    }
    // public function setMeetingTypeAttribute($value)
    //  {
    //      switch ($value) {

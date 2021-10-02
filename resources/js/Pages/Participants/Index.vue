@@ -21,30 +21,36 @@
               
           </inertia-link>
         </div>
-        <advanced-filter @set-advanced-filters="setFilters"></advanced-filter>
+        <advanced-filter @set-advanced-filters="setFilters" :gradingrules="this.gradingrules.data"></advanced-filter>
    
     <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
       <thead class="text-white">
         <tr v-for="participant in participants.data" :key="participant.id" class="bg-indigo-800 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
           <th class="p-3 text-left">Name</th>
+          <th class="p-3 text-left">Category</th>
+          <th class="p-3 text-left">Club</th>
           <!-- <th class="p-3 text-left">Email</th> -->
           <th class="p-3 text-left">Joined At</th>
           <th class="p-3 text-left">Left At</th>
-          <th class="p-3 text-left">Duration</th>
+          <!-- <th class="p-3 text-left">Duration</th> -->
+          <th class="p-3 text-left">Time Credit</th>
           <th class="p-3 text-left">Meeting</th>
           <th class="p-3 text-left">Instance</th>
           <th class="p-3 text-left">Instance Start Time</th>
-          <th class="p-3 text-left">Meeting Start Time</th>
+          <th class="p-3 text-left">Instance End Time</th>
          </tr>
         
       </thead>
       <tbody class="flex-1 sm:flex-none">
         <tr class="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0"  v-for="participant in participants.data" :key="participant.id">
           <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ participant.name }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ participant.category }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ participant.club_name }}</td>
           <!-- <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.email }}</td> -->
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.join_time }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.leave_time }}</td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.duration }}</td>
+          <!-- <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.duration }}</td> -->
+          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.timeCredit }}</td>
           
            
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate">  
@@ -54,6 +60,7 @@
           <!-- <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.start_time }}</td> -->
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.instance_uuid }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.instance_start_time }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.instance_end_time }}</td>
          </tr>
         <tr v-if="participants.data.length === 0">
           <td class="border-t px-2 py-4" colspan="4">No participants found.</td>
@@ -94,8 +101,11 @@ export default {
     participants:null,
     filters:Object,
     advdata:Object,
+    gradingrules:Object,
    },
-
+mounted(){
+  //console.log(this.gradingrules.data)
+},
  metaInfo: { title: 'Participants' },
   layout: Layout,
   data() {
@@ -122,7 +132,8 @@ export default {
     setFilters(data)
     {
         this.advdata=data;
-        alert(this.advdata._to);
+        //console.log(this.advdata);
+        this.$inertia.post(this.route('participants.filtered'), pickBy(this.advdata), { preserveState: true })
     }
   }
 }

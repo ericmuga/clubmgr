@@ -25,6 +25,7 @@
         <tr v-for="participant in participants.data" :key="participant.id" class="bg-indigo-800 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
           <th class="p-3 text-left">Name</th>
           <th class="p-3 text-left">Category</th>
+          <th class="p-3 text-left">Club</th>
           <!-- <th class="p-3 text-left">Email</th> -->
           <th class="p-3 text-left">Joined At</th>
           <th class="p-3 text-left">Left At</th>
@@ -42,6 +43,7 @@
       <tbody class="flex-1 sm:flex-none">
         <tr class="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0"  v-for="participant in participants.data" :key="participant.id">
           <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ participant.name }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ participant.category }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ participant.club_name }}</td>
           <!-- <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.email }}</td> -->
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.join_time }}</td>

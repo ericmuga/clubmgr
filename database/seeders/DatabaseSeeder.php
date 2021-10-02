@@ -69,8 +69,8 @@ class DatabaseSeeder extends Seeder
              DB::table('member_type')->insert(['type_id'=>$member->type_id,"member_id"=>$member->id]);
          } 
 
-         Meeting::factory(12)->create();
-         $meetings= Meeting::where('meeting_type',1)->get();
+        // Meeting::factory(12)->create();
+         $meetings= Meeting::where('meeting_type',2)->get();
 
 
 

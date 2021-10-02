@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GradingRuleController;
 use App\Http\Controllers\ImagesController;
 use App\Http\Controllers\OrganizationsController;
 use App\Http\Controllers\ReportsController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\RegistrantController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\InstanceController;
 use App\Http\Controllers\OccurrenceController;
+use App\Models\GradingRule;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -266,6 +268,39 @@ Route::delete('/meetings/{meeting}', [MeetingController::class, 'destroy'])
     //authorize      
     //authorize
 
+//grading_rules
+
+
+Route::get('/gradingrules', [GradingRuleController::class, 'index'])
+        ->name('gradingrules')
+        ->middleware('auth');
+
+Route::get('/gradingrules/create', [GradingRuleController::class, 'create'])
+        ->name('gradingrules.create')
+        ->middleware('auth');
+
+
+Route::get('/gradingrules/{gradingrule}/edit', [GradingRuleController::class, 'edit'])
+        ->name('gradingrules.edit')
+        ->middleware('auth');
+
+Route::put('/gradingrules/{gradingrule}', [GradingRuleController::class, 'update'])
+        ->name('gradingrules.update')
+        ->middleware('auth');
+
+
+Route::post('/gradingrules', [GradingRuleController::class, 'store'])
+        ->name('gradingrules.store')
+        ->middleware('auth');
+
+
+Route::delete('/gradingrules/{gradingrule}/delete', [GradingRuleController::class, 'delete'])
+        ->name('gradingrules.delete')
+        ->middleware('auth');
+        ///////////////////End of grading rules////////////////////////
+
+
+
 ///instances 
 Route::get('/instances', [InstanceController::class, 'index'])
         ->name('instances')
@@ -390,6 +425,9 @@ Route::get('/part', [ParticipantController::class, 'index'])
 Route::get('/participants/create', [ParticipantController::class, 'create'])
         ->name('participants.create')
         ->middleware('auth');   
+Route::post('/participants/filter', [ParticipantController::class, 'filteredParticipants'])
+        ->name('participants.filtered')
+        ->middleware('auth'); 
 
 Route::post('/participants', [ParticipantController::class, 'store'])
         ->name('participants.store')

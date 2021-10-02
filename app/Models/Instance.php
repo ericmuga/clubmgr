@@ -8,17 +8,29 @@ use Illuminate\Database\Eloquent\Model;
 class Instance extends Model
 {
     use HasFactory;
-    protected $fillable=['uuid','meeting_id','start_time','official_start_time','official_end_time'];
+    protected $fillable=['uuid','meeting_id','start_time','official_start_time','official_end_time','grading_rule_id'];
     protected $dates=['start_time','created_at','updated_at','official_start_time','official_end_time'];
     protected $table ='instances';
 
     public function meeting()
     {
-        return $this->belongsTo(Meeting::class,'meeting_id');
+        return $this->belongsTo(Meeting::class,'meeting_id','meeting_id');
     }
 
     public function participants()
     {
         return $this->hasMany(Participant::class,'instance_uuid','uuid');
+
     }
+
+    public function grading_rule()
+    {
+      return $this->belongsTo(GradingRule::class,'grading_rule_id');   
+    }
+    
+    public function recordings()
+    {
+        return $this->hasMany(Recoding::class,'instance_uuid','uuid');
+    }
+
 }

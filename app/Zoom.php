@@ -80,6 +80,8 @@ Class Zoom {
 
                  case 'instanceRegistrants':Instance::createInstanceRegistrant($meeting_id,$item,$qs);                                      
                        break;
+                 case 'instanceRecordings':Instance::createInstanceRecordings($meeting_id,$item,$qs);                                      
+                       break;
 
 
                  case 'instanceParticipants':Instance::createInstanceParticipant($meeting_id,$item,$qs);                                      

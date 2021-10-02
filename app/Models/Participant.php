@@ -43,7 +43,7 @@ class Participant extends Model
 
    public function registrant()
   {
-      return $this->belongsTo(Registrant::class,'meeting_id','meeting_id');
+      return $this->belongsTo(Registrant::class,'registrant_id','registrant_id');
   }
   public function meeting()
   {

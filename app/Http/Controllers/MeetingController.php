@@ -15,6 +15,7 @@ use App\Models\Setup;
 use App\Models\ZoomUser;
 use App\Models\Instance;
 use App\Models\Occurrence;
+use App\Http\Controllers\InstanceController;
 use Illuminate\Support\Facades\DB;
 use App\Zoom;
 
@@ -163,7 +164,7 @@ class MeetingController extends Controller
                                                         "timezone"=>$item["timezone"],
                                                         "created_at"=>$item["created_at"],
                                                         "join_url"=>$item["join_url"],
-                                                        "meeting_type"=>2,
+                                                        "meeting_type"=>1,
                                                         "meeting_day"=>Carbon::parse($item["start_time"])->format('l')
                                                ]);
                                         }
@@ -338,7 +339,7 @@ class MeetingController extends Controller
             $request->session()->put('z_tk_time', Carbon::now());
 
 
-             return redirect()->back()->with('success', 'Request authentication successful');
+             return redirect()->route('meetings')->with('success', 'Request authentication successful');
        }
             
        public function refreshUsers(Request $request)
@@ -589,11 +590,14 @@ class MeetingController extends Controller
                         {
                             $st=Carbon::parse($instance["start_time"]);
                     
-                           Instance::create([
+                           $i=Instance::create([
                                         "meeting_id"=>$meeting->meeting_id,
                                         "uuid"=>$instance["uuid"],
                                         "start_time"=>$st,
                                       ]);
+                             
+                           InstanceController::fetchInstanceRecordings($request,$i);
+                           InstanceController::fetchInstanceParticipants2($request,$i);
                       }
                   }
          

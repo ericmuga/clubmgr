@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Participant;
 use App\Models\Meeting;
 use App\Models\Instance;
+use App\Models\Registrant;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Carbon\Carbon;
+use App\Models\GradingRule;
 use Illuminate\Support\Facades\Redirect;
 
 
@@ -17,7 +19,16 @@ class ParticipantController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * 
+     * 
+     * 
      */
+
+
+    public function filteredParticipants(Request $request)
+    {
+     dd($request->all());   
+    }
     public function index(Request $request)
     {
 
@@ -36,14 +47,27 @@ class ParticipantController extends Controller
                                                         'email'=>$participant->user_email,
                                                         'join_time'=>Carbon::parse($participant->join_time)->toDateTimeString(),
                                                         'leave_time'=>Carbon::parse($participant->leave_time)->toDateTimeString(),
-                                                        'duration'=>$participant->join_time->diffInMinutes($participant->leave_time),
+                                                        // 'duration'=>$participant->join_time->diffInMinutes($participant->leave_time),
                                                         'meeting_id'=>$participant->meeting_id,
                                                         'instance_uuid'=>$participant->instance_uuid,
-                                                        'instance_start_time'=>Instance::firstWhere("uuid",$participant->instance_uuid)?Instance::firstWhere("uuid",$participant->instance_uuid)->start_time->toDateTimeString():"",
+                                                        'instance_start_time'=>Instance::firstWhere("uuid",$participant->instance_uuid)?Instance::firstWhere("uuid",$participant->instance_uuid)->official_start_time->toDateTimeString():"",
+                                                        'instance_end_time'=>Instance::firstWhere("uuid",$participant->instance_uuid)?Instance::firstWhere("uuid",$participant->instance_uuid)->official_end_time->toDateTimeString():"",
                                                         'mid'=>Meeting::where('meeting_id',$participant->meeting_id)->first()->id,
                                                         'start_time'=>Carbon::parse(Meeting::where('meeting_id',$participant->meeting_id)->first()->start_time)->toDateTimeString(),
+                                                        'timeCredit'=>$participant->timeCredit(),
+                                                        "category"=>(Registrant::where('email',$participant->user_email)->first())?Registrant::where('email',$participant->user_email)->first()->category:"",
+                                                        "club_name"=>(Registrant::where('email',$participant->user_email)->first())?Registrant::where('email',$participant->user_email)->first()->club_name:"",
                                                        
-                                                     ]))
+                                                     ])),
+                                'gradingrules'=>GradingRule::orderBy('rule_name')
+                                                            ->paginate(10)
+                                                            ->through(fn($gradingrule)=>(
+                                                                [
+                                                                    'id'=>$gradingrule->id,
+                                                                    'rule_name'=>$gradingrule->rule_name,
+                                                                    'meeting_type'=>$gradingrule->meeting_type
+                                                                ]
+                                                            ))
 
 
         ]);

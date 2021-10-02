@@ -20,6 +20,7 @@ class CreateInstancesTable extends Migration
             $table->dateTimeTz('start_time');
             $table->dateTimeTz('official_start_time')->nullable();
             $table->dateTimeTz('official_end_time')->nullable();
+            $table->integer('grading_rule_id')->nullable();
             $table->timestamps();
         });
     }

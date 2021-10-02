@@ -31,6 +31,29 @@
                                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" 
                                id="grid-first-id" placeholder="To" v-model="data._to">
                       </div>
+
+                        <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-phone">
+                         Meeting ID
+                        </label>
+                        <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-phone" type="text" placeholder="topic" v-model="data.meeting_id">
+                      </div>
+
+                      <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-phone">
+                         Category
+                        </label>
+                        <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-phone" type="text" placeholder="topic" v-model="data.category">
+                      </div>
+
+                      <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-phone">
+                         Grading Rule
+                        </label>
+                       <select v-model="data.gradingrule_id">
+                         <option v-for="gradingrule in gradingrules" :key=gradingrule.id :value="gradingrule.id">{{gradingrule.rule_name}}</option>
+                       </select>
+                      </div>
                       
                           <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                             <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
@@ -38,7 +61,7 @@
 
                        
                         <div class="py-2">
-                          <loading-button  class="btn-indigo" type="submit">Go!</loading-button> 
+                          <loading-button  class="btn-indigo" type="submit">Generate Report!</loading-button> 
                         </div>
                      
                     </div>
@@ -51,10 +74,78 @@
       </div>
       
      
-      </div>
+    
    <!-- </div> -->
    </template>
+ <script>
+     import LoadingButton from '@/Shared/LoadingButton'
+     export default{
 
+      name: 'Accordion',
+
+         mounted(){
+           
+         },
+
+         components:{
+            LoadingButton,
+         },
+        props:{
+          gradingrules:Array,
+        }, 
+        data () {
+          return {
+            data:{
+              _to:"",
+              _from:"",
+              category:"",
+              meeting_id:"",
+              gradingrule_id:""
+               
+              }  
+          }
+        },
+
+        methods:{
+          setFilters(){
+            
+             
+             this.$emit('set-advanced-filters',this.data);
+          },
+          reset()
+          {
+               return {
+               data:{
+                 _to:null,
+                 _from:null,
+              category:"",
+              meeting_id:"",
+              gradingrule_id:"",
+                 }  
+             }
+          }
+
+        }
+     }
+
+
+
+
+
+      var myRadios = document.getElementsByName('tabs2');
+      var setCheck;
+      var x = 0;
+      for(x = 0; x < myRadios.length; x++){
+          myRadios[x].onclick = function(){
+              if(setCheck != this){
+                   setCheck = this;
+              }else{
+                  this.checked = false;
+                  setCheck = null;
+          }
+          };
+      }
+   </script>
    <style type="css" scoped>
          /* Tab content - closed */
          .tab-content {
@@ -121,72 +212,4 @@
 
    </style>
      
-   <script>
-     import LoadingButton from '@/Shared/LoadingButton'
-     export default{
-
-      name: 'Accordion',
-
-         mounted(){
-           
-         },
-
-         components:{
-            LoadingButton,
-         },
-         
-        data () {
-          return {
-            data:{
-              _name:"",
-              _from:"",
-              _phone:"",
-              _email:"",
-              _affiliation:"",
-              _type:"" 
-              }  
-          }
-        },
-
-        methods:{
-          setFilters(){
-            
-             
-             this.$emit('set-advanced-filters',this.data);
-          },
-          reset()
-          {
-               return {
-               data:{
-                 _name:"",
-                 _id:"",
-                 _phone:"",
-                 _email:"",
-                 _affiliation:"",
-                 _type:"" 
-                 }  
-             }
-          }
-
-        }
-     }
-
-
-
-
-
-      /* Optional Javascript to close the radio button version by clicking it again */
-      var myRadios = document.getElementsByName('tabs2');
-      var setCheck;
-      var x = 0;
-      for(x = 0; x < myRadios.length; x++){
-          myRadios[x].onclick = function(){
-              if(setCheck != this){
-                   setCheck = this;
-              }else{
-                  this.checked = false;
-                  setCheck = null;
-          }
-          };
-      }
-   </script>
+  
