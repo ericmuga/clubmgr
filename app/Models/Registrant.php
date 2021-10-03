@@ -33,7 +33,10 @@ class Registrant extends Model
     {
         return $this->belongsTo(Meeting::class ,'meeting_id');
     }
-
+   public function particiapant()
+   {
+       return $this->hasMany(Participan::class,'user_email','email');
+   }
 
 
     public function scopeFilter($query, array $filters)

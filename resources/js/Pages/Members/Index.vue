@@ -7,7 +7,7 @@
     </h1>
   <div class="flex items-center justify-center">
   <div class="container">
-    <member-stats></member-stats>
+    <member-stats :activemembers="activemembers" :rotarians="rotarians" :rotaractors="rotaractors" :inductees="inductees"></member-stats>
     <advanced-filter @set-advanced-filters="setFilters"></advanced-filter>
 
     <div class="mb-4 py-5 flex justify-between items-center">
@@ -35,18 +35,30 @@
           <th class="p-3 text-left">Phone</th>
           <th class="p-3 text-left">Affiliation</th>
           <th class="p-3 text-left">Type</th>
+          <th class="p-3 text-left">Sector</th>
+          <th class="p-3 text-left">Active</th>
           
          </tr>
         
       </thead>
       <tbody class="flex-1 sm:flex-none">
         <tr class="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0"  v-for="member in members.data" :key="member.id">
-          <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ member.member_id }}</td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ member.name }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3">
+             {{ member.member_id }}
+             </td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3">
+             
+            <inertia-link class="text-indigo-400 hover:text-indigo-600" :href="route('members.edit',member.id)">
+             {{ member.name }}
+             
+             </inertia-link>
+             </td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ member.email }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ member.phone }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ member.affiliation }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ member.type }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ member.sector }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ member.active }}</td>
           
           
            
@@ -89,7 +101,11 @@ export default {
   
    props:{
     members:null,
-    filters:Object
+    filters:Object,
+    activemembers:null,
+    rotarians:null,
+    rotaractors:null,
+    inductees:null
    },
 
  metaInfo: { title: 'Members' },

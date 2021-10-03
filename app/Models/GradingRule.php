@@ -15,6 +15,10 @@ class GradingRule extends Model
     {
         return $this->hasMany(Instance::class);
     }
-
+   
+    public function grading_history()
+    {
+        return $this->hasMany(GradingHistory::class,'grading_rule_id','id');
+    }
 
 }

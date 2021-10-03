@@ -20,6 +20,7 @@ class CreateMembersTable extends Migration
             $table->string('email')->unique();
             $table->string('phone')->unique()->nullable();
             $table->integer('affiliation_id')->nullable();
+            // $table->string('sector')->nullable();
             $table->integer('type_id')->nullable();
             $table->timestamps();
         });

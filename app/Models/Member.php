@@ -13,7 +13,7 @@ class Member extends Model
     use HasFactory;
     use SoftDeletes;
     protected $dates = ['deleted_at'];
-    protected $fillable=['name','email','affiliation_id','type_id','active','phone'];     
+    protected $fillable=['name','email','affiliation_id','type_id','active','phone','sector'];     
      
     public function types()
      {
@@ -61,6 +61,7 @@ class Member extends Model
                 ->orWhere('member_id', 'like', '%'.$search.'%')
                 ->orWhere('phone', 'like', '%'.$search.'%')
                     ->orWhere('email', 'like', '%'.$search.'%')
+                    ->orWhere('sector', 'like', '%'.$search.'%')
                     ->orWhereHas('affiliations', function ($query) use ($search) {
                         $query->where('code', 'like', '%'.$search.'%');
                     })

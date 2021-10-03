@@ -22,7 +22,7 @@
           Active Members
         </p>
         <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
-          140
+          {{activemembers}}
         </p>
       </div>
     </div>
@@ -47,7 +47,7 @@
           Rotarians
         </p>
         <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
-          120
+          {{rotarians}}
         </p>
       </div>
     </div>
@@ -70,7 +70,7 @@
           Rotaractors
         </p>
         <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
-          10
+          {{rotaractors}}
         </p>
       </div>
     </div>
@@ -94,7 +94,7 @@
         <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
           Inductess
         </p>
-        <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">20</p>
+        <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">{{inductees}}</p>
       </div>
     </div>
   </div>
@@ -105,7 +105,12 @@
 export default {
 
   name: 'MemberStats',
-
+  props:{
+    activemembers:0,
+    rotarians:0,
+    rotaractors:0,
+    inductees:0
+  },
   data () {
     return {
 

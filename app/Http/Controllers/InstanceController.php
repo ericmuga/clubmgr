@@ -369,7 +369,7 @@ public static function createInstanceRegistrant($meeting_id,$registrant,$qs)
 
 
                                  ]);
-        InstanceController::fetchInstanceRecordings($request,$instance);
+        //InstanceController::fetchInstanceRecordings($request,$instance);
 
          return redirect()->back()->with('success',"Instance Updated Successfully");
     }

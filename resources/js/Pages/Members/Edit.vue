@@ -14,11 +14,13 @@
         <div class="p-8 -mr-6 -mb-8 flex flex-wrap">
           
           <text-input v-model="form.name" :error="form.errors.name" class="pr-6 pb-8 w-full lg:w-1/2" label="name" />
+          <text-input v-model="form.member_id" :error="form.errors.member_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Member ID" />
           
          
           <text-input v-model="form.email" :error="form.errors.email" class="pr-6 pb-8 w-full lg:w-1/2" label="Email" />
          
           <text-input v-model="form.phone" :error="form.errors.phone" class="pr-6 pb-8 w-full lg:w-1/2" label="Phone" />
+          <text-input v-model="form.sector" :error="form.errors.sector" class="pr-6 pb-8 w-full lg:w-1/2" label="Sector" />
           
           <select-input v-model="form.affiliation_id" :error="form.errors.affiliation_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Affiliation">
             <option :value="null" />
@@ -30,8 +32,8 @@
           </select-input>
 
           <select-input v-model="form.active" :error="form.errors.active" class="pr-6 pb-8 w-full lg:w-1/2" label="Status" >
-              <option  value=true  >Active</option>
-              <option  value=false >Retired</option>
+              <option  :value=1  >Active</option>
+              <option  :value=0 >Retired</option>
           </select-input>
           
           
@@ -87,6 +89,7 @@ export default {
                                   phone: this.member.phone,
                                   active: this.member.active,
                                   type_id: this.member.type_id,
+                                  sector:this.member.sector
                                   
                               }),
     }

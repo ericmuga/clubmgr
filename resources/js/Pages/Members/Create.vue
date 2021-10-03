@@ -9,10 +9,12 @@
       <form @submit.prevent="store">
         <div class="p-8 -mr-6 -mb-8 flex flex-wrap">
           <text-input v-model="form.name" :error="form.errors.name" class="pr-6 pb-8 w-full lg:w-1/2" label="Name" />
+          <text-input v-model="form.member_id" :error="form.errors.member_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Member ID" />
           <!-- <text-input v-model="form.last_name" :error="form.errors.last_name" class="pr-6 pb-8 w-full lg:w-1/2" label="Last name" /> -->
           <text-input v-model="form.email" :error="form.errors.email" class="pr-6 pb-8 w-full lg:w-1/2" label="Email" />
 
           <text-input v-model="form.phone" :error="form.errors.phone" class="pr-6 pb-8 w-full lg:w-1/2" label="Phone" />
+          <text-input v-model="form.sector" :error="form.errors.sector" class="pr-6 pb-8 w-full lg:w-1/2" label="Sector" />
 
           <select-input v-model="form.type_id" :error="form.errors.type_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Member Type">
             <option :value="1">Member</option>
@@ -70,6 +72,8 @@ export default {
         email: null,
         active:false,
         phone:null,
+        member_id:null,
+        sector:null,
        
       }),
     }

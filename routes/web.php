@@ -16,6 +16,7 @@ use App\Http\Controllers\RegistrantController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\InstanceController;
 use App\Http\Controllers\OccurrenceController;
+use App\Http\Controllers\GradingHistoryController;
 use App\Models\GradingRule;
 use Illuminate\Support\Facades\Route;
 
@@ -444,10 +445,16 @@ Route::delete('/participants/{registrant}', [ParticipantController::class, 'dest
         ->name('participants.destroy')
         ->middleware('auth');
 
+Route::get('/gradings', [GradingHistoryController::class, 'index'])
+        ->name('gradings')
+        ->middleware('auth');
+
 Route::get('ap/members',[MemberController::class, 'api'])
        ->name('ap.members')
        ->middleware('auth');
 
+ Route::get('/gradinghistory/{filename}',[GradingHistory::class,'fetchFile'] );
+       
 
 
 

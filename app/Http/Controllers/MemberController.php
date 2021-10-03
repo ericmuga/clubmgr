@@ -40,9 +40,12 @@ class MemberController extends Controller
     {
        
      //dd(Member::orderBy('name')->paginate(10)->withQueryString());
-
        return Inertia::render('Members/Index', [
                                 'filters' =>$request->all('search','trashed'),
+                                'rotarians'=>Member::where('affiliation_id',1)->get()->count(),
+                                'activemembers'=>Member::where('active',1)->get()->count(),
+                                'rotaractors'=>Member::where('affiliation_id',2)->get()->count(),
+                                'inductees'=>Member::where('affiliation_id',3)->get()->count(),
                                 'members' => Member::with('types','affiliations')
                                 ->orderBy('name')
                                 ->filter($request->only('search', 'trashed'))
@@ -53,9 +56,11 @@ class MemberController extends Controller
                                                          'id'=>$member->id,
                                                         'name'=>$member->name,
                                                         'email'=>$member->email,
-                                                        'affiliation'=>$member->affiliations()->count()>0? $member->afl() : "Unassigned" ,
-                                                        'type'=>$member->types()->count()>0 ? $member->tp():"Unassigned",
-                                                        'phone'=>$member->phone
+                                                        'affiliation'=>Affiliation::where('id',$member->affiliation_id)->exists()?Affiliation::where('id',$member->affiliation_id)->first()->code:"" ,
+                                                        'type'=>Type::where('id',$member->type_id)->exists()?Type::where('id',$member->type_id)->first()->code:"" ,
+                                                        'phone'=>$member->phone,
+                                                        'sector'=>$member->sector,
+                                                        'active'=>$member->active==1?'Yes':'No'
                                                      ]))
                                     
                 ]);
@@ -99,6 +104,7 @@ class MemberController extends Controller
             'affiliation_id' => ['required', 'max:1'],
             'type_id' => ['required', 'max:1'],
             'active' => ['required', 'boolean'],
+            'sector' => ['required', 'boolean'],
             'email' => ['required', 'max:50', 'email', Rule::unique('members')]
 
             ]);
@@ -108,8 +114,10 @@ class MemberController extends Controller
             'affiliation_id' => $request->affiliation_id,
             'email' => $request->email,
             'phone'=>$request->phone,
+            'sector'=>$request->sector,
             'type_id' => $request->type_id,           
-            'active' => $request->active
+            'active' => $request->active,
+            'member_id' => $request->member_id
             
         ]);
 
@@ -142,11 +150,13 @@ class MemberController extends Controller
             'member' => [
                 'id' => $member->id,
                 'name' => $member->name,
+                'member_id' => $member->member_id,
                 'active'=>$member->active,
                 'email' => $member->email,
+                'sector' => $member->sector,
                 'phone' => $member->phone,
-                'type_id' => $member->types_id,
-                'affiliation_id' => $member->affiliations_id,
+                'type_id' => $member->type_id,
+                'affiliation_id' => $member->affiliation_id,
                 'deleted_at' => $member->deleted_at,
             ],
             'types' => Type::all()->sortBy('code')
@@ -176,18 +186,21 @@ class MemberController extends Controller
             'name' => ['required', 'max:50'],
             'affiliation_id' => ['required', 'max:1'],
             'type_id' => ['required', 'max:1'],
-            'active' => ['required', 'boolean'],
-            'email' => ['required', 'max:50', 'email']
+            'active' => ['required','boolean'],
+            'email' => ['required', 'max:50', 'email'],
+            'sector' => ['required', 'max:50']
+
 
             ]);
 
-        Member::update([
-            'name' => $member->name,
-            'affiliation_id' => $member->affiliation_id,
-            'email' => $member->email,
-            'phone'=>$member->phone,
-            'type_id' => $member->type_id,           
-            'active' => $member->active
+        $member->update([
+            'name' => $request->name,
+            'affiliation_id' => $request->affiliation_id,
+            'email' => $request->email,
+            'phone'=>$request->phone,
+            'sector'=>$request->sector,
+            'type_id' => $request->type_id,           
+            'active' => $request->active
             
         ]);
 
@@ -202,6 +215,7 @@ class MemberController extends Controller
      */
     public function destroy(Member $member)
     {
-        //
+        $member->delete();
+        return redirect()->route('members')->with('success','Member Deleted Successfully');
     }
 }

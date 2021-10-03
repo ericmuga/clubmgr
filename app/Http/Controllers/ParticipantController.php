@@ -10,10 +10,15 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use App\Models\GradingRule;
+use App\Models\GradingHistory;
 use Illuminate\Support\Facades\Redirect;
 use App\Exports\ParticipantsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+use File;
 
 class ParticipantController extends Controller
 {
@@ -39,9 +44,35 @@ class ParticipantController extends Controller
             $slug = Str::of(Carbon::now()->todateTimeString())->slug('-');     
        
             Excel::store(new ParticipantsExport($request->all()), $slug.'.xlsx');
+            Schema::dropIfExists('temp');
+
+            GradingHistory::create([
+                                    'user_id'=>$request->user()->email,
+                                    'from'=>$request->_from,
+                                    'to'=>$request->_to,
+                                    'grading_rule_id'=>$request->gradingrule_id,
+                                    'meeting_id'=>$request->meeting_id,
+                                    'category'=>($request->category==null)?'':$request->category,
+                                    'downloadurl'=>$slug.'.xlsx'
+                                    ]);  
+            //    rename('/storage/app/'.$slug.'.xlsx', '/public/'.$slug);
+             File::move(storage_path('app/'.$slug.'.xlsx'), public_path('reports/'.$slug.'.xlsx'));
+            
             return redirect()->back()->with('success','download successful');
-       
+            
+         //commit to history gradings
+         /*
+           $table->id();
+            $table->string('user_id');
+            $table->dateTime('from');
+            $table->dateTime('to');
+            $table->string('meeting_id');
+            $table->string('category');
+            $table->string('grading_rule_id');
+            $table->timestamps();
+         */
         
+         
     }
 
 
