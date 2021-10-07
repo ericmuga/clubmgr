@@ -34,7 +34,10 @@ class Meeting extends Model
        return $this->hasMany(Registrant::class,'meeting_id','meeting_id'); 
     }
 
-
+   public function grading_rule()
+   {
+       return $this->belongsTo(GradingRule::class,'grading_rule_id','id');
+   }
 
     public function occurrences()
     {

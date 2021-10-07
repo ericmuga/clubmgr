@@ -59,32 +59,33 @@ class Participant extends Model
 
   public function timeCredit()
   {
-     $timeToTrim=0;
-     $instance= Instance::firstWhere('uuid',$this->instance_uuid);
-      if (($instance->official_start_time==null)||
-         ($instance->official_end_time==null)||
-         ($this->join_time==null)||
-         ($this->leave_time==null))
-        return 0;
+    //  $timeToTrim=0;
+    //  $instance= Instance::firstWhere('uuid',$this->instance_uuid);
+    //   if (($instance->official_start_time==null)||
+    //      ($instance->official_end_time==null)||
+    //      ($this->join_time==null)||
+    //      ($this->leave_time==null))
+    //     return 0;
 
-     $startTime=null; $endTime=null;
-      if ($instance->official_start_time>$this->join_time)
-      {
-          $startTime=$instance->official_start_time;
-          //$timeToTrim=Carbon::parse($this->join_time)->diffInMinutes($instance->official_start_time);
-      }
-      else $startTime=$this->join_time;
+    //  $startTime=null; $endTime=null;
+    //   if ($instance->official_start_time>$this->join_time)
+    //   {
+    //       $startTime=$instance->official_start_time;
+    //       //$timeToTrim=Carbon::parse($this->join_time)->diffInMinutes($instance->official_start_time);
+    //   }
+    //   else $startTime=$this->join_time;
 
-      if ($instance->official_end_time<$this->leave_time)
-      {
-        // $timeToTrim+=Carbon::parse($instance->official_end_time)->diffInMinutes($this->join_time);
-        $endTime=$instance->official_end_time;
-      }
-      else $endTime=$this->leave_time;
+    //   if ($instance->official_end_time<$this->leave_time)
+    //   {
+    //     // $timeToTrim+=Carbon::parse($instance->official_end_time)->diffInMinutes($this->join_time);
+    //     $endTime=$instance->official_end_time;
+    //   }
+    //   else $endTime=$this->leave_time;
 
-       if ($this->join_time>$instance->official_end_time) return 0;
+    //    if ($this->join_time>$instance->official_end_time) return 0;
 
-      return Carbon::parse($endTime)->diffInMinutes($startTime);
+    //   return Carbon::parse($endTime)->diffInMinutes($startTime);
+      return Carbon::parse($this->join_time)->diffInMinutes($this->leave_time);
   }
   
   

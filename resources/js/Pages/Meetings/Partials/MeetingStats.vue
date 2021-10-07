@@ -45,7 +45,7 @@
           Physical Meetings
         </p>
         <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
-          12
+          {{pmeetings}}
         </p>
       </div>
     </div>
@@ -105,6 +105,7 @@ export default {
   name: 'MeetingStats',
   props:{
     zmeetings:0,
+    pmeetings:0,
   },
  
   data () {

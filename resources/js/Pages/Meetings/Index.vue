@@ -4,7 +4,7 @@
       <inertia-link class="text-indigo-400 hover:text-indigo-600" :href="route('meetings')">Meetings</inertia-link>
     </h1>
   <div class="container">
-    <meeting-stats :zmeetings=zmeetings></meeting-stats>
+    <meeting-stats :zmeetings=zmeetings :pmeetings=pmeetings></meeting-stats>
     <div class="mb-4 py-5 flex justify-between items-center">
           <search-filter v-model="form.search" class="w-full max-w-md mr-4" @reset="reset">
             <label class="block text-gray-700">Trashed:</label>
@@ -149,6 +149,7 @@ export default {
    props:{
     meetings:null,
     zmeetings:0,
+    pmeetings:0,
     filters:Object,
    url:""
    },

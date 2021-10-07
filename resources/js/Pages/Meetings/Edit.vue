@@ -19,14 +19,27 @@
          
           <text-input v-model="form.meeting_id" :error="form.errors.meeting_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Meeting ID" />
          
-         <!--  <text-input 
-             type="datetime-local"
-             v-model="form.start_time" 
-             :error="form.errors.start_time" 
-             class="pr-6 pb-8 w-full lg:w-1/2" 
-             label="Start Time"
+            <text-input 
+              type="datetime-local"
+              v-model="form.official_start_time" 
+              :error="form.errors.official_start_time" 
+              class="pr-6 pb-8 w-full lg:w-1/2" 
+              label="Official Start Time"
 
-             /> -->
+             />
+
+             <text-input 
+             type="datetime-local"
+             v-model="form.official_end_time" 
+             :error="form.errors.official_end_time" 
+             class="pr-6 pb-8 w-full lg:w-1/2" 
+             label="Official End Time"
+
+             />
+
+             <select-input v-model="form.grading_rule_id" :error="form.errors.grading_rule_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Grading Rule" >
+                <option  v-for="gradingrule in gradingrules.data" :key="gradingrule.id" value="gradingrule.id"  >{{gradingrule.rule_name}}</option>
+              </select-input>
 
            <!--   <label for="birthdaytime">Birthday (date and time):</label>
           <input type="datetime-local" id="birthdaytime"  :error="form.errors.start_time" 
@@ -158,6 +171,7 @@ export default {
   layout: Layout,
   props: {
     meeting: Object,
+    gradingrules:Object,
     registrantsStats:Array,
     participantsStats:Array,
     instances:Object,
@@ -165,7 +179,7 @@ export default {
    },
  
  mounted(){
-   console.log(this.categories)
+   console.log(this.gradingrules)
  },
   remember: 'form',
   data() {
@@ -178,8 +192,10 @@ export default {
                                   guest_speaker: this.meeting.guest_speaker,
                                   topic: this.meeting.topic,
                                   start_time: this.meeting.start_time,
+                                  official_start_time: this.meeting.official_start_time,
+                                  official_end_time: this.meeting.official_end_time,
                                   meeting_type: this.meeting.meeting_type,
-                                  
+                                  grading_rule_id:this.meeting.grading_rule_id                    
                                   
                               }),
     }

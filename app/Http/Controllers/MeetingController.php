@@ -15,6 +15,7 @@ use App\Models\Setup;
 use App\Models\ZoomUser;
 use App\Models\Instance;
 use App\Models\Occurrence;
+use App\Models\GradingRule;
 use App\Http\Controllers\InstanceController;
 use Illuminate\Support\Facades\DB;
 use App\Zoom;
@@ -33,7 +34,8 @@ class MeetingController extends Controller
                                  'filters' =>$request->all('search','trashed'),
                                  "url"=>"https://zoom.us/oauth/authorize?response_type=code&client_id=".$this->getSetup()->client_id."&redirect_uri=".$this->getSetup()->callback_url."&state={userState}",
                                  
-                                "zmeetings"=>Meeting::where('meeting_type',2)->count(),
+                                "zmeetings"=>Meeting::where('meeting_type',1)->count(),
+                                "pmeetings"=>Meeting::where('meeting_type',2)->count(),
                                 'meetings' => Meeting::with('registrants')
                                 ->orderByDesc('start_time')
                                   ->filter($request->only('search', 'trashed'))
@@ -51,6 +53,7 @@ class MeetingController extends Controller
                                                                                   'start_time'=>Carbon::parse($meeting->start_time)->toDateTimeString(),
                                                                                   'meeting_day'=>$meeting->meeting_day,
                                                                                   'topic'=>$meeting->topic
+                                                                                  
                                                                                     ]))
   
                                                 ]);
@@ -194,12 +197,14 @@ class MeetingController extends Controller
 
         
         // $instances=Instance::where("meeting_id",$meeting->meeting_id)->paginate(20);
-        //      dd($instances);
+            $mt=DB::table('meetings')->select('meeting_type')->where('meeting_id',$meeting->meeting_id)->first()->meeting_type;
              //dd($categories->toArray());
-        
+            dd( Meeting::where('meeting_type',0)->count());
         return Inertia::render('Meetings/Edit',[
                                 
-                                      // "stats"=> [ $categories->toArray()],
+                                      "gradingrules"=>GradingRule::where('meeting_type',$mt)
+                                                                  ->paginate()
+                                                                  ->through(fn($gradingrule)=>(['id'=>$gradingrule->id,'rule_name'=>$gradingrule->rule_name])),
                                       "registrantsStats"=> $meeting->registrantsStats(),
                                       "participantsStats"=> $meeting->participantsStats(),
                                        "instances"=>Instance::where("meeting_id",$meeting->meeting_id)
@@ -237,7 +242,10 @@ class MeetingController extends Controller
                                                       "guest_speaker"=>$meeting->guest_speaker,
                                                       "topic"=>$meeting->topic,
                                                       "start_time"=>Carbon::parse($meeting->start_time)->toDayDateTimeString(),
-                                                      "instances"=>$meeting->instances()->count()
+                                                      "instances"=>$meeting->instances()->count(),
+                                                       'official_start_time'=>$meeting->official_start_time,
+                                                      'official_end_time'=>$meeting->official_end_time,
+                                                      'grading_rule_id'=>$meeting->grading_rule_id
                                                       //"start_time"=>$meeting->start_time,
                                                     ]
                                             ]);
@@ -575,7 +583,7 @@ class MeetingController extends Controller
          $mode="instances";
 
             $obj=collect($instances->json());
-         
+            // dd($obj); 
             if (!array_key_exists("meetings",$obj->toArray()))
                  return redirect()->back()->with('error',$mode.'No instances were found for that meeting');
 
@@ -621,14 +629,7 @@ class MeetingController extends Controller
 
             $obj=collect($instances->json());
 
-            //dd($obj["occurrences"]);
-         
-            // if (!array_key_exists("meetings",$obj->toArray()))
-            //      return redirect()->back()->with('error',$mode.'No instance were found for that meeting');
-
-            //   $instances=$obj ["meetings"];
-            //   //dd($instances);
-            
+           
             foreach ($obj ["occurrences"] as $occurrence) 
             {  
                 if (!Occurrence::where('occurrence_id',$occurrence["occurrence_id"])
