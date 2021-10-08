@@ -31,19 +31,19 @@
                                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" 
                                id="grid-first-id" placeholder="To" v-model="data._to">
                       </div>
-
+                      <!--
                         <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-phone">
                          Meeting ID
                         </label>
                         <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-phone" type="text" placeholder="topic" v-model="data.meeting_id">
-                      </div>
+                      </div> -->
 
                       <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-phone">
                          Category
                         </label>
-                        <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-phone" type="text" placeholder="topic" v-model="data.category">
+                        <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-phone" type="text" placeholder="Guest" v-model="data.category">
                       </div>
 
                       <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
@@ -99,7 +99,6 @@
               _to:"",
               _from:"",
               category:"",
-              meeting_id:"",
               gradingrule_id:""
                
               }  
@@ -119,7 +118,6 @@
                  _to:null,
                  _from:null,
               category:"",
-              meeting_id:"",
               gradingrule_id:"",
                  }  
              }

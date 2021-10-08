@@ -33,8 +33,8 @@
           <!-- <th class="p-3 text-left">Meeting</th> -->
           <!-- <th class="p-3 text-left">Instance</th> -->
           <!-- <th class="p-3 text-left">Instance Start Time</th> -->
-          <th class="p-3 text-left">Official Start Time</th>
-          <th class="p-3 text-left">Official End Time</th>
+          <!-- <th class="p-3 text-left">Official Start Time</th>
+          <th class="p-3 text-left">Official End Time</th> -->
           <th class="p-3 text-left">Time Credit</th>
 
          </tr>
@@ -49,8 +49,8 @@
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.join_time }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.leave_time }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.duration }}</td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.official_start_time }}</td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.official_end_time }}</td>
+          <!-- <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.official_start_time }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.official_end_time }}</td> -->
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.time_credit }}</td>
           
            

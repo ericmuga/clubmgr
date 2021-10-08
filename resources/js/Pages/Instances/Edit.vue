@@ -21,7 +21,7 @@
               v-model="form.start_time" 
              :error="form.errors.start_time" 
              class="pr-6 pb-8 w-full lg:w-1/2" 
-             label="Start Time"
+             label="When"
 
              />
 
@@ -120,7 +120,7 @@ export default {
    },
  
  mounted(){
-  console.log(this.gradingrules)
+  // console.log(this.gradingrules)
  },
   remember: 'form',
   data() {

@@ -37,8 +37,8 @@ class ParticipantController extends Controller
     //  dd($request->all()); 
               $request->validate([
                                   '_from'=>['required'],
-                                  '_to'=>['required'],
-                                  'gradingrule_id'=>['required']
+                                  '_to'=>['required']
+                                //   'gradingrule_id'=>['required']
                                ]);
             
             $slug = Str::of(Carbon::now()->todateTimeString())->slug('-');     
@@ -51,7 +51,7 @@ class ParticipantController extends Controller
                                     'from'=>$request->_from,
                                     'to'=>$request->_to,
                                     'grading_rule_id'=>$request->gradingrule_id,
-                                    'meeting_id'=>$request->meeting_id,
+                                    'meeting_id'=>'',
                                     'category'=>($request->category==null)?'':$request->category,
                                     'downloadurl'=>$slug.'.xlsx'
                                     ]);  
@@ -97,8 +97,8 @@ class ParticipantController extends Controller
                                                         // 'duration'=>$participant->join_time->diffInMinutes($participant->leave_time),
                                                         'meeting_id'=>$participant->meeting_id,
                                                         'instance_uuid'=>$participant->instance_uuid,
-                                                        'instance_start_time'=>Instance::firstWhere("uuid",$participant->instance_uuid)?Instance::firstWhere("uuid",$participant->instance_uuid)->official_start_time->toDateTimeString():"",
-                                                        'instance_end_time'=>Instance::firstWhere("uuid",$participant->instance_uuid)?Instance::firstWhere("uuid",$participant->instance_uuid)->official_end_time->toDateTimeString():"",
+                                                        //'instance_start_time'=>DB::table('instances')->where("uuid",$participant->instance_uuid)->exists()?((Instance::firstWhere("uuid",$participant->instance_uuid)->official_start_time)!=null)->toDateTimeString():"",
+                                                        //'instance_end_time'=>DB::table('instances')->where("uuid",$participant->instance_uuid)->exists()?Instance::firstWhere("uuid",$participant->instance_uuid)->official_end_time->toDateTimeString():"",
                                                         'mid'=>Meeting::where('meeting_id',$participant->meeting_id)->first()->id,
                                                         'start_time'=>Carbon::parse(Meeting::where('meeting_id',$participant->meeting_id)->first()->start_time)->toDateTimeString(),
                                                         'timeCredit'=>$participant->timeCredit(),

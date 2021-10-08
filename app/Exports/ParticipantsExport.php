@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Exports;
 
 use App\Models\Participant;
@@ -16,7 +18,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use App\Models\Member;
-
+global  $dateArray;
 class ParticipantsExport implements FromQuery,Withheadings
 {
     /**
@@ -30,8 +32,8 @@ class ParticipantsExport implements FromQuery,Withheadings
     public $category;
     public $gradingrule_id;
     public $sql;
-
-
+    public $dateArray=[];
+    
     public function __construct($params)
     {
         // dd($params);
@@ -39,21 +41,23 @@ class ParticipantsExport implements FromQuery,Withheadings
       $this->f=Carbon::parse($params['_from'])->toDateTimeString();
       $this->to=Carbon::parse($params['_to'])->toDateTimeString();
       $this->t=Carbon::parse($params['_to'])->toDateTimeString();
-      $this->meeting_id=$params['meeting_id'];
+     // $this->meeting_id=$params['meeting_id'];
       $this->category=array_key_exists('category',$params)?$params['category']:"";
       $this->gradingrule_id=$params['gradingrule_id'];
-
+      
      
     }
 
-
+   public function setDateArray($dateArray)
+   {
+       # code...
+   }    
 
     
 
     public function query()
     {
-        $instances= Instance::where('meeting_id',$this->meeting_id)
-                                        ->where('official_start_time','>=',$this->from)
+        $instances= Instance::where('official_start_time','>=',$this->from)
                                         ->where('official_end_time','<=',$this->to)
                                         ->with('participants')
                                         ->get();
@@ -122,12 +126,8 @@ class ParticipantsExport implements FromQuery,Withheadings
                                 'meeting_id'=>$participant->meeting_id,
                                 'instance_uuid'=>$participant->instance_uuid,
                                     'instance_date'=>$instance->official_start_time->toDateString(),
-                                // 'instance_start_time'=>$instance->official_start_time->toDateTimeString(),
-                                // 'instance_end_time'=>$instance->official_end_time->toDateTimeString(),
                                 'mid'=>Meeting::where('meeting_id',$participant->meeting_id)->first()->topic,
                                 'membership'=>$membership==1?'Member':'non-member',
-                                // 'start_time'=>Carbon::parse(Meeting::where('meeting_id',$participant->meeting_id)->first()->start_time)->toDateTimeString(),
-                                // 'timeCredit'=>$participant->timeCredit(),
                                 "category"=>(Registrant::where('email',$participant->user_email)->orderByDesc('id')->first())?Registrant::where('email',$participant->user_email)->orderByDesc('id')->first()->category:"",
                                 "club_name"=>(Registrant::where('email',$participant->user_email)->orderByDesc('id')->first())?Registrant::where('email',$participant->user_email)->orderByDesc('id')->first()->club_name:"",
 
@@ -151,12 +151,17 @@ class ParticipantsExport implements FromQuery,Withheadings
        //grade the entries
        //1. group by email, order by join_time
            $orderedList= DB::table('temp')
-               ->select(DB::raw('instances.uuid,temp.email,temp.join_time,temp.leave_time,instances.official_end_time'))
+               ->select(DB::raw('instances.uuid,
+                                     temp.email,
+                                     temp.join_time,
+                                     temp.leave_time,
+                                     instances.official_end_time'))
                ->join('instances','instance_uuid','=','instances.uuid')
                ->orderByRaw('instances.uuid,temp.email,temp.join_time')
                ->get();
 
-      //eliminate if ealiest join time is >instnace official start time
+      //eliminate if ealiest join time is >instnace official end time
+    //   dd($orderedList);
        $currentEntry='';
        $toDrop=collect([]);
        
@@ -186,6 +191,8 @@ class ParticipantsExport implements FromQuery,Withheadings
             ->select(DB::raw('temp.*,(TIME_TO_SEC(leave_time)-TIME_TO_SEC(join_time))/60 as duration'))
             ->orderByRaw('instance_uuid,email')
             ->get();
+
+            // dd($refinedList);
 
         $currentEntry='';
         $prevSessionEnd=null;
@@ -278,9 +285,7 @@ class ParticipantsExport implements FromQuery,Withheadings
                         ->join('registrants','temp_attendance.email','=','registrants.email')
                         ->orderByRaw('temp_attendance.instance_uuid,temp_attendance.email')
                         ->get();
-            //dd($penultimate->unique()->values()->all());
-
-        // Schema::dropIfExists('temp_attendance');
+        //  dd($penultimate);
 
         Schema::dropIfExists('temp_grouped');
         Schema::create('temp_grouped', function (Blueprint $table) 
@@ -313,20 +318,7 @@ class ParticipantsExport implements FromQuery,Withheadings
                                                   
                                                    ]);
             }
-         
-          //return  DB::table('temp_grouped')->select(DB::raw('instance_date,name,membership,email,category,score'))->orderByRaw('instance_date,email');
-            
-             
-
-            
-            
-        
-
-             
-       
       
-        
-    //    dd('here');
        Schema::dropIfExists('temp_grouped_dates');
        Schema::create('temp_grouped_dates', function (Blueprint $table) 
           {
@@ -344,6 +336,7 @@ class ParticipantsExport implements FromQuery,Withheadings
          });
        
           
+            $instance_dates=DB::table('temp_grouped')->select('instance_date')->groupBy('instance_date')->orderBy('instance_date')->get();
          // insert into this table
          $array_grouped=collect([]);
          $emails=DB::table('temp_grouped')->select(DB::raw('distinct email'))->get();
@@ -354,7 +347,6 @@ class ParticipantsExport implements FromQuery,Withheadings
             
              $arr[$counter]['email']=$item->email;
            
-            $instance_dates=DB::table('temp_grouped')->select('instance_date')->groupBy('instance_date')->orderBy('instance_date')->get();
              foreach($instance_dates as $instance_date )
              
              {
@@ -392,31 +384,53 @@ class ParticipantsExport implements FromQuery,Withheadings
                                  temp_grouped.name,
                                  temp_grouped.membership,
                                  temp_grouped.category,
-
-                                '.$string
+                                 registrants.club_name,'.$string
                           ))
                 ->join('temp_grouped','temp_grouped.email','=','temp_grouped_dates.email')
-                ->orderBy('temp_grouped_dates.name');
+                ->join('registrants','registrants.email','=','temp_grouped.email')
+                ->orderBy('temp_grouped.name');
                
-
-        
+            $instance_dates=DB::table('temp_grouped')->select('instance_date')->groupBy('instance_date')->orderBy('instance_date')->get();
+        //    $dateArray=[];
+            foreach($instance_dates as $date)
+            { 
+               array_push($dateArray,preg_replace('/-/', '_', Carbon::parse($date->instance_date)->setTimezone('GMT +3:00')->toDateString()));
+            }
 
 
     }
+
     public function headings(): array
     {
-        $arr=['Email', 
+
+        $instances= DB::table('instances')->select(DB::raw('distinct DATE(official_start_time) as instance_date'))
+                                        ->where('official_start_time','>=',$this->from)
+                                        ->where('official_end_time','<=',$this->to)
+                                        ->groupBy('official_start_time')
+                                        ->orderBy('official_start_time')
+                                         
+                                        // ->with('participants')
+                                        ->get();//->only('official_start_time')->unique();
+       $array=[];
+      $arr=['Email', 
             'Name',
             'Membership',
-            'Category'];
-            $instance_dates=DB::table('temp_grouped')->select('instance_date')->groupBy('instance_date')->orderBy('instance_date')->get();
-            $string='';
-            foreach($instance_dates as $date)
-            {
-   
-               array_push($arr,preg_replace('/-/', '_', Carbon::parse($date->instance_date)->setTimezone('GMT +3:00')->toDateString()));
-            }
-       //dd($arr); 
+            'Category',
+        'club_name'];
+            $i=4;
+        foreach($instances as $date)
+        { 
+             $i++;
+           array_push($array,preg_replace('/-/', '_', Carbon::parse($date->instance_date)->setTimezone('GMT +3:00')->toDateString()));
+             $arr[$i] =$date->instance_date;
+        }
+
+   //  dd(($array);
+        
+
+        
+            
+    //    dd($arr); 
         return $arr;
         
         

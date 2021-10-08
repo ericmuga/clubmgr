@@ -133,9 +133,9 @@ public static function createInstanceRegistrant($meeting_id,$registrant,$qs)
                                             'instance_uuid'=>$instance->uuid,
                                             'file_type'=>$recording["file_type"],
                                             'file_size'=>$recording["file_size"],
-                                            'play_url'=>array_key_exists("play_url",$recording)?$recording["play_url"]:"",
-                                            'download_url'=>array_key_exists("download_url",$recording)?$recording["download_url"]:"",
-                                            'recording_type'=>array_key_exists("recording_type",$recording)?$recording["recording_type"]:"",
+                                            'play_url'=>'',//array_key_exists("play_url",$recording)?$recording["play_url"]:"",
+                                            'download_url'=>'',//array_key_exists("download_url",$recording)?$recording["download_url"]:"",
+                                            'recording_type'=>'',//array_key_exists("recording_type",$recording)?$recording["recording_type"]:"",
                                             'status'=>$recording["status"],
                                             'recording_start'=>$startTime,
                                             'recording_end'=>$endTime

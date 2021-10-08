@@ -20,7 +20,7 @@
           <text-input v-model="form.meeting_id" :error="form.errors.meeting_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Meeting ID" />
          
             <text-input 
-              type="datetime-local"
+              type="time"
               v-model="form.official_start_time" 
               :error="form.errors.official_start_time" 
               class="pr-6 pb-8 w-full lg:w-1/2" 
@@ -29,7 +29,7 @@
              />
 
              <text-input 
-             type="datetime-local"
+             type="time"
              v-model="form.official_end_time" 
              :error="form.errors.official_end_time" 
              class="pr-6 pb-8 w-full lg:w-1/2" 

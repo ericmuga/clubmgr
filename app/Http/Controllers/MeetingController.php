@@ -199,7 +199,7 @@ class MeetingController extends Controller
         // $instances=Instance::where("meeting_id",$meeting->meeting_id)->paginate(20);
             $mt=DB::table('meetings')->select('meeting_type')->where('meeting_id',$meeting->meeting_id)->first()->meeting_type;
              //dd($categories->toArray());
-            dd( Meeting::where('meeting_type',0)->count());
+           // dd( Meeting::where('meeting_type',0)->count());
         return Inertia::render('Meetings/Edit',[
                                 
                                       "gradingrules"=>GradingRule::where('meeting_type',$mt)
@@ -262,29 +262,55 @@ class MeetingController extends Controller
      */
     public function update(Request $request, Meeting $meeting)
     {
-
-           // dd($request);
-           $validated=$request->validate([
+            
+           
+            $validated=$request->validate([
 
                                       "uuid"=>['required'],
                                       "meeting_id"=>['required'],
                                       "start_time"=>['required'],
                                       "topic"=>['required'],
                                       "meeting_type"=>['required'],
+                                      //"official_start_time"=>['required'],
+                                      //"official_end_time"=>['required'],
 
 
 
            ]);
             $meeting->update([
                        // "id"=>$request->id,
-                     "uuid"=>$request->uuid,
-                      "meeting_id"=>$request->meeting_id,
-                      "meeting_type"=>$request->meeting_type,
+                     //"uuid"=>$request->uuid,
+                     // "meeting_id"=>$request->meeting_id,
+                      //"meeting_type"=>$request->meeting_type,
                       "topic"=>$request->topic,
                       "start_time"=>$request->start_time,
+                      //'official_start_time'=>$request->official_start_time,
                       "timezone"=>'Africa/Nairobi'  
 
             ]);
+
+            //update all instances with the start and end times
+            $instances=Instance::where('meeting_id',$meeting->meeting_id)->get();
+          // $start_minutes=1140;
+          // $end_minutes=1170;
+          // if ($request->has('offcial_start_time'))
+          // {
+            $start_minutes=Carbon::parse($request->official_start_time)->secondsSinceMidnight()/60;
+          // } 
+          // if ($request->has('offcial_end_time')) {
+            $end_minutes=Carbon::parse($request->official_end_time)->secondsSinceMidnight()/60;
+          // } 
+          // dd($start_minutes);
+      foreach($instances as $instance)
+      {
+       // $minutes_to_add = 1170;
+
+        $OST=Carbon::parse($instance->start_time->format('m/d/Y'))->addMinutes($start_minutes);
+        $OET=Carbon::parse($instance->start_time->format('m/d/Y'))->addMinutes($end_minutes);
+       
+        $instance->update(['official_start_time'=>$OST,'official_end_time'=>$OET]);
+
+      }
          return Redirect::route('meetings')->with('success','Meeting updated successfully!');
 
     }
@@ -604,8 +630,8 @@ class MeetingController extends Controller
                                         "start_time"=>$st,
                                       ]);
                              
-                           InstanceController::fetchInstanceRecordings($request,$i);
-                           InstanceController::fetchInstanceParticipants2($request,$i);
+                          //  InstanceController::fetchInstanceRecordings($request,$i);
+                          //  InstanceController::fetchInstanceParticipants2($request,$i);
                       }
                   }
          
