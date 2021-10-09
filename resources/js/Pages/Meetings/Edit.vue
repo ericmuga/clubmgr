@@ -41,10 +41,8 @@
                 <option  v-for="gradingrule in gradingrules.data" :key="gradingrule.id" value="gradingrule.id"  >{{gradingrule.rule_name}}</option>
               </select-input>
 
-           <!--   <label for="birthdaytime">Birthday (date and time):</label>
-          <input type="datetime-local" id="birthdaytime"  :error="form.errors.start_time" 
-             class="pr-6 pb-8 w-full lg:w-1/2" 
-             label="Start Time"name="birthdaytime" :value="form.start_time"> -->
+           <input type="checkbox" v-model="form.marked_for_grading"  value="Marked for Grading"> 
+            <label for="Marked For Grading">Marked for grading</label><br>
           <text-input v-model="form.topic" :error="form.errors.topic" class="pr-6 pb-8 w-full lg:w-1/2" label="Topic" />
           
           <!-- <text-input v-model="form.guest_speaker" :error="form.errors.guest_speaker" class="pr-6 pb-8 w-full lg:w-1/2" label="Guest Speaker" /> -->
@@ -195,7 +193,8 @@ export default {
                                   official_start_time: this.meeting.official_start_time,
                                   official_end_time: this.meeting.official_end_time,
                                   meeting_type: this.meeting.meeting_type,
-                                  grading_rule_id:this.meeting.grading_rule_id                    
+                                  grading_rule_id:this.meeting.grading_rule_id,                    
+                                  marked_for_grading:this.meeting.marked_for_grading                    
                                   
                               }),
     }

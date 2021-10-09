@@ -31,7 +31,6 @@ class InstanceController extends Controller
         //   dd($instance->grading_rule()->first()->rule_name); 
 
 
-
         return Inertia::render('Instances/Edit',[   "participants"=>$instance->participants()
                                                                             ->orderBy("name")
                                                                              ->paginate(10)
@@ -57,6 +56,7 @@ class InstanceController extends Controller
                                                               "official_start_time"=>($instance->official_start_time==null)?null:$instance->official_start_time->toDateTimeString(),
                                                               "official_end_time"=>($instance->official_end_time==null)?null:$instance->official_end_time->toDateTimeString(),
                                                               "grading_rule_id"=>$instance->grading_rule_id,
+                                                              "marked_for_grading"=>$instance->marked_for_grading,
                                                               "meeting"=>$instance->meeting->id
                                                    ],
                                                    "gradingrules"=>collect(GradingRule::where('meeting_type',$instance->meeting()->first()->meeting_type=='Zoom'?1:2)->get()),
@@ -360,6 +360,7 @@ public static function createInstanceRegistrant($meeting_id,$registrant,$qs)
          $instance->update([ 
 
                                             "uuid"=>$request->uuid,
+                                            "marked_for_grading"=>$request->marked_for_grading,
                                             "meeting_id"=>$request->meeting_id,
                                             "start_time"=>$request->start_time,
                                              "official_end_time"=>$request->official_end_time,

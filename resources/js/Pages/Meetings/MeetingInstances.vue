@@ -10,6 +10,7 @@
           <th class="p-3 text-left">Exactly</th>
           <!-- <th class="p-3 text-left">Registrants</th> -->
           <th class="p-3 text-left">Participants</th>
+          <th class="p-3 text-left">Marked for Grading</th>
          
          </tr>
         
@@ -46,6 +47,7 @@
           </inertia-link>
          </td>
 
+          <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ instance.marked_for_grading }}</td>
 
          </tr>
          <tr v-if="instances.data.length === 0">

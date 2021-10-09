@@ -137,7 +137,7 @@ Route::put('contacts/{contact}/restore', [ContactsController::class, 'restore'])
 
 // Reports
 
-Route::get('reports', [ReportsController::class, 'index'])
+Route::get('/reporter', [ReportsController::class, 'index'])
     ->name('reports')
     ->middleware('auth');
 
@@ -454,7 +454,7 @@ Route::get('ap/members',[MemberController::class, 'api'])
        ->middleware('auth');
 
  Route::get('/gradinghistory/{filename}',[GradingHistory::class,'fetchFile'] );
-       
+
 
 
 

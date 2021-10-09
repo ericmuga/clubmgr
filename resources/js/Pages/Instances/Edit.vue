@@ -21,7 +21,7 @@
               v-model="form.start_time" 
              :error="form.errors.start_time" 
              class="pr-6 pb-8 w-full lg:w-1/2" 
-             label="When"
+             label="Start Time"
 
              />
 
@@ -47,6 +47,8 @@
             </select-input>
              
             
+          <input type="checkbox" v-model="form.marked_for_grading"  value="Marked for Grading" label='Marked for Grading'> 
+            <label for="Marked For Grading">Marked for grading</label>
           
         </div>  
         <div class="px-8 py-4 bg-gray-50 border-t border-gray-100 flex items-center">
@@ -134,7 +136,8 @@ export default {
                                   start_time: this.instance.start_time,
                                   official_start_time: this.instance.official_start_time,
                                   official_end_time: this.instance.official_end_time,
-                                  grading_rule_id:this.grading_rule_id
+                                  grading_rule_id:this.instance.grading_rule_id,
+                                  marked_for_grading:this.instance.marked_for_grading
                                   
                                   
                               }),

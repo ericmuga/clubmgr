@@ -216,6 +216,7 @@ class MeetingController extends Controller
                                                                                            "uuid"=>$instance->uuid,
                                                                                            "id"=>$instance->id,
                                                                                            "meeting_id"=>$instance->meeting_id,
+                                                                                           "marked_for_grading"=>$instance->marked_for_grading?'Yes':'No',
                                                                                            // "registrants"=>Registrant::where('meeting_id',$instance->meeting_id)->count()
                                                                                             "participants"=>Participant::where('meeting_id',$instance->meeting_id)
                                                                                                                          ->where('instance_uuid',$instance->uuid)->count(),
@@ -245,7 +246,8 @@ class MeetingController extends Controller
                                                       "instances"=>$meeting->instances()->count(),
                                                        'official_start_time'=>$meeting->official_start_time,
                                                       'official_end_time'=>$meeting->official_end_time,
-                                                      'grading_rule_id'=>$meeting->grading_rule_id
+                                                      'grading_rule_id'=>$meeting->grading_rule_id,
+                                                      'marked_for_grading'=>$meeting->marked_for_grading
                                                       //"start_time"=>$meeting->start_time,
                                                     ]
                                             ]);
@@ -271,8 +273,8 @@ class MeetingController extends Controller
                                       "start_time"=>['required'],
                                       "topic"=>['required'],
                                       "meeting_type"=>['required'],
-                                      //"official_start_time"=>['required'],
-                                      //"official_end_time"=>['required'],
+                                      "official_start_time"=>['required'],
+                                      "official_end_time"=>['required'],
 
 
 
@@ -284,43 +286,28 @@ class MeetingController extends Controller
                       //"meeting_type"=>$request->meeting_type,
                       "topic"=>$request->topic,
                       "start_time"=>$request->start_time,
-                      //'official_start_time'=>$request->official_start_time,
+                      'official_start_time'=>$request->official_start_time,
+                      'official_end_time'=>$request->official_end_time,
+                      'marked_for_grading'=>$request->marked_for_grading,
                       "timezone"=>'Africa/Nairobi'  
 
             ]);
 
-            //update all instances with the start and end times
-            $instances=Instance::where('meeting_id',$meeting->meeting_id)->get();
-          // $start_minutes=1140;
-          // $end_minutes=1170;
-          // if ($request->has('offcial_start_time'))
-          // {
-            $start_minutes=Carbon::parse($request->official_start_time)->secondsSinceMidnight()/60;
-          // } 
-          // if ($request->has('offcial_end_time')) {
-            $end_minutes=Carbon::parse($request->official_end_time)->secondsSinceMidnight()/60;
-          // } 
-          // dd($start_minutes);
+      //update all instances with the start and end times
+      $instances=Instance::where('meeting_id',$meeting->meeting_id)->get();
+      $start_minutes=Carbon::parse($request->official_start_time)->secondsSinceMidnight()/60;
+      $end_minutes=Carbon::parse($request->official_end_time)->secondsSinceMidnight()/60;
       foreach($instances as $instance)
       {
-       // $minutes_to_add = 1170;
 
         $OST=Carbon::parse($instance->start_time->format('m/d/Y'))->addMinutes($start_minutes);
         $OET=Carbon::parse($instance->start_time->format('m/d/Y'))->addMinutes($end_minutes);
-       
         $instance->update(['official_start_time'=>$OST,'official_end_time'=>$OET]);
-
       }
          return Redirect::route('meetings')->with('success','Meeting updated successfully!');
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Meeting  $meeting
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Meeting $meeting)
     {
         $meeting->delete();
