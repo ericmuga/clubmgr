@@ -20,6 +20,7 @@
            <text-input v-model="form.callback_url" :error="form.errors.callback_url" class="pr-6 pb-8 w-full lg:w-1/2" label="Callback URL" />
            <text-input v-model="form.meeting_prefix" :error="form.errors.meeting_prefix" class="pr-6 pb-8 w-full lg:w-1/2" label="Meeting Prefix" />
            <text-input v-model="form.last_meeting_no" :error="form.errors.last_meeting_no" class="pr-6 pb-8 w-full lg:w-1/2" label="Last Meeting No." />
+           <text-input v-model="form.minimum_gradable_members" :error="form.errors.minimum_gradable_members" class="pr-6 pb-8 w-full lg:w-1/2" label="Minimum Gradable Members" />
           
           
 
@@ -81,6 +82,7 @@ export default {
                                   callback_url: this.setup.callback_url,
                                   meeting_prefix: this.setup.meeting_prefix,
                                   last_meeting_no: this.setup.last_meeting_no,
+                                  minimum_gradable_members: this.setup.minimum_gradable_members,
                                   current: this.setup.current?true:false
                                   
                                   

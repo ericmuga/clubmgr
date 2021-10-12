@@ -38,6 +38,7 @@ class ZoomController extends Controller
                                                                                 'environment' => $setup->environment,
                                                                                 'meeting_prefix' => $setup->meeting_prefix,
                                                                                 'last_meeting_no' => $setup->last_meeting_no,
+                                                                                'minimum_gradable_members' => $setup->minimum_gradable_members
                                                                                     ])
                                           ]);
 
@@ -93,7 +94,8 @@ class ZoomController extends Controller
                              'callback_url'=>$setup->callback_url,
                              'current'=>$setup->current,
                              'meeting_prefix' => $setup->meeting_prefix,
-                             'last_meeting_no' => $setup->last_meeting_no
+                             'last_meeting_no' => $setup->last_meeting_no,
+                             'minimum_gradable_members' => $setup->minimum_gradable_members
                          ]
          
         ]);
