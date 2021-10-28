@@ -3,6 +3,8 @@ import VueMeta from 'vue-meta'
 import PortalVue from 'portal-vue'
 import { InertiaProgress } from '@inertiajs/progress'
 import { createInertiaApp } from '@inertiajs/inertia-vue'
+// import VueTailwindAccordion from 'vue-tailwind-accordion'
+ 
 //import Chart from 'chart.js/auto'
 import VueTailwind from 'vue-tailwind'
 
@@ -87,6 +89,7 @@ const settings = {
 
 Vue.use(VueTailwind, settings)
 
+// Vue.use(VueTailwindAccordion)
 
 
 Vue.config.productionTip = false

@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use App\Models\Member;
 global  $dateArray;
+use Illuminate\Http\Request;
 class ParticipantsExport implements FromQuery,Withheadings
 {
     /**
@@ -38,17 +39,13 @@ class ParticipantsExport implements FromQuery,Withheadings
     
     public function __construct($params)
     {
-        // dd($params);
       $this->from=Carbon::parse($params['_from'])->toDateTimeString();
-      $this->f=Carbon::parse($params['_from'])->toDateTimeString();
       $this->to=Carbon::parse($params['_to'])->toDateTimeString();
-      $this->t=Carbon::parse($params['_to'])->toDateTimeString();
-     // $this->meeting_id=$params['meeting_id'];
       $this->category=array_key_exists('category',$params)?$params['category']:"";
-
       $this->gradingrule_id=$params['gradingrule_id'];
 
-      switch ($this->category) {
+      switch ($this->category) 
+      {
           case '':$this->instances= Instance::where('official_start_time','>=',$this->from)
                     ->where('marked_for_grading',true)
                     ->has('participants','>=',Setup::where('current',true)->first()->minimum_gradable_members)
@@ -73,10 +70,7 @@ class ParticipantsExport implements FromQuery,Withheadings
               # code...
               break;
       }
-      
-
-    //    dd($this->instances->sortBy('official_start_time')->pluck('official_start_time'));
-                                        
+    //   dd($this->instances);
      
     }
 
@@ -335,7 +329,7 @@ class ParticipantsExport implements FromQuery,Withheadings
          // insert into this table
          $array_grouped=collect([]);
          $emails=DB::table('temp_grouped')->select(DB::raw('distinct email'))->get();
-         //dd($emails);
+        //  dd($emails);
          $arr=[];$counter=0;
          foreach($emails as $item)
          {  
@@ -371,17 +365,28 @@ class ParticipantsExport implements FromQuery,Withheadings
 
             $string.=preg_replace('/-/', '_', Carbon::parse($date->instance_date)->setTimezone('GMT +3:00')->toDateString()).',';
          }
-          $string=rtrim($string, ", ");
+          if ($this->instances->count()!=0) $string=rtrim($string, ", ");
 
 
             
-        //   dd($string);
+        if ($string!='')
          return DB::table('temp_grouped_dates')
                 ->select(DB::raw('distinct temp_grouped_dates.email,
                                  temp_grouped.name,
                                  temp_grouped.membership,
                                  temp_grouped.category,
                                  registrants.club_name,'.$string
+                          ))
+                ->join('temp_grouped','temp_grouped.email','=','temp_grouped_dates.email')
+                ->join('registrants','registrants.email','=','temp_grouped.email')
+                ->orderBy('temp_grouped.name');
+        else
+         return DB::table('temp_grouped_dates')
+                ->select(DB::raw('distinct temp_grouped_dates.email,
+                                 temp_grouped.name,
+                                 temp_grouped.membership,
+                                 temp_grouped.category,
+                                 registrants.club_name'
                           ))
                 ->join('temp_grouped','temp_grouped.email','=','temp_grouped_dates.email')
                 ->join('registrants','registrants.email','=','temp_grouped.email')
@@ -396,12 +401,9 @@ class ParticipantsExport implements FromQuery,Withheadings
         $array=[];
         $arr=['Email','Name','Membership','Category','club_name'];
         $i=4;
-        //   dd($this->instances->pluck('official_start_time')->values()->toArray());
         foreach($this->instances as $date)
         { 
              $i++;
-            //  if (!arra)
-        //    array_push($array,preg_replace('/-/', '_', Carbon::parse($date->instance_date)->setTimezone('GMT +3:00')->toDateString()));
              $arr[$i] =Carbon::parse($date->official_start_time)->toDateString();
         }
         return $arr;

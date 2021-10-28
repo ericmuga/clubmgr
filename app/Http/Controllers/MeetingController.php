@@ -19,6 +19,7 @@ use App\Models\GradingRule;
 use App\Http\Controllers\InstanceController;
 use Illuminate\Support\Facades\DB;
 use App\Zoom;
+use Illuminate\Support\Str;
 
 class MeetingController extends Controller
 {
@@ -102,7 +103,8 @@ class MeetingController extends Controller
     public function create()
     {
         
-         $setup=Setup::firstWhere('current',true); 
+         $setup=Setup::firstWhere('current',true);
+          
         return Inertia::render('Meetings/Create',["last_meeting_no"=>$setup->last_meeting_no,"meeting_prefix"=>$setup->meeting_prefix]);
         //return Redirect::back()->with('error','this function is under construction');
     }
@@ -126,7 +128,7 @@ class MeetingController extends Controller
                                       // 'email' => ['required', 'max:50', 'email', Rule::unique('members')]
                     ]);
 
-            Meeting::create([
+            $meeting=Meeting::create([
                        // "id"=>$request->id,
                               // "uuid"=>$request->uuid,
                               "meeting_id"=>$request->meeting_id,
@@ -137,6 +139,27 @@ class MeetingController extends Controller
                               "guest_speaker"=>$request->guest_speaker  
 
                              ]);
+
+            //create an instance of the meeting whenever a physical meeeting is created
+            
+          // protected $fillable=['uuid','meeting_id','start_time','official_start_time','official_end_time','grading_rule_id'];
+            
+                  $slug = Str::of(Carbon::now()->todateTimeString())->slug('-');
+
+                   Instance::create([
+                             'uuid'=>$slug,
+                             'meeting_id'=>$meeting->meeting_id,
+                             'start_time'=>$meeting->start_time,
+                            //  'official_start_time'=>$meeting->$start_time,
+                            //  'official_end_time'=>$meeting->start_time,
+                             //'grading_rule'=>''
+
+                                                
+                      ]); 
+
+
+
+
 
             Setup::firstWhere('current',true)->update(['last_meeting_no'=>preg_replace( '/[^0-9]/', '', $request->meeting_id )]);
            // return Redirect::route('members')->with('success', 'Member created.');

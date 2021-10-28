@@ -18,6 +18,7 @@
           <text-input v-model="form.meeting_id" :error="form.errors.meeting_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Meeting ID" />
           
           <text-input 
+            type="datetime"
               v-model="form.start_time" 
              :error="form.errors.start_time" 
              class="pr-6 pb-8 w-full lg:w-1/2" 
@@ -26,7 +27,7 @@
              />
 
              <text-input 
-            
+                type="datetime"            
              v-model="form.official_start_time" 
              :error="form.errors.official_start_time" 
               class="pr-6 pb-8 w-full lg:w-1/2" 
@@ -35,16 +36,16 @@
              />
 
              <text-input 
-            
+               type="datetime"            
              v-model="form.official_end_time" 
              :error="form.errors.official_end_time" 
              class="pr-6 pb-8 w-full lg:w-1/2" 
              label="Official End Time"
 
              />
-            <select-input v-model="form.grading_rule_id" :error="form.errors.grading_rule_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Grading Rule" >
+            <!-- <select-input v-model="form.grading_rule_id" :error="form.errors.grading_rule_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Grading Rule" >
               <option v-for="gradingrule in gradingrules" :key="gradingrule.id" :value=gradingrule.id  >{{gradingrule.rule_name}}</option>
-            </select-input>
+            </select-input> -->
              
             
           <input type="checkbox" v-model="form.marked_for_grading"  value="Marked for Grading" label='Marked for Grading'> 
@@ -52,7 +53,6 @@
           
         </div>  
         <div class="px-8 py-4 bg-gray-50 border-t border-gray-100 flex items-center">
-        
           <loading-button :loading="form.processing" class="btn-indigo ml-auto" type="submit" >Update Instance</loading-button>
         </div>
 
@@ -60,10 +60,50 @@
       </div>
         
       <div class=" bg-teal-300  w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-shrink sm:shadow-lg " >
-        <div class="flex flex-2 overflow-shrink sm:shadow-lg my-5 h-12">
-        <button class="bg-indigo-300 m2">Generate Summary</button> 
-        </div>
+        <!-- <button class="bg-ind m2">
+          Generate Participant Template
+          </button>  -->
+          <div class="m-4">
+
+         
+      <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
+      <thead class="text-white">
+        <tr  class="bg-indigo-800 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
+          <th class="p-3 text-left">Action</th>
+          <th class="p-3 text-left">Value</th>
+          
+
+         </tr>
         
+      </thead>
+      <tbody class="flex-1 sm:flex-none">
+        <tr class="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0" >
+          <td class="border-grey-light border hover:bg-gray-100 p-3">  
+              <inertia-link class="text-indigo-400 hover:text-indigo-600" :href="route('instance.generateTemplate',instance.id)">Generate Template</inertia-link>
+        </td>
+        <td class="border-grey-light border hover:bg-gray-100 p-3">
+          
+          <a class="text-indigo-400 hover:text-indigo-600" v-if="instance.template" :href="instance.template">Click to download</a></td>
+
+
+         
+		 </tr>
+     <tr><td class="text-indigo-400 hover:text-indigo-600 t-center" >Upload Participants</td>
+       <td>
+            <form @submit.prevent="uploadList">
+            <input type="hidden" v-model="instance.id">
+            <input type="file" @input="form2.participantList = $event.target.files[0]" />
+            <progress v-if="form2.progress" :value="form2.progress.percentage" max="100">
+              {{ form2.progress.percentage }}%
+            </progress>
+           <loading-button :loading="form.processing" class="btn-indigo " type="submit" >Upload List</loading-button>
+          </form>
+       </td>
+       
+     </tr>
+      </tbody>
+    </table>
+        </div>
       </div>
       
          
@@ -115,7 +155,7 @@ export default {
   props: {
     instance: Object,
     participants:Object,
-    gradingrules:Object,
+    gradingrules:Array,
     // participantsStats:Array,
     // instances:Object,
     // occurrences:Object,
@@ -141,11 +181,18 @@ export default {
                                   
                                   
                               }),
+    form2: this.$inertia.form({
+                                participantList:this.participantList,
+                                instance_id:this.instance.id
+               })
     }
   },
   methods: {
      
-
+    uploadList(){
+      // alert('file uploaded')
+      this.form2.post('/instance/uploadParticipants')
+    },
     update() {
       this.form.put(this.route('instances.update', this.instance.id))
     },

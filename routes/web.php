@@ -332,6 +332,14 @@ Route::get('/instance/{instance}/participants', [InstanceController::class, 'fet
         ->name('instance.participants')
         ->middleware('auth');
 
+Route::get('/instance/{instance}', [InstanceController::class, 'generateTemplate'])
+        ->name('instance.generateTemplate')
+        ->middleware('auth');
+
+Route::post('/instance/uploadParticipants', [InstanceController::class, 'uploadParticipants'])
+        ->name('instance.uploadParticipants')
+        ->middleware('auth');
+
 
 
 //occurrences

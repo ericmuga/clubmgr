@@ -6,7 +6,13 @@
         <div class="flex-1 box-border h-70 w-70 p-4 border-4 ">Attendance Reports
           <div class="mt-10">
 
-       <participants-per-year :categories="[{'id':1,'name':'Guest'},{'id':2,'name':'Rotarian'},{'id':3,'name':'Rotaractor'}]"></participants-per-year> 
+           <participants-per-year :categories="[{'id':1,'name':'Guest'},{'id':2,'name':'Rotarian'},{'id':3,'name':'Rotaractor'}]"></participants-per-year> 
+       
+          </div>
+          <div class="mt-10">
+
+       
+          <prospective-inductees></prospective-inductees>
           </div>
         </div>
         <div>2</div>
@@ -19,9 +25,10 @@
 <script>
 import Layout from '@/Shared/Layout'
 import ParticipantsPerYear from './ParticipantsPerYear.vue'
+import ProspectiveInductees from './ProspectiveInductees.vue'
 
 export default {
-  components: { ParticipantsPerYear },
+  components: { ParticipantsPerYear,ProspectiveInductees },
   metaInfo: { title: 'Reports' },
   layout: Layout,
 }

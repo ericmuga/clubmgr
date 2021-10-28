@@ -36,8 +36,8 @@
           <th class="p-3 text-left">Time Credit</th>
           <th class="p-3 text-left">Meeting</th>
           <th class="p-3 text-left">Instance</th>
-          <th class="p-3 text-left">Instance Start Time</th>
-          <th class="p-3 text-left">Instance End Time</th>
+          <!-- <th class="p-3 text-left">Instance Start Time</th> -->
+          <!-- <th class="p-3 text-left">Instance End Time</th> -->
          </tr>
         
       </thead>
@@ -59,8 +59,8 @@
             </inertia-link></td>
           <!-- <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.start_time }}</td> -->
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.instance_uuid }}</td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.instance_start_time }}</td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.instance_end_time }}</td>
+          <!-- <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.instance_start_time }}</td> -->
+          <!-- <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ participant.instance_end_time }}</td> -->
          </tr>
         <tr v-if="participants.data.length === 0">
           <td class="border-t px-2 py-4" colspan="4">No participants found.</td>

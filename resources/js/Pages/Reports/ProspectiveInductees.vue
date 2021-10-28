@@ -4,8 +4,8 @@
          <div class="shadow-md">
            
             <div class="tab w-full overflow-hidden border-t">
-               <input class="absolute opacity-0" id="tab-multi-two" type="checkbox" name="tabs">
-               <label class="block p-5 text-sm bg-indigo-100 leading-normal cursor-pointer" for="tab-multi-two">Attendance Per Year</label>
+               <input class="absolute opacity-0" id="tab-multi-two" type="checkbox" name="tabs3">
+               <label class="block p-5 text-sm bg-indigo-100 leading-normal cursor-pointer" for="tab-multi-two">Prospective Inductees</label>
                <div class="tab-content overflow-hidden border-l-2 bg-gray-100 border-indigo-500 leading-normal">
                   <div class="flex flex-1 p-4 shadow-md">
                   <form class="w-full max-w-lg" @submit.prevent="setFilters">
@@ -13,24 +13,39 @@
                       
                       <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-ID">
-                          Year
+                          From 
                         </label>
                         <input 
-                               type="year"
+                               type="date"
                                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" 
-                               id="grid-first-id" placeholder="From" v-model="data.year"
+                               id="grid-first-id" placeholder="From" v-model="data.from"
                         >
                       </div>
 
-                      <select-input v-model="data.category" class="pr-6 pb-8 w-full lg:w-1/2 block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" label="Category">
-                        <option v-for="item in categories" :key="item.id" :value="categories.id">{{item.name}}</option>
-                      </select-input>
-                      <!-- <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-phone">
-                         Category
+                       <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-ID">
+                         To 
                         </label>
-                        <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-phone" type="text" placeholder="Guest" v-model="data.category">
-                      </div> -->
+                        <input 
+                               type="date"
+                               class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" 
+                               id="grid-first-id" placeholder="From" v-model="data.to"
+                        >
+                      </div>
+
+                      <!-- <select-input v-model="data.category" class="pr-6 pb-8 w-full lg:w-1/2 block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" label="Category">
+                        <option v-for="item in categories" :key="item.id" :value="categories.id">{{item.name}}</option>
+                      </select-input> -->
+                      <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="threshhold attendance">
+                         Threshhold Attendance
+                        </label>
+                        <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200
+                         rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-phone" 
+                         type="number" 
+                         placeholder="6" 
+                         v-model="data.attendance_threshhold">
+                      </div>
 
                       
                       
@@ -95,10 +110,9 @@
           {
                return {
                data:{
-                 _to:null,
-                 _from:null,
-              category:"",
-              gradingrule_id:"",
+                                    _to:null,
+                                    _from:null,
+                    attendance_threshhold:"",
                  }  
              }
           }
@@ -110,7 +124,7 @@
 
 
 
-      /*var myRadios = document.getElementsByName('tabs2');
+      var myRadios = document.getElementsByName('tabs3');
       var setCheck;
       var x = 0;
       for(x = 0; x < myRadios.length; x++){
@@ -122,7 +136,7 @@
                   setCheck = null;
           }
           };
-      }*/
+      }
    </script>
    <style type="css" scoped>
          /* Tab content - closed */

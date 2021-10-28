@@ -12,9 +12,14 @@ use Carbon\Carbon;
 use App\Zoom;
 use Illuminate\Http\Request;
 
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
-
+use Illuminate\Support\Facades\Storage;
+use App\Imports\ParticipantsImport;
+use App\Exports\InstanceParticipantsExport;
+use File;
 class InstanceController extends Controller
 {
     /**
@@ -22,8 +27,60 @@ class InstanceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    
+    public function uploadParticipants(Request $request)
+    {
+    //   dd($request->all());
 
+      Excel::import(new ParticipantsImport($request->instance_id), request()->file('participantList')); 
+      return redirect()->back()->with('success','Participants imported successfully');
+    }    
+    public function generateTemplate(Instance $instance, Request $request)
+    {
+          //get the template for this instance
+            //2. Create one if it doesnt exist
+            //3. Download one.
+
+            $slug = Str::of(Carbon::now()->todateTimeString())->slug('_');     
+           
+            // dd($instance->uuid);
+            Excel::store(new InstanceParticipantsExport($instance->uuid), $slug.'.xlsx');
+            
+             File::move(storage_path('app/'.$slug.'.xlsx'), public_path('templates/'.$slug.'.xlsx'));
+            
+     return Inertia::render('Instances/Edit',[   "participants"=>$instance->participants()
+            ->orderBy("name")
+             ->paginate(10)
+             ->through(fn($participant)=>([
+                 "name"=>$participant->name, 
+                 "id"=>$participant->id, 
+                 "category"=>(Registrant::where('email',$participant->user_email)->first())?Registrant::where('email',$participant->user_email)->first()->category:"",
+                 "club_name"=>(Registrant::where('email',$participant->user_email)->first())?Registrant::where('email',$participant->user_email)->first()->club_name:"",
+                 "join_time"=>Carbon::parse($participant->join_time)->toDateTimeString(), 
+                 "official_start_time"=>($instance->official_start_time==null)?null:Carbon::parse($instance->official_start_time)->toDateTimeString(), 
+                 "official_end_time"=>($instance->official_end_time==null)?null:Carbon::parse($instance->official_end_time)->toDateTimeString(), 
+                 "leave_time"=>Carbon::parse($participant->leave_time)->toDateTimeString(), 
+                 "duration"=>Carbon::parse($participant->leave_time)->diffInMinutes(Carbon::parse($participant->join_time)),
+                 "time_credit"=>$participant->timeCredit()
+             ])),
+                "instance"=>[
+                                        "id"=>$instance->id,
+                                        "uuid"=>$instance->uuid,
+                                        "meeting_id"=>$instance->meeting_id,
+                                        "topic"=>Meeting::firstWhere('meeting_id',$instance->meeting_id)->topic,
+                                        "start_time"=>Carbon::parse($instance->start_time)->toDateTimeString(),
+                                        "attendance_rule_id"=>$instance->attendance_rule_id,
+                                        "official_start_time"=>($instance->official_start_time==null)?null:$instance->official_start_time->toDateTimeString(),
+                                        "official_end_time"=>($instance->official_end_time==null)?null:$instance->official_end_time->toDateTimeString(),
+                                        "grading_rule_id"=>$instance->grading_rule_id,
+                                        "marked_for_grading"=>$instance->marked_for_grading,
+                                        "meeting"=>$instance->meeting->id,
+                                        "template"=>url('templates/'.$slug.'.xlsx'),
+                                        ],
+                                        "gradingrules"=>collect(GradingRule::where('meeting_type',$instance->meeting()->first()->meeting_type=='Zoom'?1:2)->get()),
+
+                        ])->with('success','Template generated successfully!');
+ 
+    }
     public function edit(Request $request, Instance $instance)
     {
   
@@ -344,7 +401,7 @@ public static function createInstanceRegistrant($meeting_id,$registrant,$qs)
      */
     public function update(Request $request, Instance $instance)
     {
-        // dd($request->grading_rule_id); 
+        //dd($request->all()); 
          $validated=$request->validate([
                                             "uuid"=>['required'],
                                             "meeting_id"=>['required'],
@@ -360,7 +417,7 @@ public static function createInstanceRegistrant($meeting_id,$registrant,$qs)
          $instance->update([ 
 
                                             "uuid"=>$request->uuid,
-                                            "marked_for_grading"=>$request->marked_for_grading,
+                                            "marked_for_grading"=>$request->marked_for_grading?1:0,
                                             "meeting_id"=>$request->meeting_id,
                                             "start_time"=>$request->start_time,
                                              "official_end_time"=>$request->official_end_time,
