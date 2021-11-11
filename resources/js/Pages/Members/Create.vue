@@ -42,6 +42,9 @@
           <loading-button :loading="form.processing" class="btn-indigo" type="submit">Create</loading-button>
         </div>
       </form>
+
+    </div>
+    <div>
     </div>
   </div>
 </template>

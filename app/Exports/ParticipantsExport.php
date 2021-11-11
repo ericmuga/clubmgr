@@ -177,6 +177,7 @@ class ParticipantsExport implements FromQuery,Withheadings
         }
 
         //check time
+        // dd(DB::table('temp')->select('*')->orderByRaw('instance_uuid,email')->get());
         $refinedList=DB::table('temp')
             ->select(DB::raw('temp.*,(TIME_TO_SEC(leave_time)-TIME_TO_SEC(join_time))/60 as duration'))
             ->orderByRaw('instance_uuid,email')
@@ -253,7 +254,7 @@ class ParticipantsExport implements FromQuery,Withheadings
             }
         }
 
-    //    dd(DB::table('temp_attendance')->select('instance_uuid')->groupBy('instance_uuid')->get()); 
+       // dd(DB::table('temp_attendance')->select('instance_uuid')->groupBy('instance_uuid')->get()); 
         $penultimate= DB::table('temp_attendance')
                         ->select(DB::raw('
                             distinct
@@ -270,9 +271,9 @@ class ParticipantsExport implements FromQuery,Withheadings
                         ->join('participants','temp_attendance.email','=','participants.user_email')
                         ->leftJoin('members','temp_attendance.email','=','members.email')
                         ->join('registrants','temp_attendance.email','=','registrants.email')
-                        ->orderByRaw('temp_attendance.instance_uuid,temp_attendance.email')
+                        ->orderByRaw('temp_attendance.email')
                         ->get();
-        //  dd($penultimate);
+         // dd($penultimate);
 
         Schema::dropIfExists('temp_grouped');
         Schema::create('temp_grouped', function (Blueprint $table) 

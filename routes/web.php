@@ -168,6 +168,9 @@ Route::put('members/{member}', [MemberController::class, 'update'])
     ->name('members.update')
     ->middleware('auth');
 
+Route::delete('members/{member}', [MemberController::class, 'destroy'])
+    ->name('members.destroy')
+    ->middleware('auth');
 
     //zoom
 // Dashboard

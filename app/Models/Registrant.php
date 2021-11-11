@@ -38,7 +38,11 @@ class Registrant extends Model
        return $this->hasMany(Participan::class,'user_email','email');
    }
 
-
+    public function member()
+    {
+        return $this->belongsTo(Member::class,'email','email');
+    }
+    
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {

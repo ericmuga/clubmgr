@@ -1,31 +1,21 @@
 <template>
   <div>
-     <div class="font-bold">
-          <a
+     
 
-           class="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded-full"
-           style="background-color:#606d9e"
-            :href=url>
-              Zoom Auth
-         </a>
-
-        
-
-         <!--  <inertia-link class="btn-indigo" :href="route('zoom.meetings')">
-               <span class="hidden md:inline">Zoom Meetings</span>
-          </inertia-link> -->
-
-          <!-- <inertia-link class="btn-indigo" :href="route('zoom.accounts')">
-               <span class="hidden md:inline">Account</span>
-          </inertia-link> -->
+          <div class="flex-1 justify-between bg-indigo-200 " >
+               <HeaderStats :meetings="meetings" :members="members" :promotions="promotions" :guests="guests"/>
+          </div>
+     
+     <div class="flex justify-between bg-gray-200 p-6">
+       <CardBarChart class="mx-3" :meetingDates="meetings.thisMonthDates"/>
+       <CardBarChart class="mx-3"/>
+     </div>
      
      
       
-    </div>
-
+    
     <div class="bg-white rounded-md shadow overflow-hidden max-w-3xl flex-2 mt-6 h-1/2" >
      
-        <Chart></Chart>
      
     </div>
   </div>
@@ -33,10 +23,13 @@
 
 <script>
 import Layout from '@/Shared/Layout';
+import CardBarChart from '@/Shared/CardBarChart';
 import Chart from './Chart'
+import HeaderStats from './HeaderStats'
 // import axios from 'axios';
 
 export default {
+ 
    // mounted(){
      
    //   // axios.get('https://zoom.us/oauth/authorize?response_type=code&client_id=88qbzpueTkGI66J9dKWd1g&redirect_uri=https://localhost/show&state={userState}')
@@ -46,12 +39,20 @@ export default {
   metaInfo: { title: 'Dashboard' },
   layout: Layout,
   components:{
-    Chart
+    Chart,
+    HeaderStats,
+    CardBarChart
   },
   props: {
           response:Array,
           client_id:'',
-          callback_url:''
+          callback_url:'',
+          members:Object,
+          meetings:Object,
+          promotions:Object,
+          guests:Object,
+          
+
   },
 
   data(){

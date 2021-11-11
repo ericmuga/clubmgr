@@ -49,7 +49,27 @@
           <loading-button :loading="form.processing" class="btn-indigo" type="submit">Create</loading-button>
         </div>
       </form>
-    </div>
+    </div class="flex-1 justify-between">
+      <!-- <table>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>RI Number</th>
+        <th>Member Ship</th>
+        <th>Club Name</th>
+        <th>Mark Present</th>
+        <tr v-for="registrant in registrants.data" :key=registrants.id>
+          <td>{{registrant.first_name}}</td>
+          <td>{{registrant.last_name}}</td>
+          <td>{{registrant.email}}</td>
+          <td>{{registrant.ri_number}}</td>
+          <td>{{registrant.membership}}</td>
+          <td>{{registrant.club_name}}</td>
+          <td><input type="checkbox"></td>
+        </tr>
+      </table>
+       -->
+       <!-- <pagination class="mt-4" :links="registrants.links" /> -->
   </div>
 </template>
 
@@ -59,6 +79,7 @@ import FileInput from '@/Shared/FileInput'
 import TextInput from '@/Shared/TextInput'
 import SelectInput from '@/Shared/SelectInput'
 import LoadingButton from '@/Shared/LoadingButton'
+import Pagination from '@/Shared/Pagination'
 
 export default {
   metaInfo: { title: 'Create Meeting' },
@@ -67,17 +88,19 @@ export default {
     LoadingButton,
     SelectInput,
     TextInput,
+    Pagination,
   },
   props:{
     meeting_prefix:null,
+    registrants:Object,
     last_meeting_no:null,
   },
   layout: Layout,
   remember: 'form',
 
+  
   mounted(){
 
-    this.getMeetingID()
   },
   data() {
     return {

@@ -28,7 +28,8 @@ class MemberFactory extends Factory
                  'email'=>$this->faker->unique()->safeEmail,
                  'phone'=>$this->faker->phoneNumber(),
                  'affiliation_id'=>$this->faker->numberBetween(1,3),
-                 'type_id'=>$this->faker->numberBetween(1,2)
+                 'type_id'=>$this->faker->numberBetween(1,2),
+                 'sector'=>$this->faker->word()
               ];
     }
 

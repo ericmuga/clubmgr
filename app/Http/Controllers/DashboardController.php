@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Cookie;
 use App\Models\ZoomUser;
 use App\Models\Meeting;
 use Carbon\Carbon;
+// use App\Models\Instance;
+
 class DashboardController extends Controller
 {
     public $token='';
@@ -30,7 +32,40 @@ class DashboardController extends Controller
           
 
           return Inertia::render('Dashboard/Index',[ "client_id"=>$setup->client_id,
-                                                     "callback_url"=>$setup->callback_url
+                                                     "callback_url"=>$setup->callback_url,
+                                                     'meetings'=>[
+                                                                   'count'=>DB::table('instances')->where('marked_for_grading',true)->count(),
+                                                                   'title'=>'Gradable Meetings',
+                                                                    'thisMonth'=> DB::table('instances')
+                                                                                    ->whereMonth('official_end_time',now()->month)
+                                                                                     ->whereYear('official_end_time',now()->year)
+                                                                                    ->count(),
+                                                                     'thisMonthDates'=>DB::table('instances')
+                                                                                        ->selectRaw('DATE(official_end_time) as D')
+                                                                                        ->groupByRaw('official_end_time')
+                                                                                        ->orderByRaw('D')
+                                                                                        ->whereMonth('official_end_time',now()->month)
+                                                                                        // ->whereYear('official_end_time',now()->year)
+                                                                                        ->get()->pluck('D')->toArray()
+                                                                   ],
+                                                      'members'=>[ 'count'=>DB::table('members')->count(),
+                                                                   'title'=>'Members',
+                                                                   'asAt'=>Carbon::parse(DB::table('instances')
+                                                                                  ->orderByDesc('start_time')->get()->first()->start_time)->diffForHumans()
+                                                                ],
+                                                      'promotions'=>[
+                                                                      'title'=>'Due for induction',
+                                                                      'count'=>8,
+                                                                      'thisMonth'=>6,
+                                                                   ],
+
+                                                      'guests'=>[  'title'=>'guests',
+                                                                    'count'=>DB::table('registrants')
+                                                                                ->join('members','registrants.email','=','members.email','left')
+                                                                                ->where('members.email',null)
+                                                                                ->count()
+                                                                
+                                                                 ]
 
                                                     ]);
 

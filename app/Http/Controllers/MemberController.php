@@ -97,14 +97,14 @@ class MemberController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
+      // dd($request->all());
 
         $validated=$request->validate([
             'name' => ['required', 'max:50'],
             'affiliation_id' => ['required', 'max:1'],
             'type_id' => ['required', 'max:1'],
             'active' => ['required', 'boolean'],
-            'sector' => ['required', 'boolean'],
+            'sector' => ['required'],
             'email' => ['required', 'max:50', 'email', Rule::unique('members')]
 
             ]);

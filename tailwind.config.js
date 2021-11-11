@@ -22,6 +22,7 @@ module.exports = {
       gray: colors.blueGray,
       indigo: {
         100: '#e6e8ff',
+        200:'#c8eef7',
         300: '#b2b7ff',
         400: '#7886d7',
         500: '#6574cd',

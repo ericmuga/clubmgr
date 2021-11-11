@@ -102,10 +102,31 @@ class MeetingController extends Controller
      */
     public function create()
     {
-        
+       
+
          $setup=Setup::firstWhere('current',true);
+        // Registrant::paginate(15)->through(fn($registrant)=>([
+        //                                                               "name"=>$registrant->name,
+        //                                                               "email"=>$registrant->email,
+        //                                                               "club_name"=>$registrant->club_name,
+        //                                                               "membership"=>(DB::table('members')->where('email',$registrant->email)->exists())?"Member":"Non-member"
+        //                                                           ]))     );
           
-        return Inertia::render('Meetings/Create',["last_meeting_no"=>$setup->last_meeting_no,"meeting_prefix"=>$setup->meeting_prefix]);
+        return Inertia::render('Meetings/Create',
+                                    [
+                                        "last_meeting_no"=>$setup->last_meeting_no,
+                                        "meeting_prefix"=>$setup->meeting_prefix,
+                                        "registrants"=>Registrant::paginate(15)
+                                                                  ->through(fn($registrant)=>([
+                                                                      "first_name"=>$registrant->first_name,
+                                                                      "last_name"=>$registrant->last_name,
+                                                                    "id"=>$registrant->id,
+                                                                      "email"=>$registrant->email,
+                                                                      "club_name"=>$registrant->club_name,
+                                                                      "membership"=>(DB::table('members')->where('email',$registrant->email)->exists())?"Member":"Non-member",
+                                                                      "ri_number"=>(DB::table('members')->where('email',$registrant->email)->exists())?$registrant->member->member_id:""
+                                                                  ]))     
+                                    ]);
         //return Redirect::back()->with('error','this function is under construction');
     }
 
@@ -176,7 +197,7 @@ class MeetingController extends Controller
     public static function createZoomMeeting($item)
     {
         //$meeting_date=Carbon::parse($item["start_time"])->format('l');
-         if(!Meeting::where("uuid",$item["uuid"])->exists() &&(array_key_exists("start_time", $item)))
+         if(!Meeting::where("meeting_id",$item["id"])->exists() &&(array_key_exists("start_time", $item)))
                                         {
                                             //create
                                             Meeting::create([
