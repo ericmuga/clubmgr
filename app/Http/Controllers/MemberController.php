@@ -146,17 +146,19 @@ class MemberController extends Controller
     {
          //$member=Member::find($id);
 
-         return Inertia::render('Members/Edit', [
+         return Inertia::render('Members/MemberCard', [
             'member' => [
                 'id' => $member->id,
                 'name' => $member->name,
                 'member_id' => $member->member_id,
                 'active'=>$member->active,
                 'email' => $member->email,
+                'hashemail'=>md5(strtolower($member->email)),
                 'sector' => $member->sector,
                 'phone' => $member->phone,
                 'type_id' => $member->type_id,
                 'affiliation_id' => $member->affiliation_id,
+                'affiliation'=>DB::table('affiliations')->where('id',$member->affiliation_id)->exists()?Affiliation::find($member->affiliation_id)->code:'',
                 'deleted_at' => $member->deleted_at,
             ],
             'types' => Type::all()->sortBy('code')

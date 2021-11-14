@@ -38,26 +38,27 @@ class MeetingController extends Controller
                                 "zmeetings"=>Meeting::where('meeting_type',1)->count(),
                                 "pmeetings"=>Meeting::where('meeting_type',2)->count(),
                                 'meetings' => Meeting::with('registrants')
-                                ->orderByDesc('start_time')
-                                  ->filter($request->only('search', 'trashed'))
-                                                     ->paginate(10)
-                                                     ->withQueryString()
-                                                     ->through(fn($meeting)=>([
-                                                                                'id'=>$meeting->id,
-                                                                                'meeting_id'=>$meeting->meeting_id,
-                                                                                'meeting_type'=>$meeting->meeting_type,
-                                                                                'guest_speaker'=>$meeting->guest_speaker,
-                                                                                 'instances'=>$meeting->instances()->count(),
-                                                                                 'occurrences'=>$meeting->occurrences()->count(),
-                                                                                 'registrants'=>$meeting->registrants()->count(),
-                                                                                 'participants'=>$meeting->participants()->count(),
-                                                                                  'start_time'=>Carbon::parse($meeting->start_time)->toDateTimeString(),
-                                                                                  'meeting_day'=>$meeting->meeting_day,
-                                                                                  'topic'=>$meeting->topic
-                                                                                  
-                                                                                    ]))
-  
-                                                ]);
+                                                       ->where('topic','like','%fello%')
+                                                            ->orderByDesc('start_time')
+                                                              ->filter($request->only('search', 'trashed'))
+                                                                                 ->paginate(10)
+                                                                                 ->withQueryString()
+                                                                                 ->through(fn($meeting)=>([
+                                                                                                            'id'=>$meeting->id,
+                                                                                                            'meeting_id'=>$meeting->meeting_id,
+                                                                                                            'meeting_type'=>$meeting->meeting_type,
+                                                                                                            'guest_speaker'=>$meeting->guest_speaker,
+                                                                                                             'instances'=>$meeting->instances()->count(),
+                                                                                                             'occurrences'=>$meeting->occurrences()->count(),
+                                                                                                             'registrants'=>$meeting->registrants()->count(),
+                                                                                                             'participants'=>$meeting->participants()->count(),
+                                                                                                              'start_time'=>Carbon::parse($meeting->start_time)->toDateTimeString(),
+                                                                                                              'meeting_day'=>$meeting->meeting_day,
+                                                                                                              'topic'=>$meeting->topic
+                                                                                                              
+                                                                                                                ]))
+                              
+                                                                            ]);
     }
    
 

@@ -26,45 +26,51 @@
 import Chart from "chart.js";
 export default {
   props:{
-    meetingDates:Array,
+    meetings:Object,
+    // thisMonthMembers:Array,
+    // thisMonthGuests:Array,
   },
   data:{
-        meetingdates:[],
+        // meetings:null,
   },
   mounted: function () {
-    console.log(this.meetingDates[0])
+    // alert(this.meetings.thisMonthMembers)
+    // alert(this.meetings.thisMonthGuests[0])
+
    this.$nextTick(function () {
       let config = {
         type: "bar",
         data: {
-          labels: this.meetingDates,
+          labels: this.meetings.thisMonthDates,
           datasets: [
             {
-              label: new Date().getFullYear(),
+              // label: new Date().getFullYear(),
+              label:"Members", 
               backgroundColor: "#ed64a6",
               borderColor: "#ed64a6",
               // data: [30, 78, 56, 34, 100, 45, 13],
-              data: [30],
+              data: this.meetings.thisMonthMembers,
               fill: false,
               barThickness: 8,
             },
             {
-              label: new Date().getFullYear() - 1,
+              // label: new Date().getFullYear() - 1,
+              label:"Guests", 
               fill: false,
               backgroundColor: "#4c51bf",
               borderColor: "#4c51bf",
-              // data: [27, 68, 86, 74, 10, 4, 87],
-              data: [27],
+               // data: [4, 68, 86, 74, 10, 4, 87],
+              data: this.meetings.thisMonthGuests,
               barThickness: 8,
             },
           ],
         },
         options: {
-          maintainAspectRatio: false,
+          maintainAspectRatio: true,
           responsive: true,
           title: {
             display: false,
-            text: "Orders Chart",
+            text: "Meetings",
           },
           tooltips: {
             mode: "index",
@@ -107,7 +113,11 @@ export default {
               },
             ],
             yAxes: [
+
               {
+                ticks: {
+                          beginAtZero: true
+                      },
                 display: true,
                 scaleLabel: {
                   display: true,

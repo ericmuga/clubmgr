@@ -1,17 +1,22 @@
 <template>
-  <div>
-    <h1 class="mb-8 font-bold text-3xl">
+  <div class="flex bg-blue-500">
+    <!-- <h1 class="mb-8 font-bold text-3xl">
       <inertia-link class="text-indigo-400 hover:text-indigo-600" :href="route('members')">Members</inertia-link>
       <span class="text-indigo-400 font-medium">/</span>
       {{ form.name }}
-      </h1>
-    <trashed-message v-if="member.deleted_at" class="mb-6" @restore="restore">
+      </h1> -->
+    <!-- <trashed-message v-if="member.deleted_at" class="mb-6" @restore="restore">
       This member has been deleted.
-    </trashed-message>
+    </trashed-message> -->
+     <div class="flex flex-col ">
+       <MemberCard :member="member"/>
+       <!-- <MemberCard :member="member"/> -->
+
+   
     
-    <div class="bg-white rounded-md shadow overflow-hidden max-w-3xl">
+    <div class="bg-white rounded-md shadow overflow-hidden">
       <form @submit.prevent="update">
-        <div class="p-8 -mr-6 -mb-8 flex flex-wrap">
+        <div class="p-8   flex flex-wrap">
           
           <text-input v-model="form.name" :error="form.errors.name" class="pr-6 pb-8 w-full lg:w-1/2" label="name" />
           <text-input v-model="form.member_id" :error="form.errors.member_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Member ID" />
@@ -45,6 +50,7 @@
 
       </form>
     </div>
+      </div>
   </div>
 </template>
 
@@ -54,7 +60,7 @@ import TextInput from '@/Shared/TextInput'
 import SelectInput from '@/Shared/SelectInput'
 import LoadingButton from '@/Shared/LoadingButton'
 import TrashedMessage from '@/Shared/TrashedMessage'
-
+import MemberCard from './MemberCard'
 export default {
 
 
@@ -68,13 +74,14 @@ export default {
     SelectInput,
     TextInput,
     TrashedMessage,
+    MemberCard,
   },
   layout: Layout,
   props: {
     member: Object,
     affiliations:Object,
     types:Object,
-    selected:false
+    selected:false,
 
     
   },

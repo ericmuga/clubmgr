@@ -49,14 +49,14 @@
       
     </div>
         </div>
-         <advanced-filter @set-advanced-filters="setFilters"></advanced-filter>
+         <!-- <advanced-filter @set-advanced-filters="setFilters"></advanced-filter> -->
    
-    <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
+    <table class="w-sm flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
       <thead class="text-white">
-        <tr v-for="meeting in meetings.data" :key="meeting.id" class="bg-indigo-800 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
-          <th class="p-3 text-left">ID</th>
+        <tr v-for="meeting in meetings.data" :key="meeting.id" class="bg-teal-400 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
+          <!-- <th class="p-3 text-left">ID</th> -->
           <th class="p-3 text-left">Topic</th>
-          <th class="p-3 text-left">Guest Speaker</th>
+          <!-- <th class="p-3 text-left">Guest Speaker</th> -->
           <th class="p-3 text-left">Type</th>
           <th class="p-3 text-left">Start Time</th>
           <th class="p-3 text-left">Meeting Day</th>
@@ -64,16 +64,21 @@
           <th class="p-3 text-left">Past Instances</th>
           <th class="p-3 text-left">Registrants</th>
           <!-- <th class="p-3 text-left">Participants</th> -->
+          
          </tr>
         
       </thead>
       <tbody class="flex-1 sm:flex-none">
         <tr class="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0"  v-for="meeting in meetings.data" :key="meeting.id">
-          <td class="border-grey-light border hover:bg-gray-100 p-3">  <inertia-link class="text-indigo-400" :href="route('meetings.edit',meeting.id)" tabindex="-1">
+         <!--  <td class="border-grey-light border hover:bg-gray-100 p-3">  
               {{meeting.meeting_id}}
-            </inertia-link></td></td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ meeting.topic }}</td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ meeting.guest_speaker }}</td>
+           </td> -->
+          <td class="border-grey-light border hover:bg-gray-100 p-3">
+              <inertia-link class="text-indigo-400" :href="route('meetings.edit',meeting.id)" tabindex="-1"> {{ meeting.topic }}
+              </inertia-link>
+          </td>
+           </td>
+          <!-- <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ meeting.guest_speaker }}</td> -->
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.meeting_type }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.start_time }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.meeting_day }}</td>

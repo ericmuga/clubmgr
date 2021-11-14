@@ -45,8 +45,28 @@ class DashboardController extends Controller
                                                                                         ->groupByRaw('official_end_time')
                                                                                         ->orderByRaw('D')
                                                                                         ->whereMonth('official_end_time',now()->month)
-                                                                                        // ->whereYear('official_end_time',now()->year)
-                                                                                        ->get()->pluck('D')->toArray()
+                                                                                        ->whereYear('official_end_time',now()->year)
+                                                                                        ->get()->pluck('D')->toArray(),
+
+                                                                    'thisMonthGuests'=>DB::table('instances')
+                                                                                        ->selectRaw('DATE(instances.official_end_time) as D,COUNT(participants.id)as C')
+                                                                                        ->join('participants','participants.instance_uuid','instances.uuid')
+                                                                                        ->leftJoin('members','participants.user_email','=','members.email')
+                                                                                        ->where('members.email',null)
+                                                                                        ->groupByRaw('instances.official_end_time')
+                                                                                        ->orderByRaw('C')
+                                                                                        ->whereMonth('instances.official_end_time',now()->month)
+                                                                                        ->whereYear('instances.official_end_time',now()->year)
+                                                                                        ->get()->pluck('C')->toArray(),
+                                                                     'thisMonthMembers'=>DB::table('instances')
+                                                                                        ->selectRaw('DATE(instances.official_end_time) as D,COUNT(participants.id)as C')
+                                                                                        ->join('participants','participants.instance_uuid','instances.uuid')
+                                                                                        ->join('members','participants.user_email','=','members.email')
+                                                                                        ->groupByRaw('instances.official_end_time')
+                                                                                        ->orderByRaw('C')
+                                                                                        ->whereMonth('instances.official_end_time',now()->month)
+                                                                                        ->whereYear('instances.official_end_time',now()->year)
+                                                                                        ->get()->pluck('C')->toArray()
                                                                    ],
                                                       'members'=>[ 'count'=>DB::table('members')->count(),
                                                                    'title'=>'Members',
