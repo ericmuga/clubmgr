@@ -4,6 +4,7 @@ import PortalVue from 'portal-vue'
 import { InertiaProgress } from '@inertiajs/progress'
 import { createInertiaApp } from '@inertiajs/inertia-vue'
 // import VueTailwindAccordion from 'vue-tailwind-accordion'
+import VueModal from "vue2-modal";
  
 //import Chart from 'chart.js/auto'
 import VueTailwind from 'vue-tailwind'
@@ -97,6 +98,7 @@ Vue.mixin({ methods: { route: window.route } })
 Vue.use(PortalVue)
 Vue.use(VueMeta)
 Vue.use(require('vue-moment'))
+Vue.use(VueModal)
 Vue.component('TTable','TTable');
 
 InertiaProgress.init()

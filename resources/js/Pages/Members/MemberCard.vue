@@ -3,8 +3,13 @@
 <!-- <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css">
 <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
  -->
-<section class="pt-6 bg-blueGray-50">
-<div class="w-full lg:w-4/12 px-4 mx-auto">
+<section class="bg-blueGray-50">
+  <h1 class="font-bold text-1xl bg-gray-50 p-6 m-2">
+      <inertia-link class="text-indigo-400 hover:text-indigo-600" :href="route('members')">Members</inertia-link>
+      <span class="text-indigo-400 font-medium">/</span>
+      {{ form.name }}
+  </h1>
+<div class="w-full lg:w-12/12 px-4 flex justify-between">
   <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16">
     <div class="px-4">
       <div class="flex flex-wrap justify-center">
@@ -17,15 +22,15 @@
           <div class="flex justify-center py-4 lg:pt-4 pt-8">
             <div class="mr-4 p-3 text-center">
               <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                22
+                {{member.instances_attended}}
               </span>
-              <span class="text-sm text-blueGray-400">Meetings</span>
+              <span class="text-sm text-blueGray-400">Attended</span>
             </div>
             <div class="mr-4 p-3 text-center">
               <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                10
+                {{member.marked_present}}
               </span>
-              <span class="text-sm text-blueGray-400">Make-ups</span>
+              <span class="text-sm text-blueGray-400">Marked Present</span>
             </div>
             <div class="lg:mr-4 p-3 text-center">
               <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
@@ -44,10 +49,10 @@
           <i class="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i>
           {{member.affiliation}}
         </div>
-        <div class="mb-2 text-blueGray-600 mt-10">
+        <!-- <div class="mb-2 text-blueGray-600 mt-10">
           <i class="fas fa-briefcase mr-2 text-lg text-blueGray-400"></i>
           Solution Manager - Creative Tim Officer
-        </div>
+        </div> -->
         <div class="mb-2 text-blueGray-600">
           <i class="fas fa-university mr-2 text-lg text-blueGray-400"></i>
           {{member.sector}}
@@ -69,46 +74,114 @@
           </div>
         </div>
       </div> -->
-      <div class="flex border-t border-blueGray-200">
+       </div>
+         </div>
+      <div class="flex border-t border-blueGray-200 ml-2">
+
       	<div class="bg-white rounded-md shadow overflow-hidden">
       <form @submit.prevent="update">
-        <div class="p-8   flex flex-wrap">
+        <div class="p-6   flex flex-wrap">
           
-          <text-input v-model="form.name" :error="form.errors.name" class="pr-6 pb-8 w-full lg:w-1/2" label="name" />
-          <text-input v-model="form.member_id" :error="form.errors.member_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Member ID" />
+          <text-input v-model="form.name" :error="form.errors.name" class="pr-6 pb-8 w-full lg:w-1/2" label="Name" />
+          <text-input v-model="form.member_id" :error="form.errors.member_id" class="pr-6 pb-4 w-full lg:w-1/2" label="Member ID" />
           
          
-          <text-input v-model="form.email" :error="form.errors.email" class="pr-6 pb-8 w-full lg:w-1/2" label="Email" />
+          <!-- <text-input v-model="form.email" :error="form.errors.email" class="pr-6 pb-4 w-full lg:w-1/2" label="Email" />
          
-          <text-input v-model="form.phone" :error="form.errors.phone" class="pr-6 pb-8 w-full lg:w-1/2" label="Phone" />
-          <text-input v-model="form.sector" :error="form.errors.sector" class="pr-6 pb-8 w-full lg:w-1/2" label="Sector" />
+          <text-input v-model="form.phone" :error="form.errors.phone" class="pr-6 pb-4 w-full lg:w-1/2" label="Phone" /> -->
+          <text-input v-model="form.sector" :error="form.errors.sector" class="pr-6 pb-4 w-full lg:w-1/2" label="Sector" />
           
-          <select-input v-model="form.affiliation_id" :error="form.errors.affiliation_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Affiliation">
+          <select-input v-model="form.affiliation_id" :error="form.errors.affiliation_id" class="pr-6 pb-4 w-full lg:w-1/2" label="Affiliation">
             <option :value="null" />
             <option v-for="affiliation in affiliations" :key="affiliation.id" :value="affiliation.id">{{ affiliation.code }}</option>
           </select-input>
 
-          <select-input v-model="form.type_id" :error="form.errors.type_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Type">
+          <select-input v-model="form.type_id" :error="form.errors.type_id" class="pr-6 pb-4 w-full lg:w-1/2" label="Type">
             <option v-for="type in types" :key="type.id" :value="type.id">{{ type.code }}</option>
           </select-input>
 
-          <select-input v-model="form.active" :error="form.errors.active" class="pr-6 pb-8 w-full lg:w-1/2" label="Status" >
+          <select-input v-model="form.active" :error="form.errors.active" class="pr-6 pb-4 w-full lg:w-1/2" label="Status" >
               <option  :value=1  >Active</option>
               <option  :value=0 >Retired</option>
           </select-input>
-          
+<button>
+                   <inertia-link 
+                          class="text-indigo-400 hover:text-indigo-600 border-b" 
+                          :href="route('member.contacts',member.id)"
+                   >CONTACTS
+               </inertia-link>  
+             </button>
+          <div class="bg-white border-t w-full ">
+             
+                
+            <div class="flex flex-col">
+              <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                  <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      
+                      <tbody class="bg-white divide-y divide-gray-200">
+
+                        <tr v-for="contact in member.contacts" :key="contact.id">
+                          <td class="px-6 py-2 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <div v-if="contact.contact_type==='email'" class="flex-shrink-0  w-10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                              </svg>
+                            </div>
+                             <div v-else class="flex-shrink-0  w-10">
+                               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                              </svg>
+                              </svg>
+                            </div>
+
+                              <!-- <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">
+                                  {{contact.type}}
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                  
+                                </div>
+                              </div> -->
+                            </div>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">{{contact.contact}}</div>
+                          </td>
+                         
+                        </tr>
+
+                        <!-- More people... -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+      </div>
           
         </div>  
         <div class="px-8 py-4 bg-gray-50 border-t border-gray-100 flex items-center">
           <button v-if="!member.deleted_at" class="text-red-600 hover:underline" tabindex="-1" type="button" @click="destroy">Delete member</button>
           <loading-button :loading="form.processing" class="btn-indigo ml-auto" type="submit">Update Member</loading-button>
         </div>
-
+ 
       </form>
+     
+        <trashed-message v-if="member.deleted_at" class="mb-6" @restore="restore">
+            This member has been deleted.
+              <div class="px-8 py-4 bg-gray-50 border-t border-gray-100 flex items-center">
+                <button class="text-red-600 hover:underline" tabindex="-1" type="button" @click="restore">Restore member</button>
+              </div>
+         
+        </trashed-message>
     </div>
       </div>
-    </div>
-  </div>
+   
+
 </div>
 <!-- <footer class="relative  pt-8 pb-6 mt-8">
   <div class="container mx-auto px-4">
@@ -126,11 +199,13 @@
 
 <script>
 import Layout from '@/Shared/Layout'
-
+import {Link } from '@inertiajs/inertia-vue'
 import TrashedMessage from '@/Shared/TrashedMessage'
 import TextInput from '@/Shared/TextInput'
 import SelectInput from '@/Shared/SelectInput'
 import LoadingButton from '@/Shared/LoadingButton'
+// import VueModal from "vue2-modal"
+
 export default {
 metaInfo() {
     return {
@@ -163,6 +238,7 @@ mounted()
   // },
  methods: {
     update() {
+
       this.form.put(this.route('members.update', this.member.id))
     },
     destroy() {
@@ -191,7 +267,8 @@ remember: 'form',
                                   sector:this.member.sector
                                   
                               }),
-        url:'https://www.gravatar.com/avatar/'+this.member.hashemail+'/?s=100'
+        url:'https://www.gravatar.com/avatar/'+this.member.hashemail+'/?s=100',
+        url2:'https://www.gravatar.com/avatar/'+this.member.hashemail+'/',
     };
   },
 };

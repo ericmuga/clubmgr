@@ -17,6 +17,7 @@ use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\InstanceController;
 use App\Http\Controllers\OccurrenceController;
 use App\Http\Controllers\GradingHistoryController;
+use App\Http\Controllers\MemberContactsController;
 use App\Models\GradingRule;
 use Illuminate\Support\Facades\Route;
 
@@ -166,6 +167,22 @@ Route::get('members/{member}/edit', [MemberController::class, 'edit'])
 
 Route::put('members/{member}', [MemberController::class, 'update'])
     ->name('members.update')
+    ->middleware('auth');
+
+Route::get('members/{member}/contacts',[MemberContactsController::class,'membercontacts'])
+       ->name('member.contacts')
+       ->middleware('auth');
+    
+Route::post('members/contact/store',[MemberContactsController::class,'store'])
+       ->name('member.savecontact')
+       ->middleware('auth');
+
+Route::delete('membercontacts/{memberContact}',[MemberContactsController::class,'destroy'])
+       ->name('member.deletecontact')
+       ->middleware('auth');
+
+Route::put('members/restore/{member}', [MemberController::class, 'restore'])
+    ->name('members.restore')
     ->middleware('auth');
 
 Route::delete('members/{member}', [MemberController::class, 'destroy'])

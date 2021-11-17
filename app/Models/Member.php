@@ -6,15 +6,122 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Affiliation;
+use App\Models\Instance;
+use App\Models\Participant;
 use App\Models\Type;
+use App\Models\MemberContacts;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class Member extends Model
 {
     use HasFactory;
     use SoftDeletes;
     protected $dates = ['deleted_at'];
-    protected $fillable=['name','email','affiliation_id','type_id','active','phone','sector'];     
+    protected $fillable=['name','email','affiliation_id','type_id','active','phone','sector','gender'];     
      
+    
+    public function memberEmails()
+    {
+        return DB::table('member_contacts')
+                  ->select('contact')
+                  ->where('member_id',$this->id)
+                  ->where('contact_type','like','%email%');
+    }
+    
+    public function instanceAttended($uuid)
+    {
+       // if($uuid=='4jYl7bZuTkWkAanHTpHAIA==') dd('Here');
+
+       $memberEmails=DB::table('member_contacts')
+                  ->select('contact')
+                  ->where('member_id',$this->id)
+                  ->where('contact_type','like','%email%');
+
+       if(DB::table('participants')
+                 ->join('instances', fn($q)=>($q->on('participants.instance_uuid','=','instances.uuid')
+                                                  ->on('participants.join_time','<=','instances.official_end_time')
+                                    ))
+                 ->where('instances.uuid',$uuid)
+                 ->where('instances.marked_for_grading',true)
+                 ->whereIn('user_email',$memberEmails)
+                 ->count()==0) return 0;
+
+      // if($uuid=='4jYl7bZuTkWkAanHTpHAIA==') dd('here');
+
+
+       $logins=DB::table('participants')
+                 ->selectRaw('participant_id,join_time,leave_time')
+                 ->join('instances', fn($q)=>($q->on('participants.instance_uuid','=','instances.uuid')
+                                                  ->on('participants.join_time','<=','instances.official_end_time')
+                                    ))
+                 ->whereIn('user_email',$memberEmails)
+                 ->where('instances.uuid',$uuid)
+                 ->where('instances.marked_for_grading',true)
+                 ->orderBy('join_time')->get();
+        
+        //if($uuid=='4jYl7bZuTkWkAanHTpHAIA==') dd($logins);
+
+         if ($logins->count()<=0) return 0;
+        
+           $timer=0;$min=0;$prevendTime=null;
+
+           foreach($logins as $login)
+           {
+             //dd((ABS(Carbon::parse($login->join_time)->diffInMinutes($login->leave_time))));
+             $timer++;
+
+
+                 if ((ABS(Carbon::parse($login->join_time)->diffInMinutes($login->leave_time))>=30) and ($timer==1)) return 1;
+                 else
+                 { 
+                    if ($timer==1) 
+                    {
+                        $prevendTime=$login->leave_time;
+                        $min+=ABS(Carbon::parse($login->join_time)->diffInMinutes($login->leave_time));
+                    }
+                    else{
+                        if(ABS(Carbon::parse($prevendTime)->diffInMinutes($login->join_time))<=30)
+                          {
+                            
+                            $min+=ABS(Carbon::parse($login->join_time)->diffInMinutes($login->leave_time));
+                            if ($min>=30) return 1; 
+                            $prevendTime=$login->leave_time;
+                          }
+                      }
+
+                    
+                  }
+                    
+                      
+            } 
+             
+
+           
+           
+        return 0; 
+    }
+         
+        
+
+    public function contacts()
+    {
+        return $this->hasMany(MemberContacts::class,'member_id','id');
+    }
+
+    public function emails()
+    {
+        return MemberContacts::where('contact_type','like','%email%')
+                               ->where('member_id',$this->id)->get();
+    }
+
+    public function phones()
+    {
+        return MemberContacts::where('contact_type','like','%phone%')
+                               ->where('member_id',$this->id)->get();
+    }
+        
+
     public function types()
      {
          return $this->belongsToMany(Type::class);
@@ -59,8 +166,8 @@ class Member extends Model
             $query->where(function ($query) use ($search) {
                 $query->where('name', 'like', '%'.$search.'%')
                 ->orWhere('member_id', 'like', '%'.$search.'%')
-                ->orWhere('phone', 'like', '%'.$search.'%')
-                    ->orWhere('email', 'like', '%'.$search.'%')
+                //->orWhere('phone', 'like', '%'.$search.'%')
+                  //  ->orWhere('email', 'like', '%'.$search.'%')
                     ->orWhere('sector', 'like', '%'.$search.'%')
                     ->orWhereHas('affiliations', function ($query) use ($search) {
                         $query->where('code', 'like', '%'.$search.'%');

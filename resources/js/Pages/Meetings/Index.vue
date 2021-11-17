@@ -3,10 +3,11 @@
   <h1 class="mb-8 font-bold text-3xl">
       <inertia-link class="text-indigo-400 hover:text-indigo-600" :href="route('meetings')">Meetings</inertia-link>
     </h1>
-  <div class="container">
+  <div class="container ">
     <meeting-stats :zmeetings=zmeetings :pmeetings=pmeetings></meeting-stats>
+
     <div class="mb-4 py-5 flex justify-between items-center">
-          <search-filter v-model="form.search" class="w-full max-w-md mr-4" @reset="reset">
+          <search-filter v-model="form.search" class="max-w-md mr-4" @reset="reset">
             <label class="block text-gray-700">Trashed:</label>
             <select v-model="form.trashed" class="mt-1 w-full form-select">
               <option :value="null" />
@@ -14,7 +15,13 @@
               <option value="only">Only Trashed</option>
             </select>
           </search-filter>
+            <a
 
+           class="bg-teal-500 rounded p-2"
+           
+            :href=url>
+              Zoom 
+                 </a>
           <inertia-link class="btn-indigo bg-indigo-800" :href="route('meetings.create')">
               <span>Create Physical Meeting </span>
           </inertia-link>
@@ -27,13 +34,7 @@
           </inertia-link>
 
            <div class="font-bold">
-          <a
-
-           class="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded-full"
-           style="background-color:#606d9e"
-            :href=url>
-              Zoom Auth
-         </a>
+        
 
         
 
@@ -51,7 +52,7 @@
         </div>
          <!-- <advanced-filter @set-advanced-filters="setFilters"></advanced-filter> -->
    
-    <table class="w-sm flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
+    <table class="w-md flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
       <thead class="text-white">
         <tr v-for="meeting in meetings.data" :key="meeting.id" class="bg-teal-400 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
           <!-- <th class="p-3 text-left">ID</th> -->

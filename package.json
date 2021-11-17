@@ -34,9 +34,12 @@
         "vue-meta": "^2.3.1",
         "vue-moment": "^4.1.0",
         "vue-tailwind": "^2.4.2",
-        "vue-template-compiler": "^2.6.12"
+        "vue-template-compiler": "^2.6.12",
+        "vue2-modal": "^1.5.1"
     },
     "devDependencies": {
-        "postcss": "^8.1.14"
+        "node-sass": "^6.0.1",
+        "postcss": "^8.1.14",
+        "sass-loader": "^12.3.0"
     }
 }

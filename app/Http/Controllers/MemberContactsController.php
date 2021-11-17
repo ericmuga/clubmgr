@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\MemberContacts;
+use App\Models\Member;
+
 use Illuminate\Http\Request;
 
 class MemberContactsController extends Controller
@@ -22,6 +24,19 @@ class MemberContactsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+     public function membercontacts(Request $request,Member $member)
+     {
+         return inertia('Members/Contacts',[
+
+                            'member'=>[ 'id'=>$member->id,
+                                         'name'=>$member->name,
+                                         'contacts'=>MemberContacts::where('member_id',$member->id)->paginate()
+
+                                        ],
+         ]);
+             
+     }
+
     public function create()
     {
         //
@@ -35,7 +50,14 @@ class MemberContactsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $attributes=$request->validate([
+                    'member_id'=>'required',
+                    'contact'=>$request->contact_type=='email'?'required|email|unique:member_contacts':'required|unique:member_contacts',
+                    'contact_type'=>'required'
+
+        ]);
+        MemberContacts::create($attributes);
+        return redirect()->back()->with('success','Contact created successfully!');
     }
 
     /**
@@ -78,8 +100,10 @@ class MemberContactsController extends Controller
      * @param  \App\Models\MemberContacts  $memberContacts
      * @return \Illuminate\Http\Response
      */
-    public function destroy(MemberContacts $memberContacts)
+    public function destroy(MemberContacts $memberContact)
     {
-        //
+        // dd($memberContact);
+        $memberContact->delete();
+        return redirect()->back()->with('success','Contact deleted successfully!');
     }
 }

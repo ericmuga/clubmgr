@@ -29,7 +29,11 @@ class DashboardController extends Controller
           
           $setup=$this->getSetup();
 
-          
+          $memberEmails=DB::table('members')
+                          ->selectRaw('member_contacts.contact')
+                          ->join('member_contacts','members.id','=','member_contacts.member_id')
+                          ->where('member_contacts.contact_type','=','email')
+                          ->where('members.type_id',1);
 
           return Inertia::render('Dashboard/Index',[ "client_id"=>$setup->client_id,
                                                      "callback_url"=>$setup->callback_url,
@@ -51,8 +55,7 @@ class DashboardController extends Controller
                                                                     'thisMonthGuests'=>DB::table('instances')
                                                                                         ->selectRaw('DATE(instances.official_end_time) as D,COUNT(participants.id)as C')
                                                                                         ->join('participants','participants.instance_uuid','instances.uuid')
-                                                                                        ->leftJoin('members','participants.user_email','=','members.email')
-                                                                                        ->where('members.email',null)
+                                                                                        ->whereNotIn('participants.user_email',$memberEmails)
                                                                                         ->groupByRaw('instances.official_end_time')
                                                                                         ->orderByRaw('C')
                                                                                         ->whereMonth('instances.official_end_time',now()->month)
@@ -61,14 +64,16 @@ class DashboardController extends Controller
                                                                      'thisMonthMembers'=>DB::table('instances')
                                                                                         ->selectRaw('DATE(instances.official_end_time) as D,COUNT(participants.id)as C')
                                                                                         ->join('participants','participants.instance_uuid','instances.uuid')
-                                                                                        ->join('members','participants.user_email','=','members.email')
+                                                                                        ->whereIn('participants.user_email',$memberEmails)
                                                                                         ->groupByRaw('instances.official_end_time')
                                                                                         ->orderByRaw('C')
                                                                                         ->whereMonth('instances.official_end_time',now()->month)
                                                                                         ->whereYear('instances.official_end_time',now()->year)
-                                                                                        ->get()->pluck('C')->toArray()
+                                                                                        ->get()->pluck('C')->toArray(),
                                                                    ],
-                                                      'members'=>[ 'count'=>DB::table('members')->count(),
+                                                      'members'=>[ 'count'=>DB::table('members')
+                                                                                ->where('type_id',1)
+                                                                                ->count(),
                                                                    'title'=>'Members',
                                                                    'asAt'=>Carbon::parse(DB::table('instances')
                                                                                   ->orderByDesc('start_time')->get()->first()->start_time)->diffForHumans()
@@ -79,27 +84,14 @@ class DashboardController extends Controller
                                                                       'thisMonth'=>6,
                                                                    ],
 
-                                                      'guests'=>[  'title'=>'guests',
+                                                      'guests'=>[  
+                                                                    'title'=>'guests',
                                                                     'count'=>DB::table('registrants')
-                                                                                ->join('members','registrants.email','=','members.email','left')
-                                                                                ->where('members.email',null)
-                                                                                ->count()
-                                                                
+                                                                               ->whereNotIn('registrants.email',$memberEmails)->count()
+                                                                                                            
                                                                  ]
 
                                                     ]);
-
-         // <a href="https://zoom.us/oauth/authorize?response_type=code&client_id=88qbzpueTkGI66J9dKWd1g&redirect_uri=https://localhost/show&state={userState}">Check Meetings</a>
-
-//            $setup=$this->getSetup();
-//            $url= 'https://zoom.us/oauth/authorize?response_type=code&client_id='.$setup->client_id.'&redirect_uri=https://localhost/&state={userState}';
-// //'.$setup->callback_url.'
-//            //dd($url);
-
-//          return Http::get($url);
-
-        //dd($resonse);
-         // return Http::dd()->get('https://zoom.us/oauth/authorize?response_type=code&client_id=88qbzpueTkGI66J9dKWd1g&redirect_uri=https://localhost/show&state={userState}');
 
     }
 

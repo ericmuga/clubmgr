@@ -13,29 +13,13 @@ use Redirect;
 use Illuminate\Support\Facades\DB;
 use App\Models\Type;
 use App\Models\Affiliation;
+use App\Models\Instance;
+use App\Models\Participant;
+
 
 use App\Http\Resources\MemberCollection;
 class MemberController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */ // return Inertia::render('Organizations/Index', [
-        //     'filters' => Request::all('search', 'trashed'),
-        //     'organizations' => Auth::user()->account->organizations()
-        //         ->orderBy('name')
-        //         ->filter(Request::only('search', 'trashed'))
-        //         ->paginate(10)
-        //         ->withQueryString()
-        //         ->through(fn ($organization) => [
-        //             'id' => $organization->id,
-        //             'name' => $organization->name,
-        //             'phone' => $organization->phone,
-        //             'city' => $organization->city,
-        //             'deleted_at' => $organization->deleted_at,
-        //         ]),
-        // ]);
     public function index(Request $request)
     {
        
@@ -47,21 +31,22 @@ class MemberController extends Controller
                                 'rotaractors'=>Member::where('affiliation_id',2)->get()->count(),
                                 'inductees'=>Member::where('affiliation_id',3)->get()->count(),
                                 'members' => Member::with('types','affiliations')
-                                ->orderBy('name')
-                                ->filter($request->only('search', 'trashed'))
-                                                     ->paginate(10)
-                                                     ->withQueryString()
-                                                     ->through(fn($member)=>([
-                                                         'member_id'=>$member->member_id,
-                                                         'id'=>$member->id,
-                                                        'name'=>$member->name,
-                                                        'email'=>$member->email,
-                                                        'affiliation'=>Affiliation::where('id',$member->affiliation_id)->exists()?Affiliation::where('id',$member->affiliation_id)->first()->code:"" ,
-                                                        'type'=>Type::where('id',$member->type_id)->exists()?Type::where('id',$member->type_id)->first()->code:"" ,
-                                                        'phone'=>$member->phone,
-                                                        'sector'=>$member->sector,
-                                                        'active'=>$member->active==1?'Yes':'No'
-                                                     ]))
+                                        ->orderBy('name')
+                                        ->filter($request->only('search', 'trashed'))
+                                                             ->paginate(10)
+                                                             ->withQueryString()
+                                                             ->through(fn($member)=>([
+                                                                 'member_id'=>$member->member_id,
+                                                                 'id'=>$member->id,
+                                                                'name'=>$member->name,
+                                                                'email'=>$member->email,
+                                                                'affiliation'=>Affiliation::where('id',$member->affiliation_id)->exists()?Affiliation::where('id',$member->affiliation_id)->first()->code:"" ,
+                                                                'type'=>Type::where('id',$member->type_id)->exists()?Type::where('id',$member->type_id)->first()->code:"" ,
+                                                                'phone'=>$member->phone,
+                                                                'sector'=>$member->sector,
+                                                                'active'=>$member->active==1?'Yes':'No'
+                                                             ]))
+
                                     
                 ]);
     
@@ -144,22 +129,36 @@ class MemberController extends Controller
      */
     public function edit(Member $member)
     {
-         //$member=Member::find($id);
+         $instances=Participant::whereIn('user_email',$member->memberEmails())->select('instance_uuid')->groupBy('instance_uuid')->get();
+         
+          $marked_present=0;
+//4jYl7bZuTkWkAanHTpHAIA==
 
+          //$member->instanceAttended('4jYl7bZuTkWkAanHTpHAIA==');
+          foreach($instances as $instance)
+          {
+            $marked_present+=$member->instanceAttended($instance->instance_uuid);
+          }
+//dd($marked_present);
          return Inertia::render('Members/MemberCard', [
             'member' => [
                 'id' => $member->id,
                 'name' => $member->name,
                 'member_id' => $member->member_id,
                 'active'=>$member->active,
-                'email' => $member->email,
+                // 'email' => $member->email,
                 'hashemail'=>md5(strtolower($member->email)),
                 'sector' => $member->sector,
-                'phone' => $member->phone,
+                'instances_attended'=>$instances->count(),
+                'marked_present'=>$marked_present,
                 'type_id' => $member->type_id,
                 'affiliation_id' => $member->affiliation_id,
                 'affiliation'=>DB::table('affiliations')->where('id',$member->affiliation_id)->exists()?Affiliation::find($member->affiliation_id)->code:'',
                 'deleted_at' => $member->deleted_at,
+                'contacts'=>DB::table('member_contacts')
+                                   ->selectRaw('member_contacts.contact_type,member_contacts.contact,member_contacts.id')
+                                   ->where('member_contacts.member_id','=',$member->id)
+                                   ->orderBy('member_contacts.contact_type')->get()
             ],
             'types' => Type::all()->sortBy('code')
                 
@@ -183,7 +182,7 @@ class MemberController extends Controller
      */
     public function update(Request $request, Member $member)
     {
-       //dd($member);
+       // dd($request->all());
        $validated=$request->validate([
             'name' => ['required', 'max:50'],
             'affiliation_id' => ['required', 'max:1'],
@@ -206,7 +205,7 @@ class MemberController extends Controller
             
         ]);
 
-        return Redirect::route('members')->with('success', 'Member created.');
+        return Redirect::back()->with('success', 'Member Updated Successfully');
     }
 
     /**
@@ -220,4 +219,12 @@ class MemberController extends Controller
         $member->delete();
         return redirect()->route('members')->with('success','Member Deleted Successfully');
     }
+
+     public function restore(Member $member)
+        {
+            $member->deleted_at=null;
+
+            $member->save();
+            return redirect()->back()->with('success','Member Restored Successfully');
+        }
 }

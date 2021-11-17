@@ -7,10 +7,11 @@
     </h1>
   <div class="flex items-center justify-center">
   <div class="container">
-    <member-stats :activemembers="activemembers" :rotarians="rotarians" :rotaractors="rotaractors" :inductees="inductees"></member-stats>
+    <!-- <member-stats :activemembers="activemembers" :rotarians="rotarians" :rotaractors="rotaractors" :inductees="inductees"></member-stats> -->
+     <div class="content-center">
     <advanced-filter @set-advanced-filters="setFilters"></advanced-filter>
 
-    <div class="mb-4 py-5 flex justify-between items-center">
+    <div class="mb-4 py-5 flex justify-between items-center max-w-md">
           <search-filter v-model="form.search" class="w-full max-w-md mr-4" @reset="reset">
             <label class="block text-gray-700">Trashed:</label>
             <select v-model="form.trashed" class="mt-1 w-full form-select">
@@ -21,22 +22,29 @@
           </search-filter>
             
 
-          <inertia-link class="btn-indigo bg-indigo-800" :href="route('members.create')">
-              <span>Create</span>
+          <inertia-link class="btn-indigo bg-indigo-800 float-right" :href="route('members.create')">
+              <span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+  <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+</svg></span>
               
           </inertia-link>
         </div>
-    <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
+      
+          
+        
+    <table class="w-md flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
       <thead class="text-white">
-        <tr v-for="member in members.data" :key="member.id" class="bg-indigo-800 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
+        <tr v-for="member in members.data" :key="member.id" class="bg-teal-400 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
           <th class="p-3 text-left">ID</th>
           <th class="p-3 text-left">Name</th>
-          <th class="p-3 text-left">Email</th>
-          <th class="p-3 text-left">Phone</th>
+         <!--  <th class="p-3 text-left">Email</th>
+          <th class="p-3 text-left">Phone</th> -->
           <th class="p-3 text-left">Affiliation</th>
           <th class="p-3 text-left">Type</th>
           <th class="p-3 text-left">Sector</th>
           <th class="p-3 text-left">Active</th>
+          <th class="p-3 text-left">Contacts</th>
+
           
          </tr>
         
@@ -51,14 +59,22 @@
             <inertia-link class="text-indigo-400 hover:text-indigo-600" :href="route('members.edit',member.id)">
              {{ member.name }}
              
-             </inertia-link>
+              </inertia-link>
              </td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ member.email }}</td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ member.phone }}</td>
+          <!--<td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ member.email }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ member.phone }}</td> -->
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ member.affiliation }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ member.type }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ member.sector }}</td>
           <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ member.active }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 p-3">
+             
+            <inertia-link class="text-indigo-400 hover:text-indigo-600 text-center" :href="route('member.contacts',member.id)">
+             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+</svg>
+              </inertia-link>
+             </td>
           
           
            
@@ -68,7 +84,8 @@
         </tr>
       </tbody>
     </table>
-    <pagination class="mt-4" :links="members.links" />
+    </div>
+    <pagination class="mt-4" :links="members.links"  />
   </div>
 
 </div>
