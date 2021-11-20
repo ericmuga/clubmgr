@@ -47,7 +47,7 @@ class Member extends Model
                  ->whereIn('user_email',$memberEmails)
                  ->count()==0) return 0;
 
-      // if($uuid=='4jYl7bZuTkWkAanHTpHAIA==') dd('here');
+      //if($uuid=='Gy1GB0HwSReTXtQ/S9Sb1Q==') dd('here');
 
 
        $logins=DB::table('participants')
@@ -60,7 +60,7 @@ class Member extends Model
                  ->where('instances.marked_for_grading',true)
                  ->orderBy('join_time')->get();
         
-        //if($uuid=='4jYl7bZuTkWkAanHTpHAIA==') dd($logins);
+        //dd($logins);
 
          if ($logins->count()<=0) return 0;
         
@@ -74,7 +74,7 @@ class Member extends Model
 
                  if ((ABS(Carbon::parse($login->join_time)->diffInMinutes($login->leave_time))>=30) and ($timer==1)) return 1;
                  else
-                 { 
+                 { //dd('here');
                     if ($timer==1) 
                     {
                         $prevendTime=$login->leave_time;
@@ -97,7 +97,7 @@ class Member extends Model
             } 
              
 
-           
+           //dd('here');
            
         return 0; 
     }
@@ -124,12 +124,12 @@ class Member extends Model
 
     public function types()
      {
-         return $this->belongsToMany(Type::class);
+         return $this->belongsTo(Type::class,'type_id');
      }
  
     public function affiliations()
     {
-        return $this->belongsToMany(Affiliation::class);
+        return $this->belongsTo(Affiliation::class,'affiliation_id');
     }
 
 

@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h1 class="mb-8 font-bold text-3xl">
+    <h1 class="mb-2 p-2 bg-gray-50 font-bold text-3xl">
       <inertia-link class="text-indigo-400 hover:text-indigo-600" :href="route('meetings.edit',instance.meeting)">Instances</inertia-link>
       <span class="text-indigo-400 font-medium">/</span>
-      {{ form.id }} / {{form.uuid}} /{{form.topic}}
+      {{ form.id }}
       </h1>
       
      <div class="flex  justify-between">
@@ -12,25 +12,14 @@
     
     <div class="bg-white rounded-md shadow overflow-hidden max-w-3xl flex-2" >
       <form @submit.prevent="update">
-        <div class="p-8 -mr-6 -mb-8 flex flex-wrap">
+        <div class="p-2 -mr-6  flex flex-wrap">
           
-          <text-input v-model="form.uuid" :error="form.errors.uuid" class="pr-6 pb-8 w-full lg:w-1/2" label="Uuid" />
-          <text-input v-model="form.meeting_id" :error="form.errors.meeting_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Meeting ID" />
           
-          <text-input 
-            type="datetime"
-              v-model="form.start_time" 
-             :error="form.errors.start_time" 
-             class="pr-6 pb-8 w-full lg:w-1/2" 
-             label="Start Time"
-
-             />
-
              <text-input 
                 type="datetime"            
              v-model="form.official_start_time" 
              :error="form.errors.official_start_time" 
-              class="pr-6 pb-8 w-full lg:w-1/2" 
+              class="pr-6 pb-4 w-full lg:w-1/2" 
               label="Official Start Time"
 
              />
@@ -39,7 +28,7 @@
                type="datetime"            
              v-model="form.official_end_time" 
              :error="form.errors.official_end_time" 
-             class="pr-6 pb-8 w-full lg:w-1/2" 
+             class="pr-6 pb-4 w-full lg:w-1/2" 
              label="Official End Time"
 
              />
@@ -52,57 +41,81 @@
             <label for="Marked For Grading">Marked for grading</label>
           
         </div>  
-        <div class="px-8 py-4 bg-gray-50 border-t border-gray-100 flex items-center">
-          <loading-button :loading="form.processing" class="btn-indigo ml-auto" type="submit" >Update Instance</loading-button>
+        <div class="px-8 py-2 bg-gray-50 border-t border-gray-100 flex items-center">
+          <loading-button :loading="form.processing" class="btn-indigo ml-auto" type="submit" >Update</loading-button>
         </div>
 
       </form>
       </div>
         
-      <div class=" bg-teal-300  w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-shrink sm:shadow-lg " >
+      <div class=" m-2 bg-teal-300  w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-shrink sm:shadow-lg " >
         <!-- <button class="bg-ind m2">
           Generate Participant Template
           </button>  -->
-          <div class="m-4">
+          <div class="m-4 flex">
+          <div class="p-2 pb-1 m-2 bg-gray-500 h-sm text-white rounded text-center hover:border-teal-700">
+            Total <div><br><span class="">{{instance.total}}</span></div>
+            <br>
+            <div class="mb-1">Present</div> <br> <div><span class="rounded-full p-1 text-bold text-white bg-orange-500">{{Math.round(instance.marked_present/instance.total*100,1)}}%</span></div>
 
-         
-      <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
-      <thead class="text-white">
-        <tr  class="bg-indigo-800 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
-          <th class="p-3 text-left">Action</th>
-          <th class="p-3 text-left">Value</th>
+          </div>
+          <div class="p-2 m-2 bg-gray-500 h-sm text-white rounded text-center hover:border-teal-700">
+            Present <div><br><span class="">{{instance.marked_present}}</span></div>
+            <br>
+            <div class="mb-1">Absent</div> <br> <div><span class="text-white">{{instance.marked_absent}}</span></div>
+
+          </div>
           
-
-         </tr>
-        
-      </thead>
-      <tbody class="flex-1 sm:flex-none">
-        <tr class="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0" >
-          <td class="border-grey-light border hover:bg-gray-100 p-3">  
-              <inertia-link class="text-indigo-400 hover:text-indigo-600" :href="route('instance.generateTemplate',instance.id)">Generate Template</inertia-link>
-        </td>
-        <td class="border-grey-light border hover:bg-gray-100 p-3">
-          
-          <a class="text-indigo-400 hover:text-indigo-600" v-if="instance.template" :href="instance.template">Click to download</a></td>
-
-
          
-		 </tr>
-     <tr><td class="text-indigo-400 hover:text-indigo-600 t-center" >Upload Participants</td>
-       <td>
-            <form @submit.prevent="uploadList">
-            <input type="hidden" v-model="instance.id">
-            <input type="file" @input="form2.participantList = $event.target.files[0]" />
-            <progress v-if="form2.progress" :value="form2.progress.percentage" max="100">
-              {{ form2.progress.percentage }}%
-            </progress>
-           <loading-button :loading="form.processing" class="btn-indigo " type="submit" >Upload List</loading-button>
-          </form>
-       </td>
-       
-     </tr>
-      </tbody>
-    </table>
+          <div class=" px-1">
+            <card-stats
+              statSubtitle="Members"
+              :statTitle="instance.members"
+              statArrow=""
+              :statPercent="instance.members_present"
+              statPercentColor="text-red-500"
+              statDescripiron="Present"
+              statIconName="fas fa-percent"
+              statIconColor="bg-indigo-500"
+            />
+          </div>
+           <div class=" px-1">
+            <card-stats
+              statSubtitle="Rotarians"
+              :statTitle="instance.Rotarian"
+              statArrow=""
+              :statPercent="instance.Rotarian_present"
+              statPercentColor="text-red-500"
+              statDescripiron="Present"
+              statIconName="fas fa-percent"
+              statIconColor="bg-gray-500"
+            />
+          </div>
+          <div class=" px-1">
+            <card-stats
+              statSubtitle="Rotaractors"
+              :statTitle="instance.Rotaractor"
+              statArrow=""
+              :statPercent="instance.Rotaractor_present"
+              statPercentColor="text-red-500"
+              statDescripiron="Present"
+              statIconName="fas fa-percent"
+              statIconColor="bg-green-500"
+            />
+          </div>
+          <div class=" px-1">
+            <card-stats
+              statSubtitle="guests"
+              :statTitle="instance.guests"
+              statArrow=""
+              :statPercent="instance.guests_present"
+              statPercentColor="text-red-500"
+              statDescripiron="Present"
+              statIconName="fas fa-percent"
+              statIconColor="bg-indigo-600"
+            />
+          </div>
+          
         </div>
       </div>
       
@@ -114,7 +127,18 @@
     </div>
     <!-- <instance-instances :instances=instances></instance-instances> -->
     <!-- <instance-occurrences :occurrences=occurrences></instance-occurrences> -->
-    <instance-participants :participants=participants></instance-participants>
+    <div class="flex justify-betwee bg-gray-100 p-1">
+      <div class="bg-gray-200 px-6 py-2 m-2  rounded-md w-full">
+        <h1 class="p-5 bg-gray-50 font-bold text-md text-center text-indigo-400">Attendees </h1>
+        <instance-participants :participants="participants" :members="members" :filters="filters" :instance="instance"></instance-participants>
+      </div>
+
+       <div class="bg-gray-200 px-6 py-2 m-2 rounded-md">
+         <h1 class="p-5 bg-gray-50 font-bold text-md text-center text-orange-400">Mark Attendance </h1>
+         <MemberForm :members="members" :filters="filters2" :instance="instance"></MemberForm>
+      </div>
+    </div>
+    
     </div>
   
   </div>
@@ -128,6 +152,8 @@ import LoadingButton from '@/Shared/LoadingButton'
 import TrashedMessage from '@/Shared/TrashedMessage'
  import TTable from 'vue-tailwind/dist/t-table'
  import InstanceParticipants from './InstanceParticipants'
+ import CardStats from "../Dashboard/CardStats.vue";
+ import MemberForm from './MemberForm.vue'
  // import InstanceInstances from './InstanceInstances'
  // import InstanceOccurrences from './InstanceOccurrences'
  // import InstanceStats from './Partials/InstanceStats'
@@ -147,6 +173,8 @@ export default {
     TrashedMessage,
      TTable,
      InstanceParticipants,
+     CardStats,
+     MemberForm,
      // InstanceInstances,
      // InstanceOccurrences,
      // InstanceStats,
@@ -154,8 +182,11 @@ export default {
   layout: Layout,
   props: {
     instance: Object,
+    members:Object,
     participants:Object,
     gradingrules:Array,
+    filters:Object,
+    filters2:Object,
     // participantsStats:Array,
     // instances:Object,
     // occurrences:Object,

@@ -33,7 +33,7 @@ import {
 } from 'vue-tailwind/dist/components';
 
 const components = {
-  TTable,
+  TTable,TInput
 }
 
 const settings = {
@@ -99,7 +99,7 @@ Vue.use(PortalVue)
 Vue.use(VueMeta)
 Vue.use(require('vue-moment'))
 Vue.use(VueModal)
-Vue.component('TTable','TTable');
+Vue.component('TTable','TInput');
 
 InertiaProgress.init()
 

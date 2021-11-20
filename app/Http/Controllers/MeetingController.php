@@ -38,7 +38,7 @@ class MeetingController extends Controller
                                 "zmeetings"=>Meeting::where('meeting_type',1)->count(),
                                 "pmeetings"=>Meeting::where('meeting_type',2)->count(),
                                 'meetings' => Meeting::with('registrants')
-                                                       ->where('topic','like','%fello%')
+                                                       ->where('topic','like','%fello%')->orWhere('meeting_type',2)
                                                             ->orderByDesc('start_time')
                                                               ->filter($request->only('search', 'trashed'))
                                                                                  ->paginate(10)

@@ -14,6 +14,6 @@ class Affiliation extends Model
      
      public function members()
      {
-         return $this->belongsToMany(Member::class);
+         return $this->hasMany(Member::class,'affiliation_id','id');
      }
 }

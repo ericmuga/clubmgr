@@ -13,6 +13,6 @@ class Type extends Model
 
     public function members()
     {
-        return $this->belongsToMany(Member::class);
+        return $this->hasMany(Member::class ,'type_id');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Instance extends Model
 {
     use HasFactory;
@@ -12,6 +13,15 @@ class Instance extends Model
     protected $dates=['start_time','created_at','updated_at','official_start_time','official_end_time'];
     protected $table ='instances';
     protected $hidden=['id'];
+    
+    /*
+
+      this method will return an array of members who attended and instance.
+
+    */
+    
+   
+
     public function meeting()
     {
         return $this->belongsTo(Meeting::class,'meeting_id','meeting_id');

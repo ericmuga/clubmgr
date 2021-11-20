@@ -79,7 +79,7 @@ class ParticipantController extends Controller
     public function index(Request $request)
     {
 
-        // return ("Here");
+        // dd($request->all());
 
         // /dd(Meeting::find(Participant::first()->load('meeting')->meeting_id));
         return Inertia::render('Participants/Index',[

@@ -9,7 +9,7 @@
   <div class="container">
     <!-- <member-stats :activemembers="activemembers" :rotarians="rotarians" :rotaractors="rotaractors" :inductees="inductees"></member-stats> -->
      <div class="content-center">
-    <advanced-filter @set-advanced-filters="setFilters"></advanced-filter>
+    <!-- <advanced-filter @set-advanced-filters="setFilters"></advanced-filter> -->
 
     <div class="mb-4 py-5 flex justify-between items-center max-w-md">
           <search-filter v-model="form.search" class="w-full max-w-md mr-4" @reset="reset">
@@ -24,8 +24,9 @@
 
           <inertia-link class="btn-indigo bg-indigo-800 float-right" :href="route('members.create')">
               <span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-  <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-</svg></span>
+                      <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                    </svg>
+              </span>
               
           </inertia-link>
         </div>

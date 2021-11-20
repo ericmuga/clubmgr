@@ -259,9 +259,9 @@ remember: 'form',
 
       form: this.$inertia.form({
                                   name: this.member.name,
-                                  email: this.member.email,
+                                  // email: this.member.email,
                                   affiliation_id: this.member.affiliation_id,
-                                  phone: this.member.phone,
+                                  // phone: this.member.phone,
                                   active: this.member.active,
                                   type_id: this.member.type_id,
                                   sector:this.member.sector

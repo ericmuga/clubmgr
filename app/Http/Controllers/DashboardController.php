@@ -34,7 +34,8 @@ class DashboardController extends Controller
                           ->join('member_contacts','members.id','=','member_contacts.member_id')
                           ->where('member_contacts.contact_type','=','email')
                           ->where('members.type_id',1);
-
+        
+       
           return Inertia::render('Dashboard/Index',[ "client_id"=>$setup->client_id,
                                                      "callback_url"=>$setup->callback_url,
                                                      'meetings'=>[
@@ -53,7 +54,7 @@ class DashboardController extends Controller
                                                                                         ->get()->pluck('D')->toArray(),
 
                                                                     'thisMonthGuests'=>DB::table('instances')
-                                                                                        ->selectRaw('DATE(instances.official_end_time) as D,COUNT(participants.id)as C')
+                                                                                        ->selectRaw('DATE(instances.official_end_time) as D,COUNT(distinct participants.user_email)as C')
                                                                                         ->join('participants','participants.instance_uuid','instances.uuid')
                                                                                         ->whereNotIn('participants.user_email',$memberEmails)
                                                                                         ->groupByRaw('instances.official_end_time')
@@ -62,7 +63,7 @@ class DashboardController extends Controller
                                                                                         ->whereYear('instances.official_end_time',now()->year)
                                                                                         ->get()->pluck('C')->toArray(),
                                                                      'thisMonthMembers'=>DB::table('instances')
-                                                                                        ->selectRaw('DATE(instances.official_end_time) as D,COUNT(participants.id)as C')
+                                                                                        ->selectRaw('DATE(instances.official_end_time) as D,COUNT(distinct participants.user_email)as C')
                                                                                         ->join('participants','participants.instance_uuid','instances.uuid')
                                                                                         ->whereIn('participants.user_email',$memberEmails)
                                                                                         ->groupByRaw('instances.official_end_time')

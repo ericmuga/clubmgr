@@ -8,57 +8,21 @@
     <!-- <trashed-message v-if="member.deleted_at" class="mb-6" @restore="restore">
       This member has been deleted.
     </trashed-message> -->
-     <div class="flex flex-col ">
+     <div class="flex flex-col 
+      ">
        <MemberCard :member="member"/>
        <!-- <MemberCard :member="member"/> -->
 
    
     
-    <div class="bg-white rounded-md shadow overflow-hidden">
-      <form @submit.prevent="update">
-        <div class="p-8   flex flex-wrap">
-          
-          <text-input v-model="form.name" :error="form.errors.name" class="pr-6 pb-8 w-full lg:w-1/2" label="name" />
-          <text-input v-model="form.member_id" :error="form.errors.member_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Member ID" />
-          
-         
-          <text-input v-model="form.email" :error="form.errors.email" class="pr-6 pb-8 w-full lg:w-1/2" label="Email" />
-         
-          <text-input v-model="form.phone" :error="form.errors.phone" class="pr-6 pb-8 w-full lg:w-1/2" label="Phone" />
-          <text-input v-model="form.sector" :error="form.errors.sector" class="pr-6 pb-8 w-full lg:w-1/2" label="Sector" />
-          
-          <select-input v-model="form.affiliation_id" :error="form.errors.affiliation_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Affiliation">
-            <option :value="null" />
-            <option v-for="affiliation in affiliations" :key="affiliation.id" :value="affiliation.id">{{ affiliation.code }}</option>
-          </select-input>
-
-          <select-input v-model="form.type_id" :error="form.errors.type_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Type">
-            <option v-for="type in types" :key="type.id" :value="type.id">{{ type.code }}</option>
-          </select-input>
-
-          <select-input v-model="form.active" :error="form.errors.active" class="pr-6 pb-8 w-full lg:w-1/2" label="Status" >
-              <option  :value=1  >Active</option>
-              <option  :value=0 >Retired</option>
-          </select-input>
-          
-          
-        </div>  
-        <div class="px-8 py-4 bg-gray-50 border-t border-gray-100 flex items-center">
-          <button v-if="!member.deleted_at" class="text-red-600 hover:underline" tabindex="-1" type="button" @click="destroy">Delete member</button>
-          <loading-button :loading="form.processing" class="btn-indigo ml-auto" type="submit">Update Member</loading-button>
-        </div>
-
-      </form>
-    </div>
+    
       </div>
   </div>
 </template>
 
 <script>
 import Layout from '@/Shared/Layout'
-import TextInput from '@/Shared/TextInput'
-import SelectInput from '@/Shared/SelectInput'
-import LoadingButton from '@/Shared/LoadingButton'
+
 import TrashedMessage from '@/Shared/TrashedMessage'
 import MemberCard from './MemberCard'
 export default {
@@ -91,9 +55,9 @@ export default {
 
       form: this.$inertia.form({
                                   name: this.member.name,
-                                  email: this.member.email,
+                                  //email: this.member.email,
                                   affiliation_id: this.member.affiliation_id,
-                                  phone: this.member.phone,
+                                 // phone: this.member.phone,
                                   active: this.member.active,
                                   type_id: this.member.type_id,
                                   sector:this.member.sector
@@ -101,20 +65,6 @@ export default {
                               }),
     }
   },
-  methods: {
-    update() {
-      this.form.put(this.route('members.update', this.member.id))
-    },
-    destroy() {
-      if (confirm('Are you sure you want to delete this member?')) {
-        this.$inertia.delete(this.route('members.destroy', this.member.id))
-      }
-    },
-    restore() {
-      if (confirm('Are you sure you want to restore this member?')) {
-        this.$inertia.put(this.route('members.restore', this.member.id))
-      }
-    },
-  },
+ 
 }
 </script>

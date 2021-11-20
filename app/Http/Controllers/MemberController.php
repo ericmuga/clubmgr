@@ -185,25 +185,18 @@ class MemberController extends Controller
        // dd($request->all());
        $validated=$request->validate([
             'name' => ['required', 'max:50'],
-            'affiliation_id' => ['required', 'max:1'],
-            'type_id' => ['required', 'max:1'],
-            'active' => ['required','boolean'],
+            // 'affiliation_id' => ['required', 'max:1'],
+            // 'type_id' => ['required', 'max:1'],
+            // 'active' => ['required','boolean'],
             'email' => ['required', 'max:50', 'email'],
-            'sector' => ['required', 'max:50']
+            // 'sector' => ['required', 'max:50']
 
 
             ]);
 
-        $member->update([
-            'name' => $request->name,
-            'affiliation_id' => $request->affiliation_id,
-            'email' => $request->email,
-            'phone'=>$request->phone,
-            'sector'=>$request->sector,
-            'type_id' => $request->type_id,           
-            'active' => $request->active
+        $member->update($request->all());
             
-        ]);
+      
 
         return Redirect::back()->with('success', 'Member Updated Successfully');
     }

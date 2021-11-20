@@ -45,6 +45,11 @@ class Participant extends Model
   {
       return $this->belongsTo(Registrant::class,'user_email','email');
   }
+ public function member_contacts()
+  {
+      return $this->belongsTo(MemberContacts::class,'user_email','contact');
+  }
+
   public function meeting()
   {
      return $this->belongsTo(Meeting::class,'meeting_id','meeting_id'); 

@@ -340,6 +340,8 @@ Route::put('/instances/{instance}', [InstanceController::class, 'update'])
         ->name('instances.update')
         ->middleware('auth');
 
+
+
 Route::delete('/instances/{instance}', [InstanceController::class, 'destroy'])
         ->name('instances.destroy')
         ->middleware('auth');
@@ -358,6 +360,14 @@ Route::get('/instance/{instance}', [InstanceController::class, 'generateTemplate
 
 Route::post('/instance/uploadParticipants', [InstanceController::class, 'uploadParticipants'])
         ->name('instance.uploadParticipants')
+        ->middleware('auth');
+
+Route::post('/instance/addParticipant', [InstanceController::class, 'addParticipant'])
+        ->name('instance.addParticipant')
+        ->middleware('auth');
+
+Route::post('/instance/removeParticipant', [InstanceController::class, 'removeParticipant'])
+        ->name('instance.removeParticipant')
         ->middleware('auth');
 
 

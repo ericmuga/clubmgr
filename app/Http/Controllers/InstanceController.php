@@ -11,7 +11,7 @@ use App\Models\Recording;
 use Carbon\Carbon;
 use App\Zoom;
 use Illuminate\Http\Request;
-
+use App\Paginater;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
@@ -19,7 +19,17 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
 use App\Imports\ParticipantsImport;
 use App\Exports\InstanceParticipantsExport;
+use App\Models\Member;
+use App\Models\MemberContacts;
+use Illuminate\Support\Facades\DB;
 use File;
+
+// use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+
 class InstanceController extends Controller
 {
     /**
@@ -34,6 +44,7 @@ class InstanceController extends Controller
       Excel::import(new ParticipantsImport($request->instance_id), request()->file('participantList')); 
       return redirect()->back()->with('success','Participants imported successfully');
     }    
+
     public function generateTemplate(Instance $instance, Request $request)
     {
           //get the template for this instance
@@ -48,20 +59,20 @@ class InstanceController extends Controller
              File::move(storage_path('app/'.$slug.'.xlsx'), public_path('templates/'.$slug.'.xlsx'));
             
      return Inertia::render('Instances/Edit',[   "participants"=>$instance->participants()
-            ->orderBy("name")
-             ->paginate(10)
-             ->through(fn($participant)=>([
-                 "name"=>$participant->name, 
-                 "id"=>$participant->id, 
-                 "category"=>(Registrant::where('email',$participant->user_email)->first())?Registrant::where('email',$participant->user_email)->first()->category:"",
-                 "club_name"=>(Registrant::where('email',$participant->user_email)->first())?Registrant::where('email',$participant->user_email)->first()->club_name:"",
-                 "join_time"=>Carbon::parse($participant->join_time)->toDateTimeString(), 
-                 "official_start_time"=>($instance->official_start_time==null)?null:Carbon::parse($instance->official_start_time)->toDateTimeString(), 
-                 "official_end_time"=>($instance->official_end_time==null)?null:Carbon::parse($instance->official_end_time)->toDateTimeString(), 
-                 "leave_time"=>Carbon::parse($participant->leave_time)->toDateTimeString(), 
-                 "duration"=>Carbon::parse($participant->leave_time)->diffInMinutes(Carbon::parse($participant->join_time)),
-                 "time_credit"=>$participant->timeCredit()
-             ])),
+                                                    ->orderBy("name")
+                                                     ->paginate(10)
+                                                     ->through(fn($participant)=>([
+                                                         "name"=>$participant->name, 
+                                                         "id"=>$participant->id, 
+                                                         "category"=>(Registrant::where('email',$participant->user_email)->first())?Registrant::where('email',$participant->user_email)->first()->category:"",
+                                                         "club_name"=>(Registrant::where('email',$participant->user_email)->first())?Registrant::where('email',$participant->user_email)->first()->club_name:"",
+                                                         "join_time"=>Carbon::parse($participant->join_time)->toDateTimeString(), 
+                                                         "official_start_time"=>($instance->official_start_time==null)?null:Carbon::parse($instance->official_start_time)->toDateTimeString(), 
+                                                         "official_end_time"=>($instance->official_end_time==null)?null:Carbon::parse($instance->official_end_time)->toDateTimeString(), 
+                                                         "leave_time"=>Carbon::parse($participant->leave_time)->toDateTimeString(), 
+                                                         "duration"=>Carbon::parse($participant->leave_time)->diffInMinutes(Carbon::parse($participant->join_time)),
+                                                         "time_credit"=>$participant->timeCredit()
+                                                     ])),
                 "instance"=>[
                                         "id"=>$instance->id,
                                         "uuid"=>$instance->uuid,
@@ -81,44 +92,195 @@ class InstanceController extends Controller
                         ])->with('success','Template generated successfully!');
  
     }
+
+     public static function attendanceList(Instance $instance, $search=null)
+        {
+            (!$search)?
+            $part= $instance->participants()
+                            ->select('user_email')
+                            ->groupBy('user_email')
+                            ->get()
+                            ->pluck('user_email'):
+           $part= Participant::where('instance_uuid',$instance->uuid)
+                              ->where('name', 'like', '%'.$search.'%')
+                              // ->orWhereHas('member_contacts', fn($q)=>($q->whereHas('member',fn($query)=>($query->where('type_id')))))
+                                ->select('user_email')
+                                ->groupBy('user_email')
+                                ->get()
+                                ->pluck('user_email');
+            
+             $list=collect([]);
+            $contact_exists=false; $registrant_exists=false;
+            foreach ($part as $value) 
+            {
+                
+                  $registrant=null;$member=null;$membership='';$category='';
+
+                  $contact_exists=MemberContacts::where('contact',$value)->exists();
+                  if ($contact_exists) $member=MemberContacts::firstWhere('contact',$value)->member()->first();
+
+                  $registrant_exists=Registrant::where('email',$value)->exists();
+                  if($registrant_exists)$registrant=Registrant::Where('email',$value)->first();
+                  
+
+                  if($member){
+
+                    switch ($member->type_id) {
+                        case 1:$membership='member'; break;
+                        case 2:$membership='inductee'; break;
+                        case 3:$membership='non-member'; break;
+                            // code...
+                            
+                        
+                        default:$membership='';
+                            // code...
+                            break;
+                    }
+
+                    switch ($member->affiliation_id) {
+                        case 1:$category='Rotarian'; break;
+                        case 2:$category='Rotaractor'; break;
+                        case 3:$category='Guest'; break;
+                           
+                        
+                        default:$category='';
+                            // code...
+                            break;
+                    }
+                  }
+
+                  //if ($value=='kabichongina@gmail.com') dd($membership);
+                  // dd($member->instanceAttended($instance->uuid));
+                $list->push([
+                                     'email'=>$value,
+                                      'name'=>($member!=null)?$member->name:'',
+                                 'club_name'=>($registrant!=null)?$registrant->club_name:'',
+                                'membership'=>($member!=null)?$membership:'',
+                                     'score'=>($member!=null)?$member->instanceAttended($instance->uuid):0,
+                                  'category'=>($member!=null)?$category:'',
+                             'instance_date'=>Carbon::parse($instance->official_start_time)->toDateString()
+                              
+                           ]);
+               
+            }
+            
+            if (($search=='Rotarian') 
+                // ||
+                //  ($search=='Rotaractor') ||
+                //  ($search=='Guest')
+             )
+                
+                return  $list->where('name','<>','')
+                             // ->where('category','=',$search)
+                              ->unique();
+
+            return  $list->where('name','<>','')->unique();
+           
+        }
+
+     public function paginate($items, $perPage = 5, $page = null, $options = [],$baseUrl=null)
+    {
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+
+
+        $lap= new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+
+         if ($baseUrl) {
+                    $lap->setPath($baseUrl);
+                }
+
+        return $lap;
+              
+    }
+
+     
+
     public function edit(Request $request, Instance $instance)
     {
-  
-        //fetch recording time
-        //   dd($instance->grading_rule()->first()->rule_name); 
+        // dd($request->all());
+
+        ($request->has('search'))?$list=$this->attendanceList($instance,$request->search):$list=$this->attendanceList($instance,null);
+        
+          $contacts=DB::table('participants')
+                        ->selectRaw('DISTINCT member_contacts.member_id')
+                        ->join('member_contacts','participants.user_email','=','member_contacts.contact')
+                         ->where('member_contacts.contact_type','email')
+                         // ->groupBy('member_id')
+                        ->where('participants.instance_uuid',$instance->uuid);
+                        // ->groupBy('member_contacts.contact')->get();
+       ($request->has('search2'))?
+                        $notAttended=DB::table('members')
+                            ->select('member_contacts.contact as email','members.name','members.id','member_contacts.contact_type')
+                            ->where('members.name','like','%'.$request->search2.'%')
+                            ->orWhere('member_contacts.contact','like','%'.$request->search2.'%')
+                            ->join('member_contacts','member_contacts.member_id','=','members.id')
+                            ->where('member_contacts.contact_type','email')
+                            ->whereNotIn('member_contacts.member_id',$contacts)
+                            ->get()
+
+                            :
+       $notAttended=DB::table('members')
+                            ->select('member_contacts.contact as email','members.name','members.id','member_contacts.contact_type')
+                            ->join('member_contacts','member_contacts.member_id','=','members.id')
+                            ->where('member_contacts.contact_type','email')
+                            ->whereNotIn('member_contacts.member_id',$contacts)
+                            ->get();
+
+           //remove duplicate members   
+
+           // dd($notAttended->first());              
+           $prevId=null;
+           foreach ($notAttended as $key=>$value) 
+           {
+               if ($value->contact_type=='phone') $notAttended->pull($key);
+               if ($value->id==$prevId) $notAttended->pull($key);
+               $prevId=$value->id;
+               
+               // if($instance->whereHas('participants',fn($q)=>($q->where('user_email','=',$value->email)))->count()>0)
+               //  $notAttended->pull($key);
 
 
-        return Inertia::render('Instances/Edit',[   "participants"=>$instance->participants()
-                                                                            ->orderBy("name")
-                                                                             ->paginate(10)
-                                                                             ->through(fn($participant)=>([
-                                                                                 "name"=>$participant->name, 
-                                                                                 "id"=>$participant->id, 
-                                                                                 "category"=>(Registrant::where('email',$participant->user_email)->first())?Registrant::where('email',$participant->user_email)->first()->category:"",
-                                                                                 "club_name"=>(Registrant::where('email',$participant->user_email)->first())?Registrant::where('email',$participant->user_email)->first()->club_name:"",
-                                                                                 "join_time"=>Carbon::parse($participant->join_time)->toDateTimeString(), 
-                                                                                 "official_start_time"=>($instance->official_start_time==null)?null:Carbon::parse($instance->official_start_time)->toDateTimeString(), 
-                                                                                 "official_end_time"=>($instance->official_end_time==null)?null:Carbon::parse($instance->official_end_time)->toDateTimeString(), 
-                                                                                 "leave_time"=>Carbon::parse($participant->leave_time)->toDateTimeString(), 
-                                                                                 "duration"=>Carbon::parse($participant->leave_time)->diffInMinutes(Carbon::parse($participant->join_time)),
-                                                                                 "time_credit"=>$participant->timeCredit()
-                                                                             ])),
-                                                   "instance"=>[
-                                                              "id"=>$instance->id,
-                                                              "uuid"=>$instance->uuid,
-                                                              "meeting_id"=>$instance->meeting_id,
-                                                              "topic"=>Meeting::firstWhere('meeting_id',$instance->meeting_id)->topic,
-                                                              "start_time"=>Carbon::parse($instance->start_time)->toDateTimeString(),
-                                                              "attendance_rule_id"=>$instance->attendance_rule_id,
+           }
+
+
+
+         
+          
+
+           return Inertia::render('Instances/Edit',[
+                                          'filters' =>$request->all('search','trashed'),
+                                          'filters2' =>$request->all('search2','trashed2'),
+                                    "members"=>$this->paginate($notAttended,5,null,[],$request->url()),
+                                    "participants"=>$this->paginate($list->sortBy('name'),5,null,[],$request->url()),
+                                           "instance"=>[
+                                                        "guests"=>$list->where('category','Guest')->count(),
+                                                        "guests_present"=>$list->where('category','Guest')->where('score',1)->count(),
+                                                        
+                                                        "members"=>$list->where('membership','member')->count(),
+                                                        "members_present"=>$list->where('membership','member')->where('score',1)->where('category','Rotarian')->count(),
+                                                        
+                                                        "Rotarian"=>$list->where('category','Rotarian')->count(),
+                                                        "Rotarian_present"=>$list->where('category','Rotarian')->where('score',1)->count(),
+                                                        
+                                                        "Rotaractor"=>$list->where('category','Rotaractor')->count(),
+                                                        "Rotaractor_present"=>$list->where('category','Rotaractor')->where('score',1)->count(),
+                                                        "marked_present"=>$list->where('score',1)->count(),
+                                                        "marked_absent"=>$list->where('score',0)->count(),
+                                                        "total"=>$list->count(),
+                                                        "Rotarian"=>$list->where('category','Rotarian')->count(),
+                                                               "id"=>$instance->id,
+                                                              
                                                               "official_start_time"=>($instance->official_start_time==null)?null:$instance->official_start_time->toDateTimeString(),
                                                               "official_end_time"=>($instance->official_end_time==null)?null:$instance->official_end_time->toDateTimeString(),
-                                                              "grading_rule_id"=>$instance->grading_rule_id,
+                                                              // "grading_rule_id"=>$instance->grading_rule_id,
                                                               "marked_for_grading"=>$instance->marked_for_grading,
                                                               "meeting"=>$instance->meeting->id
-                                                   ],
+                                                      ],
+
                                                    "gradingrules"=>collect(GradingRule::where('meeting_type',$instance->meeting()->first()->meeting_type=='Zoom'?1:2)->get()),
 
-                                                        ]);
+                                            ]);
     }
 
     /**
@@ -127,6 +289,42 @@ class InstanceController extends Controller
      * @return \Illuminate\Http\Response
      */
     
+
+
+    public function addParticipant(Request $request)
+    {
+       
+
+        $instance=Instance::find($request->instance);
+        if(!Participant::where('user_email',$request->member['email'])
+                       ->where('instance_uuid',$instance->uuid)->exists())
+        Participant::create([
+                               'meeting_id'=>$instance->meeting_id,
+                               'instance_uuid'=>$instance->uuid,
+                               'user_id'=>'',
+                               'name'=>$request->member['name'],
+                               'user_email'=>$request->member['email'],
+                               'join_time'=>$instance->official_start_time,
+                               'leave_time'=>$instance->official_end_time,
+                               'duration'=>Carbon::parse($instance->official_end_time)->diffInMinutes($instance->official_start_time),
+                               'registrant_id'=>''
+                             ]);
+
+        return redirect()->back()->with('success','Participant added successfully!');
+    }
+
+     public function removeParticipant(Request $request)
+    {
+       //dd($request->all());
+
+        $instance=Instance::find($request->instance);
+        Participant::where('user_email',$request->participant['email'])
+                       ->where('instance_uuid',$instance->uuid)->delete();
+        
+
+        return redirect()->back()->with('success','Participant removed successfully!');
+    }
+
 
 public static function createInstanceRegistrant($meeting_id,$registrant,$qs)
     {
@@ -403,11 +601,11 @@ public static function createInstanceRegistrant($meeting_id,$registrant,$qs)
     {
         //dd($request->all()); 
          $validated=$request->validate([
-                                            "uuid"=>['required'],
-                                            "meeting_id"=>['required'],
-                                            "start_time"=>['required'],
-                                            //  "official_end_time"=>['required'],
-                                            //  "official_start_time"=>['required']
+                                            //"uuid"=>['required'],
+                                            //"meeting_id"=>['required'],
+                                            //"start_time"=>['required'],
+                                             "official_end_time"=>['required'],
+                                             "official_start_time"=>['required']
 
 
  
@@ -416,13 +614,13 @@ public static function createInstanceRegistrant($meeting_id,$registrant,$qs)
 
          $instance->update([ 
 
-                                            "uuid"=>$request->uuid,
+                                            //"uuid"=>$request->uuid,
                                             "marked_for_grading"=>$request->marked_for_grading?1:0,
-                                            "meeting_id"=>$request->meeting_id,
-                                            "start_time"=>$request->start_time,
+                                            //"meeting_id"=>$request->meeting_id,
+                                            //"start_time"=>$request->start_time,
                                              "official_end_time"=>$request->official_end_time,
                                              "official_start_time"=>$request->official_start_time,
-                                             "grading_rule_id"=>$request->grading_rule_id
+                                             //"grading_rule_id"=>$request->grading_rule_id
 
 
 

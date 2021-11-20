@@ -105,3 +105,5 @@
 [Sun Nov 14 16:39:21.058356 2021] [ssl:warn] [pid 17384:tid 636] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
 [Sun Nov 14 16:39:21.605440 2021] [ssl:warn] [pid 2860:tid 660] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
 [Sun Nov 14 16:39:21.639279 2021] [ssl:warn] [pid 2860:tid 660] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Sun Nov 14 19:48:22.359701 2021] [php:error] [pid 2860:tid 1896] [client ::1:51007] PHP Fatal error:  Cannot redeclare App\\Http\\Controllers\\MemberController::destroy() in H:\\code\\clubmgr\\app\\Http\\Controllers\\MemberController.php on line 205
+[Wed Nov 17 13:49:54.465659 2021] [php:error] [pid 2860:tid 1228] [client ::1:50316] PHP Fatal error:  Can't use function return value in write context in H:\\code\\clubmgr\\app\\Models\\Member.php on line 56, referer: https://localhost/members
