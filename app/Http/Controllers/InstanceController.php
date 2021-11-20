@@ -237,8 +237,7 @@ class InstanceController extends Controller
                if ($value->id==$prevId) $notAttended->pull($key);
                $prevId=$value->id;
                
-               // if($instance->whereHas('participants',fn($q)=>($q->where('user_email','=',$value->email)))->count()>0)
-               //  $notAttended->pull($key);
+              
 
 
            }
@@ -318,7 +317,7 @@ class InstanceController extends Controller
        //dd($request->all());
 
         $instance=Instance::find($request->instance);
-        Participant::where('user_email',$request->participant['email'])
+        DB::table('participants')->where('user_email',$request->participant['email'])
                        ->where('instance_uuid',$instance->uuid)->delete();
         
 
