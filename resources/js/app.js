@@ -33,7 +33,7 @@ import {
 } from 'vue-tailwind/dist/components';
 
 const components = {
-  TTable,TInput
+  TTable,TInput,
 }
 
 const settings = {

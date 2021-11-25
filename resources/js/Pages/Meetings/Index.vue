@@ -35,93 +35,89 @@
 
            <div class="font-bold">
         
-
-        
-
-         <!--  <inertia-link class="btn-indigo" :href="route('zoom.meetings')">
-               <span class="hidden md:inline">Zoom Meetings</span>
-          </inertia-link> -->
-
-          <!-- <inertia-link class="btn-indigo" :href="route('zoom.accounts')">
-               <span class="hidden md:inline">Account</span>
-          </inertia-link> -->
-     
-     
       
     </div>
         </div>
          <!-- <advanced-filter @set-advanced-filters="setFilters"></advanced-filter> -->
-   
-    <table class="w-md flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
-      <thead class="text-white">
-        <tr v-for="meeting in meetings.data" :key="meeting.id" class="bg-teal-400 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
-          <!-- <th class="p-3 text-left">ID</th> -->
-          <th class="p-3 text-left">Topic</th>
-          <!-- <th class="p-3 text-left">Guest Speaker</th> -->
-          <th class="p-3 text-left">Type</th>
-          <th class="p-3 text-left">Start Time</th>
-          <th class="p-3 text-left">Meeting Day</th>
-          <th class="p-3 text-left">Occurences</th>
-          <th class="p-3 text-left">Past Instances</th>
-          <th class="p-3 text-left">Registrants</th>
-          <!-- <th class="p-3 text-left">Participants</th> -->
-          
-         </tr>
-        
-      </thead>
-      <tbody class="flex-1 sm:flex-none">
-        <tr class="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0"  v-for="meeting in meetings.data" :key="meeting.id">
-         <!--  <td class="border-grey-light border hover:bg-gray-100 p-3">  
-              {{meeting.meeting_id}}
-           </td> -->
-          <td class="border-grey-light border hover:bg-gray-100 p-3">
-              <inertia-link class="text-indigo-400" :href="route('meetings.edit',meeting.id)" tabindex="-1"> {{ meeting.topic }}
+     <div class=" flex justify-center w-full bg-gray-50 p-2 m-2">
+      <div class="w-sm mx-4 bg-gray-100 p-6">
+     
+        <h1 class="p-5 bg-gray-50 font-bold text-md text-center text-orange-400">Meeting Dates </h1>
+          <table class="w-md flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5 text-xs">
+            <thead class="text-white">
+              <tr v-for="meeting in meetings.data" :key="meeting.id" class="bg-teal-400 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
+                <th class="p-3 text-left">ID</th>
+                <th class="p-3 text-left">DATE</th>
+                <!-- <th class="p-3 text-left">Umbrella Meeting</th> -->
+                <th class="p-3 text-left">Meeting Type</th>
+              </tr>
+              
+            </thead>
+            <tbody class="flex-1 sm:flex-none">
+              <tr class="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0"  v-for="instance in instances.data" :key="instance.id">
+                <td class="border-grey-light border hover:bg-gray-100 p-3">
+                    <inertia-link class="text-indigo-400" :href="route('instances.edit',instance.id)" tabindex="-1"> {{ instance.id }}
+                    </inertia-link>
+                </td>
+                <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ instance.exactly}}</td>
+                <!-- <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ instance.meeting_id }}</td> -->
+                <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ instance.meeting_type }}</td>
+               
+              </tr>
+            </tbody>
+          </table>
+         <pagination class="mt-4" :links="instances.links" />
+     </div>
+
+     <div class="w-sm">
+       <h1 class="p-5 bg-gray-50 font-bold text-md text-center text-orange-400">Umbrella Meetings </h1>
+        <table class="w-md flex flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg h-sm">
+          <thead class="text-white">
+            <tr v-for="meeting in meetings.data" :key="meeting.id" class="bg-teal-400 flex flex-col flex-no wrap sm:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
+              <th class="p-1 text-left">Topic</th>
+              <th class="p-1 text-left">Type</th>
+              <!-- <th class="p-1 text-left">Start Time</th> -->
+              <th class="p-1 text-left">Meeting Day</th>
+              <th class="p-1 text-left">Occurences</th>
+              <th class="p-1 text-left">Past Instances</th>
+              <th class="p-1 text-left">Registrants</th>
+             </tr>
+            
+          </thead>
+          <tbody class="flex-1 sm:flex-none">
+            <tr class="flex flex-col flex-no wrap sm:table-row mb-1 sm:mb-0"  v-for="meeting in meetings.data" :key="meeting.id">
+             
+              <td class="border-grey-light border hover:bg-gray-100 p-1">
+                  <inertia-link class="text-indigo-400" :href="route('meetings.edit',meeting.id)" tabindex="-1"> {{ meeting.topic }}
+                  </inertia-link>
+              </td>
+               </td>
+               <td class="border-grey-light border hover:bg-gray-100 p-1 truncate"> {{ meeting.meeting_type }}</td>
+              <!-- <td class="border-grey-light border hover:bg-gray-100 p-1 truncate"> {{ meeting.start_time }}</td> -->
+              <td class="border-grey-light border hover:bg-gray-100 p-1 truncate"> {{ meeting.meeting_day }}</td>
+              <td class="border-grey-light border hover:bg-gray-100 p-1 text-indigo-400 text-center">
+                   <inertia-link class="" :href="route('meeting.occurrences',meeting.id)">
+                       {{ meeting.occurrences }}
+                  </inertia-link>
+              </td>
+              <td class="border-grey-light border hover:bg-gray-100 p-1 text-indigo-400 text-center">
+                 <inertia-link class="" :href="route('meeting.instances',meeting.id)">
+                     {{ meeting.instances }}
+                </inertia-link>
+              </td>
+             <td class="border-grey-light border hover:bg-gray-100 p-1 text-indigo-400 text-center">
+               <inertia-link class="" :href="route('meeting.registrants',meeting.id)">
+                  {{ meeting.registrants }}
               </inertia-link>
-          </td>
-           </td>
-          <!-- <td class="border-grey-light border hover:bg-gray-100 p-3"> {{ meeting.guest_speaker }}</td> -->
-          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.meeting_type }}</td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.start_time }}</td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.meeting_day }}</td>
-
-         <!--  <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.registrants }}</td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.registrants }}</td> -->
-          
-          <td class="border-grey-light border hover:bg-gray-100 p-3 text-indigo-400 text-center">
-           <inertia-link class="" :href="route('meeting.occurrences',meeting.id)">
-               {{ meeting.occurrences }}
-          </inertia-link>
-         </td>
-          <td class="border-grey-light border hover:bg-gray-100 p-3 text-indigo-400 text-center">
-           <inertia-link class="" :href="route('meeting.instances',meeting.id)">
-               {{ meeting.instances }}
-          </inertia-link>
-         </td>
-         
-
-          <td class="border-grey-light border hover:bg-gray-100 p-3 text-indigo-400 text-center">
-           <inertia-link class="" :href="route('meeting.registrants',meeting.id)">
-              {{ meeting.registrants }}
-          </inertia-link>
-         </td>
-
-        <!--  <td class="border-grey-light border hover:bg-gray-100 p-3 text-indigo-400 text-center">
-           <inertia-link class="" :href="route('meeting.participants',meeting.id)">
-               {{ meeting.participants }}
-          </inertia-link>
-         </td> -->
-       
-
-          <!-- <td class="border-grey-light border hover:bg-gray-100 p-3 truncate"> {{ meeting.participants }}</td> -->
-          
-           
-          
-         </tr>
-        <tr v-if="meetings.data.length === 0">
-          <td class="border-t px-2 py-4" colspan="4">No meetings found.</td>
-        </tr>
-      </tbody>
-    </table>
+             </td>
+           </tr>
+            <tr v-if="meetings.data.length === 0">
+              <td class="border-t px-2 py-4" colspan="4">No meetings found.</td>
+            </tr>
+       </tbody>
+     </table>
+   </div>
+  </div>
     <pagination class="mt-4" :links="meetings.links" />
   </div>
 
@@ -153,7 +149,8 @@ export default {
   },
   
    props:{
-    meetings:null,
+    meetings:Object,
+    instances:Object,
     zmeetings:0,
     pmeetings:0,
     filters:Object,

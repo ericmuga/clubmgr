@@ -2,7 +2,7 @@
   <div>
     <h1 class="mb-8 font-bold text-3xl">
       <inertia-link class="text-indigo-400 hover:text-indigo-600" :href="route('meetings')">Meetings</inertia-link>
-      <span class="text-indigo-400 font-medium">/</span> Create /{{form.meeting_id}}
+      <span class="text-indigo-400 font-medium">/</span>{{form.meeting_id}}
     </h1>
     <div class="bg-white rounded-md shadow overflow-hidden max-w-3xl">
       
@@ -22,7 +22,7 @@
             
           </select-input>
 
-          <text-input v-model="form.meeting_id" :error="form.errors.meeting_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Meeting ID"
+          <text-input v-model="form.meeting_id" :error="form.errors.meeting_id" class="pr-6 pb-8 w-full lg:w-1/2" label="Meeting ID" :value="meeting_id"
            disabled t/>
 
           
@@ -94,18 +94,18 @@ export default {
     meeting_prefix:null,
     registrants:Object,
     last_meeting_no:null,
+    meeting_id:'',
   },
   layout: Layout,
   remember: 'form',
 
   
   mounted(){
-
   },
   data() {
     return {
       form: this.$inertia.form({
-                                meeting_id:null,
+                                meeting_id:this.meeting_id,
                                 uuid: null,
                                 guest_speaker: null,
                                 start_time: null,

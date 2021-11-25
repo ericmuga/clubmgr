@@ -139,15 +139,15 @@ class MemberController extends Controller
           {
             $marked_present+=$member->instanceAttended($instance->instance_uuid);
           }
-//dd($marked_present);
+//dd($member->emails()->first()->contact);
+
          return Inertia::render('Members/MemberCard', [
             'member' => [
                 'id' => $member->id,
                 'name' => $member->name,
                 'member_id' => $member->member_id,
                 'active'=>$member->active,
-                // 'email' => $member->email,
-                'hashemail'=>md5(strtolower($member->email)),
+                'hashemail'=>($member->emails()->count()!=0)?md5(strtolower($member->emails()->first()->contact)):'',
                 'sector' => $member->sector,
                 'instances_attended'=>$instances->count(),
                 'marked_present'=>$marked_present,

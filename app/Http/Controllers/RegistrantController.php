@@ -85,6 +85,8 @@ class RegistrantController extends Controller
                                   'classification'=>array_key_exists(3, $registrant["custom_questions"])?$registrant["custom_questions"][3]["value"]:"",
                                   'create_time'=>$createTime
                              ]);
+            //create member and contact 
+
         }
 
 

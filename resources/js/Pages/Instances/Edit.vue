@@ -115,6 +115,23 @@
               statIconColor="bg-indigo-600"
             />
           </div>
+
+          <div class="items-center text-center justify-between p-2 bg-gray-100">
+
+            <Link href="/instance/export" method="post" :data="{instance_id:instance.id}" as="button" type="button" class="bg-teal-600 text-white p-1 rounded-md">
+                   Graded Excel
+                   <br>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13l-3 3m0 0l-3-3m3 3V8m0 13a9 9 0 110-18 9 9 0 010 18z" />
+                    </svg>
+            </Link>
+           
+           <div  v-if="instance.xlxs!=''" class="text-xs text-indigo-400">
+              <a :href="instance.xlxs">
+                Download Link
+              </a>
+            </div>
+          </div>  
           
         </div>
       </div>
@@ -154,6 +171,8 @@ import TrashedMessage from '@/Shared/TrashedMessage'
  import InstanceParticipants from './InstanceParticipants'
  import CardStats from "../Dashboard/CardStats.vue";
  import MemberForm from './MemberForm.vue'
+ import { Link } from '@inertiajs/inertia-vue'
+
  // import InstanceInstances from './InstanceInstances'
  // import InstanceOccurrences from './InstanceOccurrences'
  // import InstanceStats from './Partials/InstanceStats'
@@ -175,6 +194,7 @@ export default {
      InstanceParticipants,
      CardStats,
      MemberForm,
+     Link,
      // InstanceInstances,
      // InstanceOccurrences,
      // InstanceStats,

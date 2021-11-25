@@ -13,6 +13,7 @@ use App\Zoom;
 use Illuminate\Http\Request;
 use App\Paginater;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\InstanceExport;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
@@ -93,6 +94,8 @@ class InstanceController extends Controller
  
     }
 
+
+
      public static function attendanceList(Instance $instance, $search=null)
         {
             (!$search)?
@@ -152,13 +155,13 @@ class InstanceController extends Controller
                   //if ($value=='kabichongina@gmail.com') dd($membership);
                   // dd($member->instanceAttended($instance->uuid));
                 $list->push([
+                                     'name'=>($member!=null)?$member->name:'',
                                      'email'=>$value,
-                                      'name'=>($member!=null)?$member->name:'',
                                  'club_name'=>($registrant!=null)?$registrant->club_name:'',
                                 'membership'=>($member!=null)?$membership:'',
-                                     'score'=>($member!=null)?$member->instanceAttended($instance->uuid):0,
                                   'category'=>($member!=null)?$category:'',
-                             'instance_date'=>Carbon::parse($instance->official_start_time)->toDateString()
+                                  'score'=>($member!=null)?$member->instanceAttended($instance->uuid):0,
+                             // 'instance_date'=>Carbon::parse($instance->official_start_time)->toDateString()
                               
                            ]);
                
@@ -237,11 +240,15 @@ class InstanceController extends Controller
                if ($value->id==$prevId) $notAttended->pull($key);
                $prevId=$value->id;
                
-              
+          }
 
-
-           }
-
+            foreach ($list->pluck('email') as $value) 
+            {
+                 foreach ($notAttended as $key=>$v) 
+                   {
+                       if ($v->email==$value) $notAttended->pull($key);
+                   }
+            }
 
 
          
@@ -250,9 +257,11 @@ class InstanceController extends Controller
            return Inertia::render('Instances/Edit',[
                                           'filters' =>$request->all('search','trashed'),
                                           'filters2' =>$request->all('search2','trashed2'),
+                                          
                                     "members"=>$this->paginate($notAttended,5,null,[],$request->url()),
                                     "participants"=>$this->paginate($list->sortBy('name'),5,null,[],$request->url()),
                                            "instance"=>[
+                                                        'xlxs'=>$request->session()->get('instance_xls',''),
                                                         "guests"=>$list->where('category','Guest')->count(),
                                                         "guests_present"=>$list->where('category','Guest')->where('score',1)->count(),
                                                         
@@ -309,8 +318,81 @@ class InstanceController extends Controller
                                'registrant_id'=>''
                              ]);
 
-        return redirect()->back()->with('success','Participant added successfully!');
+        return redirect()->back();//->with('success','Participant added successfully!');
     }
+
+    public function addNewParticipant(Request $request)
+    {
+        //dd($request->all());
+        $instance=Instance::find($request->instance_id);
+
+        // dd($instance);
+       $validate=$request->validate([
+                                      // 'contact'=>['unique:member_contacts','required'],
+                                      'name'=>['required'],
+                                      'member_id'=>'sometimes|nullable|unique:members',
+                                    ]);
+
+        $member=Member::create([ 
+                         'member_id'=>($request->has('member_id'))?$request->member_id:null,
+                         'sector'=>($request->has('sector'))?$request->has('sector'):'',
+                         'name'=>$request->name,
+                         'type_id'=>$request->membership,
+                         'affiliation_id'=>$request->category,
+                         'active'=>1,
+                         'gender'=>$request->gender,    
+
+                     ]);
+
+     if(!MemberContacts::where('contact',$request->contact)->exists())
+             MemberContacts::create([ 'member_id'=>$member->id,
+                                       'contact_type'=>'email',
+                                       'contact'=>$request->contact,
+                                     ]);
+       
+       
+        switch ($request->category) {
+            case '1':$category='Rotarian'; break;
+            case '2':$category='Rotaractor'; break;
+            case '3':$category='Guest'; break;
+            default:$category='Guest';  break;
+        }
+if(!Registrant::where('email',$request->contact)
+             ->where('meeting_id',$instance->meeting_id)->exists())
+        Registrant::create([
+                            'meeting_id'=>$instance->meeting_id,
+                            'uuid'=>'',
+                            'occurrence_id'=>'',
+                            'email'=>$request->contact,
+                            'first_name'=>$request->name,
+                            'last_name'=>'',
+                            'category'=>$category,
+                            'club_name'=>($request->has('club_name'))?$request->has('club_name'):'',
+                            'invited_by'=>($request->has('invited_by'))?$request->has('invited_by'):'',
+                            'classification'=>($request->has('sector'))?$request->has('sector'):'',
+                            'create_time'=>now()
+
+                           ]);
+
+        if(!Participant::where('user_email',$request->contact)
+                       ->where('instance_uuid',$instance->uuid)
+                       ->where('user_id',$request->contact)
+                       ->exists())
+                        Participant::create([
+                                               'meeting_id'=>$instance->meeting_id,
+                                               'instance_uuid'=>$instance->uuid,
+                                               'user_id'=>$request->contact,
+                                               'name'=>$request->name,
+                                               'user_email'=>$request->contact,
+                                               'join_time'=>$instance->official_start_time,
+                                               'leave_time'=>$instance->official_end_time,
+                                               'duration'=>Carbon::parse($instance->official_end_time)->diffInMinutes($instance->official_start_time),
+                                               'registrant_id'=>''
+                                             ]);
+
+         return redirect()->back()->with('success','Participant added successfully!');
+    }
+
 
      public function removeParticipant(Request $request)
     {
@@ -320,8 +402,7 @@ class InstanceController extends Controller
         DB::table('participants')->where('user_email',$request->participant['email'])
                        ->where('instance_uuid',$instance->uuid)->delete();
         
-
-        return redirect()->back()->with('success','Participant removed successfully!');
+        return redirect()->back();//->with('success','Participant removed successfully!');
     }
 
 
@@ -549,6 +630,26 @@ public static function createInstanceRegistrant($meeting_id,$registrant,$qs)
 
 
 
+    }
+
+
+
+    public function export(Request $request,Instance $instance) 
+    {
+        $instance=Instance::find($request->instance_id);
+       // dd($instance);
+        $slug = Str::of(Carbon::now()->todateTimeString())->slug('_');  
+
+           Excel::store(new InstanceExport($instance), $slug.'.xlsx');
+             File::move(storage_path('app/'.$slug.'.xlsx'), public_path('reports/'.$slug.'.xlsx'));
+        
+             if ($request->session()->has('instance_xls'))
+                  {
+                    $request->session()->put('instance_xls', '/reports/'.$slug.'.xlsx');
+                }
+            else  $request->session()->push('instance_xls', '/reports/'.$slug.'.xlsx');
+
+        return redirect()->back()->with('success','Data Exported Successfully!');
     }
    
     public function create()

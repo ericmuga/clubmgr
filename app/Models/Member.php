@@ -104,7 +104,7 @@ class Member extends Model
          
         
 
-    public function contacts()
+    public function member_contacts()
     {
         return $this->hasMany(MemberContacts::class,'member_id','id');
     }

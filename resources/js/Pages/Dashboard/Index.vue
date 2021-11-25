@@ -34,7 +34,58 @@
            </div>
            <div class="p-4 flex-auto">
           <div class="relative h-350-px">
-            Content Goes here
+            <!-- <Link href="/dashboard/prospectiveInductees" 
+                  method="post" 
+                  as="button" 
+                  type="button"
+                  class="bg-teal-600 text-white p-2 rounded-md"
+            >
+                Prospective Inductees
+            </Link> -->
+
+
+
+            <div class="items-center text-center justify-between bg-gray-100 max-w-sm py-3">
+
+            <Link href="/dashboard/prospectiveInductees" method="post"  as="button" type="button" class="bg-teal-600 text-white p-1 rounded-md">
+                   Prospective Inductees
+                   <br>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13l-3 3m0 0l-3-3m3 3V8m0 13a9 9 0 110-18 9 9 0 010 18z" />
+                    </svg>
+            </Link>
+           
+           <div  v-if="meetings.xlxs!=''" class="text-xs text-indigo-400">
+              <a :href="meetings.xlxs">
+                Download Link
+              </a>
+            </div>
+          </div>
+
+         <div class="items-center text-center justify-between bg-gray-100 max-w-sm py-3">
+
+          <Link href="/dashboard/attendanceByMonth" 
+              method="post"  
+                  as="button" 
+                type="button"
+                :data="filteredForm" 
+
+                class="bg-teal-600 text-white p-1 rounded-md">
+                   Attendance By Month
+                   <br>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13l-3 3m0 0l-3-3m3 3V8m0 13a9 9 0 110-18 9 9 0 010 18z" />
+                    </svg>
+            </Link>
+            </div>
+          <!-- <div  v-if="meetings.xlxs!=''" class="text-xs text-indigo-400">
+              <a :href="meetings.xlxs">
+                Download Link
+              </a>
+            </div> -->
+
+
+
           </div>
         </div>
         </div> 
@@ -59,24 +110,20 @@ import Chart from './Chart'
 import HeaderStats from './HeaderStats'
 import TextInput from '@/Shared/TextInput'
 import throttle from 'lodash/throttle'
+import pickBy from 'lodash/pickBy'
+import { Link } from '@inertiajs/inertia-vue'
 
 // import axios from 'axios';
 
 export default {
- 
-  
-     
-   //   // axios.get('https://zoom.us/oauth/authorize?response_type=code&client_id=88qbzpueTkGI66J9dKWd1g&redirect_uri=https://localhost/show&state={userState}')
-
-   // },
-  
   metaInfo: { title: 'Dashboard' },
   layout: Layout,
   components:{
     Chart,
     HeaderStats,
     CardBarChart,
-    TextInput
+    TextInput,
+    Link,
   },
   props: {
           response:Array,
@@ -86,33 +133,35 @@ export default {
           meetings:Object,
           promotions:Object,
           guests:Object,
+          inductees:Object,
           
           
 
   },
   methods:{
 
-    refresher(){
-      alert('Gotcha!')
-    }
+    // refresher(){
+    //   alert('Gotcha!')
+    // }
   },
   
 
   data(){
         return {
-                  form:{endDate:'',startDate:''},
-                  url:"https://zoom.us/oauth/authorize?response_type=code&client_id="+this.client_id+"&redirect_uri="+this.callback_url+"&state={userState}"
+                  form:{endDate:null,startDate:null},
+                  url:"https://zoom.us/oauth/authorize?response_type=code&client_id="+this.client_id+"&redirect_uri="+this.callback_url+"&state={userState}",
+                  filteredForm:pickBy(this.form),
                } 
   },
 
  watch:{
         
-         form: {
-      deep: true,
-      handler: throttle(function() {
-        // this.$inertia.get(this.route('meetings'), pickBy(this.form), { preserveState: true })
-        this.refresher()
-      }, 150),
+     form: {
+              deep: true,
+              handler: throttle(function() {
+                // this.$inertia.get(this.route('meetings'), pickBy(this.form), { preserveState: true })
+                this.refresher()
+           }, 150),
     },
  }
 

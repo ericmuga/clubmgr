@@ -37,6 +37,19 @@ class MeetingController extends Controller
                                  
                                 "zmeetings"=>Meeting::where('meeting_type',1)->count(),
                                 "pmeetings"=>Meeting::where('meeting_type',2)->count(),
+                                "instances"=>Instance::whereHas('meeting',fn($query)=>($query->where('topic','like','%fello%')->orWhere('meeting_type',2)))
+                                                       ->orderBy('official_start_time','DESC')
+                                                       ->with('meeting')
+                                                       ->paginate(10)
+                                                       ->through(fn($instance)=>([
+
+                                                             'id'=>$instance->id,
+                                                             // 'date'=>$instance->official_end_time->diffForHumans(),
+                                                             'exactly'=>$instance->official_start_time->toDayDateTimeString(),
+                                                             'meeting_id'=>Meeting::firstWhere('meeting_id',$instance->meeting_id)->topic,
+                                                             'meeting_type'=>Meeting::firstWhere('meeting_id',$instance->meeting_id)->meeting_type,
+                                                            
+                                                       ])),
                                 'meetings' => Meeting::with('registrants')
                                                        ->where('topic','like','%fello%')->orWhere('meeting_type',2)
                                                             ->orderByDesc('start_time')
@@ -113,10 +126,14 @@ class MeetingController extends Controller
         //                                                               "membership"=>(DB::table('members')->where('email',$registrant->email)->exists())?"Member":"Non-member"
         //                                                           ]))     );
           
+        $meeting_id=$setup->meeting_prefix.($setup->last_meeting_no++);
+        //dd($meeting_id);
         return Inertia::render('Meetings/Create',
                                     [
                                         "last_meeting_no"=>$setup->last_meeting_no,
+
                                         "meeting_prefix"=>$setup->meeting_prefix,
+                                        "meeting_id"=>$meeting_id,
                                         "registrants"=>Registrant::paginate(15)
                                                                   ->through(fn($registrant)=>([
                                                                       "first_name"=>$registrant->first_name,
@@ -124,8 +141,8 @@ class MeetingController extends Controller
                                                                     "id"=>$registrant->id,
                                                                       "email"=>$registrant->email,
                                                                       "club_name"=>$registrant->club_name,
-                                                                      "membership"=>(DB::table('members')->where('email',$registrant->email)->exists())?"Member":"Non-member",
-                                                                      "ri_number"=>(DB::table('members')->where('email',$registrant->email)->exists())?$registrant->member->member_id:""
+                                                                      // "membership"=>(DB::table('members')->where('email',$registrant->email)->exists())?"Member":"Non-member",
+                                                                      // "ri_number"=>(DB::table('members')->where('email',$registrant->email)->exists())?$registrant->member->member_id:""
                                                                   ]))     
                                     ]);
         //return Redirect::back()->with('error','this function is under construction');

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Meeting;
 use App\Models\Instance;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class Participant extends Model
 {
@@ -41,7 +42,23 @@ class Participant extends Model
   protected $dates=[ 'join_time',
                           'leave_time','created_at','updated_at','deleted_at'];
 
-   public function registrant()
+ 
+ public function memberId()
+ {
+    if(DB::table('member_contacts')
+              ->select('member_id')
+              ->where('contact',$this->user_email)
+              ->exists())
+        return DB::table('member_contacts')
+              ->select('member_id')
+              ->where('contact',$this->user_email)
+              ->first()->member_id;
+    return '';
+
+  
+ }
+
+ public function registrant()
   {
       return $this->belongsTo(Registrant::class,'user_email','email');
   }

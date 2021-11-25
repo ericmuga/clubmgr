@@ -30,7 +30,7 @@
               statIconColor="bg-orange-500"
             />
           </div>
-          <div class="w-full lg:w-6/12 xl:w-3/12 px-4">
+         <!--  <div class="w-full lg:w-6/12 xl:w-3/12 px-4">
             <card-stats
               :statSubtitle="promotions.title"
               :statTitle="promotions.count"
@@ -41,7 +41,7 @@
               statIconName="fas fa-users"
               statIconColor="bg-gray-500"
             />
-          </div>
+          </div> -->
           <div class="w-full lg:w-6/12 xl:w-3/12 px-4">
             <card-stats
               :statSubtitle="guests.title"

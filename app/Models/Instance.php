@@ -20,6 +20,10 @@ class Instance extends Model
 
     */
     
+    public function scopeGradable($query)
+    {
+        return $query->where('marked_for_grading',true);
+    }
    
 
     public function meeting()

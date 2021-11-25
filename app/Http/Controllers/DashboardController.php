@@ -11,17 +11,255 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cookie;
-
+use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Models\ZoomUser;
 use App\Models\Meeting;
+use App\Models\Member;
+use App\Models\MemberContacts;
+use App\Models\Instance;
+use App\Models\Participant;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 // use App\Models\Instance;
+use App\Exports\MainCollectionExporter;
+use File;
 
 class DashboardController extends Controller
 {
     public $token='';
+
+
+    public static function pivotCollection($collection,$uniqeIdColumn,$spreadColumn,$totalColumns=false)
+    {
+        
+        //dd($collection);
+
+        $spreadColunms=collect([]);
+        foreach ($collection->groupBy($spreadColumn) as $key=>$value) 
+        {
+            $spreadColunms->push($key);
+        }
+           //dd( $spreadColunms);
+        
+
+        $finalCollection=collect([]);
+          foreach($collection->groupBy($uniqeIdColumn)as $key=>$value)
+            {
+                
+                 $memberColletion['member_id']=$key;
+                 for ($i=0; $i < $spreadColunms->count() ; $i++) 
+                 { 
+         
+
+                    $memberColletion[$spreadColunms[$i]]=($collection->where('member_id',$key)
+                                                                         ->where('instance_date',$spreadColunms[$i])
+                                                                         ->first())?
+                                                                      $collection->where('member_id',$key)
+                                                                                 ->where('instance_date',$spreadColunms[$i])
+                                                                                 ->first()['score']:0;
+                     
+                     
+                                                                                
+                 }
+                            
+              $finalCollection->push($memberColletion); 
+              $memberColletion=[];   
+             
+        }
+
+             $slug = Str::of(Carbon::now()->todateTimeString())->slug('_');  
+
+             Excel::store(new MainCollectionExporter($finalCollection), $slug.'.xlsx');
+             File::move(storage_path('app/'.$slug.'.xlsx'), public_path('reports/'.$slug.'.xlsx'));
+       // return MainCollectionExporter($finalCollection);
+             return redirect()->back()->with('success','List Exported Successfully');
+            
+     }
+
+    public static function getAttendanceByMonth(Request $request)
+    {
+        /*
+
+            get instances within date range grouped by year-month 
+            
+            grade participants in instances
+            foreach month, create new sheet, 
+            spread instance dates and grade all participants
+
+        */
+             // dd($request->all());
+           if(!($request->has('startDate')&&$request->has('endDate'))) return ('Please fill in the start and end dates');
+
+            // $instancesGroupedByMonth=DashboardController::getInstancesInDateRange($request->startDate,$request->endDate);
+
+            $participantsInInstances=DashboardController::getParticipantsInInstacnces($instancesGroupedByMonth->pluck('uuid'));
+           
+            $participantsAttended=collect([]);
+            foreach ($participantsInInstances as $key => $p) 
+            {
+              if($p->memberId()=='') DashboardController::addParticipantToMembers($p);
+              $member_id=$p->memberId();
+
+              $participantsAttended->push([ 'name'=>$p->name,
+                                            'email'=>$p->user_email,
+                                            'member_id'=>$member_id,
+                                            'instance_uuid'=>$p->instance_uuid,
+                                            'instance_date'=>$instancesGroupedByMonth->where('uuid',$p->instance_uuid)->first()->date,
+                                            'instance_month'=>$instancesGroupedByMonth->where('uuid',$p->instance_uuid)->first()->month,
+                                            'instance_year'=>$instancesGroupedByMonth->where('uuid',$p->instance_uuid)->first()->year,
+                                            'score'=>Member::find($member_id)->instanceAttended($p->instance_uuid)
+
+                                          ]);
+                    
+            }
+
+           //dd($participantsAttended);
+
+           return DashboardController::pivotCollection($participantsAttended,'member_id','instance_date');
+
+
+    }
+
+    public static function addParticipantToMembers($participant)
+    {
+        //['name','affiliation_id','type_id','active','phone','sector','gender'];  
+         $affiliation=3;
+        if($participant->registrant()->exists())
+        {
+            $registrant=$participant->registrant()->first();
+            switch ($registrant->category) 
+            {
+                case 'Rotarian':$affiliation=1; break;
+                case 'RTN':$affiliation=1; break;
+                case 'Rotaractor':$affiliation=2; break;
+                case 'RCT':$affiliation=2; break;
+                case 'RCT':$affiliation=2; break;
+                default:$affiliation=3; break;
+            }
+
+            $sector=$registrant->classification;
+
+        }
+
+        $member=Member::create([ 'name'=>$participant->name,
+                                 'affiliation_id'=>$affiliation,
+                                 'type_id'=>3,
+                                 'active'=>true,
+                                 'sector'=>$sector,
+                                 'gender'=>''
+
+                               ]);
+        if($participant->user_email!='') MemberContacts::create(['member_id'=>$member->id,'contact'=>$participant->user_email,'contact_type'=>'email']);
+
+
+
+
+    }
+
+
+    public static function getInstancesInDateRange($startDate,$endDate)
+    {
+       //dd('here');
+       return DB::table('instances')
+             ->selectRaw('uuid, DATE(official_start_time) date, YEAR(official_start_time) year, MONTH(official_start_time) month')
+             ->where('official_start_time','>=',$startDate)
+             ->where('official_start_time','<=',$endDate)
+             ->where('marked_for_grading',true)
+             ->groupBy('uuid','date', 'year','month')
+             ->orderBy('year','ASC')
+             ->orderBy('month','ASC')
+             ->orderBy('date','ASC')
+             ->get();
+
+    }
+
+    public static function getParticipantsInInstacnces($instances)
+    {
+        //dd($instances);
+        return Participant::whereIn('instance_uuid',$instances)->get();
+    }
+
+    public static function getProspectiveInductees(Request $request)
+    {
+       $guestList=Member::where('type_id',3)
+                         ->select('id')
+                        ->whereHas('member_contacts',
+                                       fn($q)=>($q->where('contact_type','=','email')
+                                                  ->whereHas('participants',fn($query)=>($query->whereHas('instance',
+                                                                                                             fn($qr)=>($qr->where('marked_for_grading','=',true)))))))->get();
+       //$guestList->pluck('id')->toArray());
      
-    public function index()
+       $fineList=DB::table('member_contacts')
+               ->select('member_id','instance_uuid','instances.official_start_time')
+               ->join('participants','participants.user_email','=','member_contacts.contact')
+               ->join('instances','instances.uuid','=','instance_uuid')
+               ->where('instances.marked_for_grading',true)
+               ->where('instances.official_start_time','<>',null)
+               ->where('contact_type','email')
+               ->whereIn('member_id',$guestList)
+               ->groupBy('member_id','instance_uuid','official_start_time')
+               ->orderBy('member_id','ASC')
+               ->orderBy('instances.official_start_time','ASC')
+               ->get();
+
+        $sixthMeeting=collect([]);                   
+        
+        $memberScore=0;
+        $prev=0;
+        foreach ($fineList as $item) 
+        {   
+             
+             $member=Member::find($item->member_id);
+             $email=MemberContacts::where('member_id',$member->id)
+                                  ->where('contact_type','email')
+                                  ->first()->contact;
+             if($prev==$item->member_id) $memberScore+=$member->instanceAttended($item->instance_uuid);
+             else $memberScore=Member::find($item->member_id)->instanceAttended($item->instance_uuid);
+                   
+             if($memberScore==6)
+               if(!$sixthMeeting->contains('email',$email)) 
+                {  
+                    $sixthMeeting->push(['name'=>$member->name,
+                                        'email'=>$email,
+                                         'sixthMeeting'=>Carbon::parse($item->official_start_time)->toDateString()
+                                        ]);
+                }
+                 
+            $prev=$item->member_id;
+        }
+      
+        $headings=[
+                    ['REPORT'=>"REPORT",'REPORT'=>'PROSPECTIVE INDUCTEES'],
+                    [],
+                    ['NAME'=>"NAME",'EMAIL'=>"EMAIL",'SIXTH MEETING'=>'SIXTH MEETING']
+
+                  ];
+        $sixthMeeting->prepend($headings);
+
+         
+       // dd($instance);
+        $slug = Str::of(Carbon::now()->todateTimeString())->slug('_');  
+
+           Excel::store(new MainCollectionExporter($sixthMeeting), $slug.'.xlsx');
+             File::move(storage_path('app/'.$slug.'.xlsx'), public_path('reports/'.$slug.'.xlsx'));
+        
+             if ($request->session()->has('inductees_xls'))
+                  {
+                    $request->session()->put('inductees_xls', '/reports/'.$slug.'.xlsx');
+                }
+            else  $request->session()->push('inductees_xls', '/reports/'.$slug.'.xlsx');
+
+        return redirect()->back()->with('success','Data Exported Successfully!');
+       
+
+
+    }
+
+
+    
+     
+    public function index(Request $request)
     {
 
           //prefetch zoom users in case of changes
@@ -34,11 +272,13 @@ class DashboardController extends Controller
                           ->join('member_contacts','members.id','=','member_contacts.member_id')
                           ->where('member_contacts.contact_type','=','email')
                           ->where('members.type_id',1);
+
+
         
        
           return Inertia::render('Dashboard/Index',[ "client_id"=>$setup->client_id,
                                                      "callback_url"=>$setup->callback_url,
-                                                     'meetings'=>[
+                                                     'meetings'=>[   'xlxs'=>$request->session()->get('inductees_xls',''),
                                                                    'count'=>DB::table('instances')->where('marked_for_grading',true)->count(),
                                                                    'title'=>'Gradable Meetings',
                                                                     'thisMonth'=> DB::table('instances')
@@ -79,11 +319,12 @@ class DashboardController extends Controller
                                                                    'asAt'=>Carbon::parse(DB::table('instances')
                                                                                   ->orderByDesc('start_time')->get()->first()->start_time)->diffForHumans()
                                                                 ],
-                                                      'promotions'=>[
-                                                                      'title'=>'Due for induction',
-                                                                      'count'=>8,
-                                                                      'thisMonth'=>6,
-                                                                   ],
+                                                      // 'promotions'=>[
+                                                      //                 'title'=>'Due for induction',
+                                                      //                 'count'=>$this->getProspectiveInductees()->count(),
+                                                      //                 'thisMonth'=>6,
+                                                      //              ],
+                                                           
 
                                                       'guests'=>[  
                                                                     'title'=>'guests',

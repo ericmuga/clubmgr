@@ -196,6 +196,13 @@ Route::get('/', [DashboardController::class, 'index'])
     ->name('dashboard')
     ->middleware('auth');
 
+Route::post('/dashboard/prospectiveInductees', [DashboardController::class, 'getProspectiveInductees'])
+    ->name('dashboard.prospectiveInductees')
+    ->middleware('auth');
+
+Route::post('/dashboard/attendanceByMonth', [DashboardController::class, 'getattendanceByMonth'])
+    ->name('dashboard.attendanceByMonth')
+    ->middleware('auth');
 
 Route::get('/show/{code?}/{state?}', [MeetingController::class, 'show'])
     ->name('show')
@@ -366,10 +373,17 @@ Route::post('/instance/addParticipant', [InstanceController::class, 'addParticip
         ->name('instance.addParticipant')
         ->middleware('auth');
 
+Route::post('/instance/addNewParticipant', [InstanceController::class, 'addNewParticipant'])
+        ->name('instance.addNewParticipant')
+        ->middleware('auth');
+
 Route::post('/instance/removeParticipant', [InstanceController::class, 'removeParticipant'])
         ->name('instance.removeParticipant')
         ->middleware('auth');
 
+Route::post('/instance/export', [InstanceController::class,'export'])
+        ->name('instances.export')
+        ->middleware('auth');
 
 
 //occurrences
