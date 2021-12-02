@@ -126,8 +126,12 @@ class MeetingController extends Controller
         //                                                               "membership"=>(DB::table('members')->where('email',$registrant->email)->exists())?"Member":"Non-member"
         //                                                           ]))     );
           
-        $meeting_id=$setup->meeting_prefix.($setup->last_meeting_no++);
-        //dd($meeting_id);
+        $setup->last_meeting_no=$setup->last_meeting_no+=1;
+        $setup->save();
+
+        $meeting_id=$setup->meeting_prefix.($setup->last_meeting_no);
+       
+        
         return Inertia::render('Meetings/Create',
                                     [
                                         "last_meeting_no"=>$setup->last_meeting_no,

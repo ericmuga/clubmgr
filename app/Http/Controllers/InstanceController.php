@@ -234,13 +234,15 @@ class InstanceController extends Controller
 
            // dd($notAttended->first());              
            $prevId=null;
-           foreach ($notAttended as $key=>$value) 
+           
+           //dd($notAttended);
+        foreach ($notAttended as $key=>$value) 
            {
                if ($value->contact_type=='phone') $notAttended->pull($key);
-               if ($value->id==$prevId) $notAttended->pull($key);
-               $prevId=$value->id;
+               //if ($value->id==$prevId) {$notAttended->pull($key);}
+                //$prevId=$value->id;
                
-          }
+           }
 
             foreach ($list->pluck('email') as $value) 
             {
@@ -309,7 +311,7 @@ class InstanceController extends Controller
         Participant::create([
                                'meeting_id'=>$instance->meeting_id,
                                'instance_uuid'=>$instance->uuid,
-                               'user_id'=>'',
+                               'user_id'=>md5($request->member['email'].now()->todateTimeString()),
                                'name'=>$request->member['name'],
                                'user_email'=>$request->member['email'],
                                'join_time'=>$instance->official_start_time,
@@ -337,6 +339,7 @@ class InstanceController extends Controller
                          'member_id'=>($request->has('member_id'))?$request->member_id:null,
                          'sector'=>($request->has('sector'))?$request->has('sector'):'',
                          'name'=>$request->name,
+
                          'type_id'=>$request->membership,
                          'affiliation_id'=>$request->category,
                          'active'=>1,
@@ -381,7 +384,7 @@ if(!Registrant::where('email',$request->contact)
                         Participant::create([
                                                'meeting_id'=>$instance->meeting_id,
                                                'instance_uuid'=>$instance->uuid,
-                                               'user_id'=>$request->contact,
+                                               'user_id'=>md5($request->contact.now()->todateTimeString()),
                                                'name'=>$request->name,
                                                'user_email'=>$request->contact,
                                                'join_time'=>$instance->official_start_time,

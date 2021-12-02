@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 class Participant extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+    // use SoftDeletes;
   /*
 
    $table->string('participant_id');

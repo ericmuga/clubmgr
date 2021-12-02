@@ -16,7 +16,7 @@ use Carbon\Carbon;
 class Member extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+    // use SoftDeletes;
     protected $dates = ['deleted_at'];
     protected $fillable=['name','email','affiliation_id','type_id','active','phone','sector','gender'];     
      

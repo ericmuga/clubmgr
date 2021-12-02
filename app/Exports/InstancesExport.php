@@ -3,16 +3,27 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use App\Exports\Sheets\InstancesPerMonthSheet;
 
-class InvoicesExport implements WithMultipleSheets
+class InstancesExport implements WithMultipleSheets
 {
     use Exportable;
 
-    protected $year;
+   
+    protected $collection;
+    protected $year_month;
+    protected $uniqeIdColumn;
+    protected $spreadColumn;
     
-    public function __construct(int $year)
+    public function __construct($collection,$year_month,$uniqeIdColumn,$spreadColumn)
     {
-        $this->year = $year;
+        $this->collection=$collection;
+        $this->year_month=$year_month;
+        $this->uniqeIdColumn=$uniqeIdColumn;
+        $this->spreadColumn=$spreadColumn;
+       
+      
+        
     }
 
     /**
@@ -22,9 +33,9 @@ class InvoicesExport implements WithMultipleSheets
     {
         $sheets = [];
 
-        for ($month = 1; $month <= 12; $month++) {
-            $sheets[] = new InvoicesPerMonthSheet($this->year, $month);
-        }
+          foreach($this->year_month as $year_month) 
+             $sheets[] = new InstancesPerMonthSheet($year_month,$this->collection,$this->uniqeIdColumn,$this->spreadColumn);
+       
 
         return $sheets;
     }

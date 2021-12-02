@@ -21,59 +21,41 @@ use App\Models\Instance;
 use App\Models\Participant;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
-// use App\Models\Instance;
 use App\Exports\MainCollectionExporter;
+
+use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use File;
+use App\Exports\InstancesExport;
 
-class DashboardController extends Controller
+
+
+class DashboardController extends Controller 
 {
-    public $token='';
+     public $token='';
+     // public function sheets(): array
+     //    {
+     //        $sheets = [];
+
+     //        for ($month = 1; $month <= 12; $month++) {
+     //            $sheets[] = '';//new InvoicesPerMonthSheet($this->year, $month);
+     //        }
+
+     //        return $sheets;
+     //    }
 
 
-    public static function pivotCollection($collection,$uniqeIdColumn,$spreadColumn,$totalColumns=false)
+    public static function pivotCollection($collection,$uniqeIdColumn,$spreadColumn)
     {
         
-        //dd($collection);
+       
 
-        $spreadColunms=collect([]);
-        foreach ($collection->groupBy($spreadColumn) as $key=>$value) 
-        {
-            $spreadColunms->push($key);
-        }
-           //dd( $spreadColunms);
-        
-
-        $finalCollection=collect([]);
-          foreach($collection->groupBy($uniqeIdColumn)as $key=>$value)
-            {
-                
-                 $memberColletion['member_id']=$key;
-                 for ($i=0; $i < $spreadColunms->count() ; $i++) 
-                 { 
+         $year_month=collect($collection->sortBy('instance_y_m')->pluck('instance_year_month')->unique()->flatten());  
+         $slug = Str::of(Carbon::now()->todateTimeString())->slug('_');  
+         Excel::store(new InstancesExport($collection,$year_month,$uniqeIdColumn,$spreadColumn), $slug.'.xlsx');
+         File::move(storage_path('app/'.$slug.'.xlsx'), public_path('reports/'.$slug.'.xlsx'));
          
-
-                    $memberColletion[$spreadColunms[$i]]=($collection->where('member_id',$key)
-                                                                         ->where('instance_date',$spreadColunms[$i])
-                                                                         ->first())?
-                                                                      $collection->where('member_id',$key)
-                                                                                 ->where('instance_date',$spreadColunms[$i])
-                                                                                 ->first()['score']:0;
-                     
-                     
-                                                                                
-                 }
-                            
-              $finalCollection->push($memberColletion); 
-              $memberColletion=[];   
-             
-        }
-
-             $slug = Str::of(Carbon::now()->todateTimeString())->slug('_');  
-
-             Excel::store(new MainCollectionExporter($finalCollection), $slug.'.xlsx');
-             File::move(storage_path('app/'.$slug.'.xlsx'), public_path('reports/'.$slug.'.xlsx'));
-       // return MainCollectionExporter($finalCollection);
-             return redirect()->back()->with('success','List Exported Successfully');
+         return redirect()->back()->with('success','List Exported Successfully');
             
      }
 
@@ -88,10 +70,15 @@ class DashboardController extends Controller
             spread instance dates and grade all participants
 
         */
-             // dd($request->all());
-           if(!($request->has('startDate')&&$request->has('endDate'))) return ('Please fill in the start and end dates');
+            $request->validate([ 'startDate'=>'required',
+                                 'endDate'=>'required'
 
-            // $instancesGroupedByMonth=DashboardController::getInstancesInDateRange($request->startDate,$request->endDate);
+
+
+                         ]);
+           // if(!($request->has('startDate')&&$request->has('endDate'))) return redirect()->back()->with('error','Please fill in the start and end dates');
+
+            $instancesGroupedByMonth=DashboardController::getInstancesInDateRange($request->startDate,$request->endDate);
 
             $participantsInInstances=DashboardController::getParticipantsInInstacnces($instancesGroupedByMonth->pluck('uuid'));
            
@@ -100,21 +87,21 @@ class DashboardController extends Controller
             {
               if($p->memberId()=='') DashboardController::addParticipantToMembers($p);
               $member_id=$p->memberId();
+              if ($member_id!='') 
 
-              $participantsAttended->push([ 'name'=>$p->name,
-                                            'email'=>$p->user_email,
-                                            'member_id'=>$member_id,
-                                            'instance_uuid'=>$p->instance_uuid,
-                                            'instance_date'=>$instancesGroupedByMonth->where('uuid',$p->instance_uuid)->first()->date,
-                                            'instance_month'=>$instancesGroupedByMonth->where('uuid',$p->instance_uuid)->first()->month,
-                                            'instance_year'=>$instancesGroupedByMonth->where('uuid',$p->instance_uuid)->first()->year,
-                                            'score'=>Member::find($member_id)->instanceAttended($p->instance_uuid)
+                      {$participantsAttended->push([ 'name'=>$p->name,
+                                                    'email'=>$p->user_email,
+                                                    'member_id'=>$member_id,
+                                                    'instance_uuid'=>$p->instance_uuid,
+                                                    'instance_date'=>$instancesGroupedByMonth->where('uuid',$p->instance_uuid)->first()->date,
+                                                    'instance_year_month'=>$instancesGroupedByMonth->where('uuid',$p->instance_uuid)->first()->year.'-'.$instancesGroupedByMonth->where('uuid',$p->instance_uuid)->first()->month,
+                                                    'instance_y_m'=>$instancesGroupedByMonth->where('uuid',$p->instance_uuid)->first()->year+$instancesGroupedByMonth->where('uuid',$p->instance_uuid)->first()->month,
+                                                    'score'=>Member::find($member_id)->instanceAttended($p->instance_uuid)
 
-                                          ]);
+                                                  ]);
+                    }
                     
             }
-
-           //dd($participantsAttended);
 
            return DashboardController::pivotCollection($participantsAttended,'member_id','instance_date');
 
@@ -124,7 +111,7 @@ class DashboardController extends Controller
     public static function addParticipantToMembers($participant)
     {
         //['name','affiliation_id','type_id','active','phone','sector','gender'];  
-         $affiliation=3;
+         $affiliation=3;$sector='';
         if($participant->registrant()->exists())
         {
             $registrant=$participant->registrant()->first();
@@ -150,6 +137,7 @@ class DashboardController extends Controller
                                  'gender'=>''
 
                                ]);
+
         if($participant->user_email!='') MemberContacts::create(['member_id'=>$member->id,'contact'=>$participant->user_email,'contact_type'=>'email']);
 
 

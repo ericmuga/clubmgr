@@ -68,7 +68,7 @@
               method="post"  
                   as="button" 
                 type="button"
-                :data="filteredForm" 
+                :data="form" 
 
                 class="bg-teal-600 text-white p-1 rounded-md">
                    Attendance By Month
@@ -110,7 +110,6 @@ import Chart from './Chart'
 import HeaderStats from './HeaderStats'
 import TextInput from '@/Shared/TextInput'
 import throttle from 'lodash/throttle'
-import pickBy from 'lodash/pickBy'
 import { Link } from '@inertiajs/inertia-vue'
 
 // import axios from 'axios';
@@ -149,8 +148,7 @@ export default {
   data(){
         return {
                   form:{endDate:null,startDate:null},
-                  url:"https://zoom.us/oauth/authorize?response_type=code&client_id="+this.client_id+"&redirect_uri="+this.callback_url+"&state={userState}",
-                  filteredForm:pickBy(this.form),
+                  url:"https://zoom.us/oauth/authorize?response_type=code&client_id="+this.client_id+"&redirect_uri="+this.callback_url+"&state={userState}"
                } 
   },
 
