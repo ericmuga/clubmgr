@@ -78,11 +78,11 @@
                     </svg>
             </Link>
             </div>
-          <!-- <div  v-if="meetings.xlxs!=''" class="text-xs text-indigo-400">
-              <a :href="meetings.xlxs">
+          <div  v-if="meetings.instances!=''" class="text-xs text-indigo-400">
+              <a :href="meetings.instances">
                 Download Link
               </a>
-            </div> -->
+            </div>
 
 
 

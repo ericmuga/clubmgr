@@ -45,7 +45,7 @@ class DashboardController extends Controller
      //    }
 
 
-    public static function pivotCollection($collection,$uniqeIdColumn,$spreadColumn)
+    public static function pivotCollection(Request $request,$collection,$uniqeIdColumn,$spreadColumn)
     {
         
        
@@ -54,6 +54,12 @@ class DashboardController extends Controller
          $slug = Str::of(Carbon::now()->todateTimeString())->slug('_');  
          Excel::store(new InstancesExport($collection,$year_month,$uniqeIdColumn,$spreadColumn), $slug.'.xlsx');
          File::move(storage_path('app/'.$slug.'.xlsx'), public_path('reports/'.$slug.'.xlsx'));
+
+             if ($request->session()->has('instances_xls'))
+                  {
+                    $request->session()->put('instances_xls', '/reports/'.$slug.'.xlsx');
+                }
+            else  $request->session()->push('instances_xls', '/reports/'.$slug.'.xlsx');
          
          return redirect()->back()->with('success','List Exported Successfully');
             
@@ -103,7 +109,7 @@ class DashboardController extends Controller
                     
             }
 
-           return DashboardController::pivotCollection($participantsAttended,'member_id','instance_date');
+           return DashboardController::pivotCollection($request,$participantsAttended,'member_id','instance_date');
 
 
     }
@@ -267,6 +273,7 @@ class DashboardController extends Controller
           return Inertia::render('Dashboard/Index',[ "client_id"=>$setup->client_id,
                                                      "callback_url"=>$setup->callback_url,
                                                      'meetings'=>[   'xlxs'=>$request->session()->get('inductees_xls',''),
+                                                                     'instances'=>$request->session()->get('instances_xls',''),
                                                                    'count'=>DB::table('instances')->where('marked_for_grading',true)->count(),
                                                                    'title'=>'Gradable Meetings',
                                                                     'thisMonth'=> DB::table('instances')
