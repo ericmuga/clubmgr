@@ -132,3 +132,7 @@
 [Thu Dec 02 13:05:35.887003 2021] [php:error] [pid 18732:tid 776] [client ::1:58775] PHP Fatal error:  Maximum execution time of 120 seconds exceeded in H:\\code\\clubmgr\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php on line 628, referer: https://localhost/
 [Thu Dec 02 13:07:45.526182 2021] [php:error] [pid 18732:tid 776] [client ::1:61006] PHP Fatal error:  Maximum execution time of 120 seconds exceeded in H:\\code\\clubmgr\\vendor\\laravel\\framework\\src\\Illuminate\\Collections\\helpers.php on line 58, referer: https://localhost/
 [Thu Dec 02 13:09:49.970621 2021] [php:error] [pid 18732:tid 776] [client ::1:60205] PHP Fatal error:  Maximum execution time of 120 seconds exceeded in H:\\code\\clubmgr\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Connection.php on line 345, referer: https://localhost/
+[Fri Dec 03 09:57:02.742904 2021] [ssl:warn] [pid 3600:tid 488] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Fri Dec 03 09:57:02.777968 2021] [ssl:warn] [pid 3600:tid 488] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Fri Dec 03 09:57:03.280819 2021] [ssl:warn] [pid 14388:tid 644] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name
+[Fri Dec 03 09:57:03.313542 2021] [ssl:warn] [pid 14388:tid 644] AH01909: localhost:443:0 server certificate does NOT include an ID which matches the server name

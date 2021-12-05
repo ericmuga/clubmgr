@@ -12,11 +12,13 @@ use App\Models\Type;
 use App\Models\MemberContacts;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\GradingRule;
+
 
 class Member extends Model
 {
     use HasFactory;
-    // use SoftDeletes;
+     use SoftDeletes;
     protected $dates = ['deleted_at'];
     protected $fillable=['name','email','affiliation_id','type_id','active','phone','sector','gender'];     
      
@@ -31,7 +33,8 @@ class Member extends Model
     
     public function instanceAttended($uuid)
     {
-       // if($uuid=='4jYl7bZuTkWkAanHTpHAIA==') dd('Here');
+       $rule=GradingRule::first();
+
 
        $memberEmails=DB::table('member_contacts')
                   ->select('contact')
@@ -40,7 +43,7 @@ class Member extends Model
 
        if(DB::table('participants')
                  ->join('instances', fn($q)=>($q->on('participants.instance_uuid','=','instances.uuid')
-                                                  ->on('participants.join_time','<=','instances.official_end_time')
+                                                  // ->on('participants.join_time','<=','instances.official_end_time')
                                     ))
                  ->where('instances.uuid',$uuid)
                  ->where('instances.marked_for_grading',true)
@@ -51,9 +54,9 @@ class Member extends Model
 
 
        $logins=DB::table('participants')
-                 ->selectRaw('participant_id,join_time,leave_time')
+                 ->selectRaw('participant_id,join_time,leave_time,instances.official_end_time')
                  ->join('instances', fn($q)=>($q->on('participants.instance_uuid','=','instances.uuid')
-                                                  ->on('participants.join_time','<=','instances.official_end_time')
+                                                  // ->on('participants.join_time','<=','instances.official_end_time')
                                     ))
                  ->whereIn('user_email',$memberEmails)
                  ->where('instances.uuid',$uuid)
@@ -68,11 +71,12 @@ class Member extends Model
 
            foreach($logins as $login)
            {
+              if (($timer==0)&&($login->join_time>$login->official_end_time)) return 0;
              //dd((ABS(Carbon::parse($login->join_time)->diffInMinutes($login->leave_time))));
              $timer++;
 
 
-                 if ((ABS(Carbon::parse($login->join_time)->diffInMinutes($login->leave_time))>=30) and ($timer==1)) return 1;
+                 if ((ABS(Carbon::parse($login->join_time)->diffInMinutes($login->leave_time))>=$rule->threshhold) and ($timer==1)) return 1;
                  else
                  { //dd('here');
                     if ($timer==1) 
@@ -81,11 +85,11 @@ class Member extends Model
                         $min+=ABS(Carbon::parse($login->join_time)->diffInMinutes($login->leave_time));
                     }
                     else{
-                        if(ABS(Carbon::parse($prevendTime)->diffInMinutes($login->join_time))<=30)
+                        if(ABS(Carbon::parse($prevendTime)->diffInMinutes($login->join_time))<=$rule->threshhold)
                           {
                             
                             $min+=ABS(Carbon::parse($login->join_time)->diffInMinutes($login->leave_time));
-                            if ($min>=30) return 1; 
+                            if ($min>=$rule->threshhold) return 1; 
                             $prevendTime=$login->leave_time;
                           }
                       }
@@ -144,10 +148,10 @@ class Member extends Model
     }
 
 
-    public function makeups ()
-    {
-        return $this->hasMany(Makeup::class,'email','email');
-    }
+    // public function makeups ()
+    // {
+    //     return $this->hasMany(Makeup::class,'email','email');
+    // }
 
 
      public function resolveRouteBinding($value, $field = null)

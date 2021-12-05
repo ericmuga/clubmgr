@@ -11,7 +11,7 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ZoomController;
 use App\Http\Controllers\MeetingController;
-use App\Http\Controllers\MakeupController;
+use App\Http\Controllers\MakeUpEventController;
 use App\Http\Controllers\RegistrantController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\InstanceController;
@@ -35,263 +35,263 @@ use Illuminate\Support\Facades\Route;
 // Auth
 
 Route::get('login', [AuthenticatedSessionController::class, 'create'])
-    ->name('login')
-    ->middleware('guest');
+->name('login')
+->middleware('guest');
 
 Route::post('login', [AuthenticatedSessionController::class, 'store'])
-    ->name('login.store')
-    ->middleware('guest');
+->name('login.store')
+->middleware('guest');
 
 Route::delete('logout', [AuthenticatedSessionController::class, 'destroy'])
-    ->name('logout');
+->name('logout');
 
 
 // Users
 
 Route::get('users', [UsersController::class, 'index'])
-    ->name('users')
-    ->middleware('auth');
+->name('users')
+->middleware('auth');
 
 Route::get('users/create', [UsersController::class, 'create'])
-    ->name('users.create')
-    ->middleware('auth');
+->name('users.create')
+->middleware('auth');
 
 Route::post('users', [UsersController::class, 'store'])
-    ->name('users.store')
-    ->middleware('auth');
+->name('users.store')
+->middleware('auth');
 
 Route::get('users/{user}/edit', [UsersController::class, 'edit'])
-    ->name('users.edit')
-    ->middleware('auth');
+->name('users.edit')
+->middleware('auth');
 
 Route::put('users/{user}', [UsersController::class, 'update'])
-    ->name('users.update')
-    ->middleware('auth');
+->name('users.update')
+->middleware('auth');
 
 Route::delete('users/{user}', [UsersController::class, 'destroy'])
-    ->name('users.destroy')
-    ->middleware('auth');
+->name('users.destroy')
+->middleware('auth');
 
 Route::put('users/{user}/restore', [UsersController::class, 'restore'])
-    ->name('users.restore')
-    ->middleware('auth');
+->name('users.restore')
+->middleware('auth');
 
 // Organizations
 
 Route::get('organizations', [OrganizationsController::class, 'index'])
-    ->name('organizations')
-    ->middleware('auth');
+->name('organizations')
+->middleware('auth');
 
 Route::get('organizations/create', [OrganizationsController::class, 'create'])
-    ->name('organizations.create')
-    ->middleware('auth');
+->name('organizations.create')
+->middleware('auth');
 
 Route::post('organizations', [OrganizationsController::class, 'store'])
-    ->name('organizations.store')
-    ->middleware('auth');
+->name('organizations.store')
+->middleware('auth');
 
 Route::get('organizations/{organization}/edit', [OrganizationsController::class, 'edit'])
-    ->name('organizations.edit')
-    ->middleware('auth');
+->name('organizations.edit')
+->middleware('auth');
 
 Route::put('organizations/{organization}', [OrganizationsController::class, 'update'])
-    ->name('organizations.update')
-    ->middleware('auth');
+->name('organizations.update')
+->middleware('auth');
 
 Route::delete('organizations/{organization}', [OrganizationsController::class, 'destroy'])
-    ->name('organizations.destroy')
-    ->middleware('auth');
+->name('organizations.destroy')
+->middleware('auth');
 
 Route::put('organizations/{organization}/restore', [OrganizationsController::class, 'restore'])
-    ->name('organizations.restore')
-    ->middleware('auth');
+->name('organizations.restore')
+->middleware('auth');
 
 // Contacts
 
 Route::get('contacts', [ContactsController::class, 'index'])
-    ->name('contacts')
-    ->middleware('auth');
+->name('contacts')
+->middleware('auth');
 
 Route::get('contacts/create', [ContactsController::class, 'create'])
-    ->name('contacts.create')
-    ->middleware('auth');
+->name('contacts.create')
+->middleware('auth');
 
 Route::post('contacts', [ContactsController::class, 'store'])
-    ->name('contacts.store')
-    ->middleware('auth');
+->name('contacts.store')
+->middleware('auth');
 
 Route::get('contacts/{contact}/edit', [ContactsController::class, 'edit'])
-    ->name('contacts.edit')
-    ->middleware('auth');
+->name('contacts.edit')
+->middleware('auth');
 
 Route::put('contacts/{contact}', [ContactsController::class, 'update'])
-    ->name('contacts.update')
-    ->middleware('auth');
+->name('contacts.update')
+->middleware('auth');
 
 Route::delete('contacts/{contact}', [ContactsController::class, 'destroy'])
-    ->name('contacts.destroy')
-    ->middleware('auth');
+->name('contacts.destroy')
+->middleware('auth');
 
 Route::put('contacts/{contact}/restore', [ContactsController::class, 'restore'])
-    ->name('contacts.restore')
-    ->middleware('auth');
+->name('contacts.restore')
+->middleware('auth');
 
 // Reports
 
 Route::get('/reporter', [ReportsController::class, 'index'])
-    ->name('reports')
-    ->middleware('auth');
+->name('reports')
+->middleware('auth');
 
 // Images
 
 Route::get('/img/{path}', [ImagesController::class, 'show'])
-    ->where('path', '.*')
-    ->name('image');
+->where('path', '.*')
+->name('image');
 
 // Members
 Route::get('members', [MemberController::class, 'index'])
-    ->name('members')
-    ->middleware('auth');
+->name('members')
+->middleware('auth');
 
 Route::get('members/create', [MemberController::class, 'create'])
-    ->name('members.create')
-    ->middleware('auth');
+->name('members.create')
+->middleware('auth');
 
 Route::post('members/store', [MemberController::class, 'store'])
-    ->name('members.store')
-    ->middleware('auth');
+->name('members.store')
+->middleware('auth');
 
 Route::get('members/{member}/edit', [MemberController::class, 'edit'])
 ->name('members.edit')
 ->middleware('auth');
 
 Route::put('members/{member}', [MemberController::class, 'update'])
-    ->name('members.update')
-    ->middleware('auth');
+->name('members.update')
+->middleware('auth');
 
 Route::get('members/{member}/contacts',[MemberContactsController::class,'membercontacts'])
-       ->name('member.contacts')
-       ->middleware('auth');
-    
+->name('member.contacts')
+->middleware('auth');
+
 Route::post('members/contact/store',[MemberContactsController::class,'store'])
-       ->name('member.savecontact')
-       ->middleware('auth');
+->name('member.savecontact')
+->middleware('auth');
 
 Route::delete('membercontacts/{memberContact}',[MemberContactsController::class,'destroy'])
-       ->name('member.deletecontact')
-       ->middleware('auth');
+->name('member.deletecontact')
+->middleware('auth');
 
 Route::put('members/restore/{member}', [MemberController::class, 'restore'])
-    ->name('members.restore')
-    ->middleware('auth');
+->name('members.restore')
+->middleware('auth');
 
 Route::delete('members/{member}', [MemberController::class, 'destroy'])
-    ->name('members.destroy')
-    ->middleware('auth');
+->name('members.destroy')
+->middleware('auth');
 
     //zoom
 // Dashboard
 
 Route::get('/', [DashboardController::class, 'index'])
-    ->name('dashboard')
-    ->middleware('auth');
+->name('dashboard')
+->middleware('auth');
 
 Route::post('/dashboard/prospectiveInductees', [DashboardController::class, 'getProspectiveInductees'])
-    ->name('dashboard.prospectiveInductees')
-    ->middleware('auth');
+->name('dashboard.prospectiveInductees')
+->middleware('auth');
 
 Route::post('/dashboard/attendanceByMonth', [DashboardController::class, 'getattendanceByMonth'])
-    ->name('dashboard.attendanceByMonth')
-    ->middleware('auth');
+->name('dashboard.attendanceByMonth')
+->middleware('auth');
 
 Route::get('/show/{code?}/{state?}', [MeetingController::class, 'show'])
-    ->name('show')
-    ->middleware('auth');
+->name('show')
+->middleware('auth');
 
 
  //Zoom setups
 
 Route::get('/zoom', [ZoomController::class, 'index'])
-    ->name('setup')
-    ->middleware('auth');
+->name('setup')
+->middleware('auth');
 
 Route::post('/zoom', [ZoomController::class, 'create'])
-    ->name('setup.create')
-    ->middleware('auth');
+->name('setup.create')
+->middleware('auth');
 
 Route::get('/zoom/{setup}/edit', [ZoomController::class, 'edit'])
-    ->name('setup.edit')
-    ->middleware('auth');
+->name('setup.edit')
+->middleware('auth');
 
 
 Route::put('/zoom/{setup}', [ZoomController::class, 'update'])
-    ->name('setup.update')
-    ->middleware('auth');
+->name('setup.update')
+->middleware('auth');
 
 Route::delete('/zoom/{setup}', [ZoomController::class, 'destroy'])
-        ->name('setup.delete')
-        ->middleware('auth');
-    
- Route::get('/zoom/refresh', [MeetingController::class, 'refreshUsers'])
-        ->name('zoom.refresh')
-        ->middleware('auth');
+->name('setup.delete')
+->middleware('auth');
+
+Route::get('/zoom/refresh', [MeetingController::class, 'refreshUsers'])
+->name('zoom.refresh')
+->middleware('auth');
 
 Route::get('/zoom/meetings', [MeetingController::class, 'meetings'])
-        ->name('zoom.meetings')
-        ->middleware('auth');
+->name('zoom.meetings')
+->middleware('auth');
 
 Route::get('/zoom/account', [DashboardController::class, 'participants'])
-        ->name('zoom.accounts')
-        ->middleware('auth');
+->name('zoom.accounts')
+->middleware('auth');
 
 //meetings
 
 Route::get('/meetings', [MeetingController::class, 'index'])
-        ->name('meetings')
-        ->middleware('auth');
+->name('meetings')
+->middleware('auth');
 
 Route::get('/meetings/filtered', [MeetingController::class, 'filtered'])
-        ->name('meetings.filtered')
-        ->middleware('auth');
+->name('meetings.filtered')
+->middleware('auth');
 
 Route::get('/meetings/create', [MeetingController::class, 'create'])
-        ->name('meetings.create')
-        ->middleware('auth');
+->name('meetings.create')
+->middleware('auth');
 
- Route::get('/meetings/{meeting}/edit', [MeetingController::class, 'edit'])
-        ->name('meetings.edit')
-        ->middleware('auth');
+Route::get('/meetings/{meeting}/edit', [MeetingController::class, 'edit'])
+->name('meetings.edit')
+->middleware('auth');
 
 Route::post('/meetings', [MeetingController::class, 'store'])
-        ->name('meetings.store')
-        ->middleware('auth');
+->name('meetings.store')
+->middleware('auth');
 
 Route::put('/meetings/{meeting}', [MeetingController::class, 'update'])
-        ->name('meetings.update')
-        ->middleware('auth');
+->name('meetings.update')
+->middleware('auth');
 
 Route::delete('/meetings/{meeting}', [MeetingController::class, 'destroy'])
-        ->name('meetings.destroy')
-        ->middleware('auth');
+->name('meetings.destroy')
+->middleware('auth');
 
 
- Route::get('/meetings/{meeting}/participants', [MeetingController::class, 'fetchMeetingParticipants'])
-        ->name('meeting.participants')
-        ->middleware('auth'); 
+Route::get('/meetings/{meeting}/participants', [MeetingController::class, 'fetchMeetingParticipants'])
+->name('meeting.participants')
+->middleware('auth'); 
 
 
- Route::get('/meetings/{meeting}/registrants', [MeetingController::class, 'fetchMeetingRegistrants'])
-        ->name('meeting.registrants')
-        ->middleware('auth'); 
+Route::get('/meetings/{meeting}/registrants', [MeetingController::class, 'fetchMeetingRegistrants'])
+->name('meeting.registrants')
+->middleware('auth'); 
 
- Route::get('/meetings/{meeting}/instances', [MeetingController::class, 'fetchMeetingInstances'])
-        ->name('meeting.instances')
-        ->middleware('auth');  
+Route::get('/meetings/{meeting}/instances', [MeetingController::class, 'fetchMeetingInstances'])
+->name('meeting.instances')
+->middleware('auth');  
 
 
- Route::get('/meetings/{meeting}/occurrences', [MeetingController::class, 'fetchMeetingOccurrences'])
-        ->name('meeting.occurrences')
-        ->middleware('auth');     
+Route::get('/meetings/{meeting}/occurrences', [MeetingController::class, 'fetchMeetingOccurrences'])
+->name('meeting.occurrences')
+->middleware('auth');     
     //authorize            
     //authorize      
     //authorize
@@ -300,212 +300,216 @@ Route::delete('/meetings/{meeting}', [MeetingController::class, 'destroy'])
 
 
 Route::get('/gradingrules', [GradingRuleController::class, 'index'])
-        ->name('gradingrules')
-        ->middleware('auth');
+->name('gradingrules')
+->middleware('auth');
 
 Route::get('/gradingrules/create', [GradingRuleController::class, 'create'])
-        ->name('gradingrules.create')
-        ->middleware('auth');
+->name('gradingrules.create')
+->middleware('auth');
 
 
 Route::get('/gradingrules/{gradingrule}/edit', [GradingRuleController::class, 'edit'])
-        ->name('gradingrules.edit')
-        ->middleware('auth');
+->name('gradingrules.edit')
+->middleware('auth');
 
 Route::put('/gradingrules/{gradingrule}', [GradingRuleController::class, 'update'])
-        ->name('gradingrules.update')
-        ->middleware('auth');
+->name('gradingrules.update')
+->middleware('auth');
 
 
 Route::post('/gradingrules', [GradingRuleController::class, 'store'])
-        ->name('gradingrules.store')
-        ->middleware('auth');
+->name('gradingrules.store')
+->middleware('auth');
 
 
 Route::delete('/gradingrules/{gradingrule}/delete', [GradingRuleController::class, 'delete'])
-        ->name('gradingrules.delete')
-        ->middleware('auth');
+->name('gradingrules.delete')
+->middleware('auth');
         ///////////////////End of grading rules////////////////////////
 
 
 
 ///instances 
 Route::get('/instances', [InstanceController::class, 'index'])
-        ->name('instances')
-        ->middleware('auth');
+->name('instances')
+->middleware('auth');
 Route::get('/instances/create', [InstanceController::class, 'create'])
-        ->name('instances.create');
+->name('instances.create');
 
 Route::post('/instances', [InstanceController::class, 'store'])
-        ->name('instances.store');
+->name('instances.store');
 
 Route::get('/instances/{instance}/edit', [InstanceController::class, 'edit'])
-        ->name('instances.edit')
-        ->middleware('auth');
+->name('instances.edit')
+->middleware('auth');
 
 Route::put('/instances/{instance}', [InstanceController::class, 'update'])
-        ->name('instances.update')
-        ->middleware('auth');
+->name('instances.update')
+->middleware('auth');
 
 
 
 Route::delete('/instances/{instance}', [InstanceController::class, 'destroy'])
-        ->name('instances.destroy')
-        ->middleware('auth');
+->name('instances.destroy')
+->middleware('auth');
 
 Route::get('/instance/{instance}/registrants', [InstanceController::class, 'fetchInstanceRegistrants'])
-        ->name('instance.registrants')
-        ->middleware('auth');
+->name('instance.registrants')
+->middleware('auth');
 
 Route::get('/instance/{instance}/participants', [InstanceController::class, 'fetchInstanceParticipants'])
-        ->name('instance.participants')
-        ->middleware('auth');
+->name('instance.participants')
+->middleware('auth');
 
 Route::get('/instance/{instance}', [InstanceController::class, 'generateTemplate'])
-        ->name('instance.generateTemplate')
-        ->middleware('auth');
+->name('instance.generateTemplate')
+->middleware('auth');
 
 Route::post('/instance/uploadParticipants', [InstanceController::class, 'uploadParticipants'])
-        ->name('instance.uploadParticipants')
-        ->middleware('auth');
+->name('instance.uploadParticipants')
+->middleware('auth');
 
 Route::post('/instance/addParticipant', [InstanceController::class, 'addParticipant'])
-        ->name('instance.addParticipant')
-        ->middleware('auth');
+->name('instance.addParticipant')
+->middleware('auth');
 
 Route::post('/instance/addNewParticipant', [InstanceController::class, 'addNewParticipant'])
-        ->name('instance.addNewParticipant')
-        ->middleware('auth');
+->name('instance.addNewParticipant')
+->middleware('auth');
 
 Route::post('/instance/removeParticipant', [InstanceController::class, 'removeParticipant'])
-        ->name('instance.removeParticipant')
-        ->middleware('auth');
+->name('instance.removeParticipant')
+->middleware('auth');
 
 Route::post('/instance/export', [InstanceController::class,'export'])
-        ->name('instances.export')
-        ->middleware('auth');
+->name('instances.export')
+->middleware('auth');
 
 
 //occurrences
 Route::get('/occurs', [OccurrenceController::class, 'index'])
-        ->name('occurs')
-        ->middleware('auth');
+->name('occurs')
+->middleware('auth');
 Route::get('/occurs/create', [OccurrenceController::class, 'create'])
-        ->name('occurs.create');
+->name('occurs.create');
 
 Route::post('/occurs', [OccurrenceController::class, 'store'])
-        ->name('occurs.store');
+->name('occurs.store');
 
 Route::get('/occurs/{occur}/edit', [OccurrenceController::class, 'edit'])
-        ->name('occurs.edit')
-        ->middleware('auth');
+->name('occurs.edit')
+->middleware('auth');
 
 Route::put('/occurs/{occur}', [OccurrenceController::class, 'update'])
-        ->name('occurs.update')
-        ->middleware('auth');
+->name('occurs.update')
+->middleware('auth');
 
 Route::delete('/occurs/{occur}', [OccurrenceController::class, 'destroy'])
-        ->name('occurs.destroy')
-        ->middleware('auth');
+->name('occurs.destroy')
+->middleware('auth');
 
 Route::get('/occurrence/{occurrence}/registrants', [OccurrenceController::class, 'fetchOccurrenceRegistrants'])
-        ->name('occs.registrants')
-        ->middleware('auth');
+->name('occs.registrants')
+->middleware('auth');
 
 Route::get('/occur/{occurrence}/participants', [OccurrenceController::class, 'fetchOccurrenceParticipants'])
-        ->name('occs.participants')
-        ->middleware('auth');
+->name('occs.participants')
+->middleware('auth');
 
 
       //makeups
 
-Route::get('/makeups', [MakeupController::class, 'index'])
-        ->name('makeups')
-        ->middleware('auth');
-Route::get('/makeups/create', [MakeupController::class, 'create'])
-        ->name('makeups.create');
+Route::get('/makeups', [MakeUpEventController::class, 'index'])
+->name('makeups');
 
-Route::post('/makeups', [MakeupController::class, 'store'])
-        ->name('makeups.store');
+Route::get('/registerMakeup', [MakeUpEventController::class, 'makeUpEvent'])
+        ->name('makeups.register');
 
-Route::get('/makeups/{makeup}/edit', [MakeupController::class, 'edit'])
-        ->name('makeups.edit')
-        ->middleware('auth');
 
-Route::put('/makeups/{makeup}', [MakeupController::class, 'update'])
-        ->name('makeups.update')
-        ->middleware('auth');
+// Route::get('/makeups/create', [MakeupController::class, 'create'])
+//         ->name('makeups.create');
 
-Route::delete('/makeups/{makeup}', [MakeupController::class, 'destroy'])
-        ->name('makeups.destroy')
-        ->middleware('auth');
+// Route::post('/makeups', [MakeupController::class, 'store'])
+//         ->name('makeups.store');
+
+// Route::get('/makeups/{makeup}/edit', [MakeupController::class, 'edit'])
+//         ->name('makeups.edit')
+//         ->middleware('auth');
+
+// Route::put('/makeups/{makeup}', [MakeupController::class, 'update'])
+//         ->name('makeups.update')
+//         ->middleware('auth');
+
+// Route::delete('/makeups/{makeup}', [MakeupController::class, 'destroy'])
+//         ->name('makeups.destroy')
+//         ->middleware('auth');
 
 
 
 //registrants
 Route::get('/registrants', [RegistrantController::class, 'index'])
-        ->name('registrants')
-        ->middleware('auth');
+->name('registrants')
+->middleware('auth');
 
 Route::get('/registrants/{registrant}/edit', [RegistrantController::class, 'edit'])
-        ->name('registrants.edit')
-        ->middleware('auth');
+->name('registrants.edit')
+->middleware('auth');
 
 Route::post('/registrants', [RegistrantController::class, 'store'])
-        ->name('registrants.store')
-        ->middleware('auth');
+->name('registrants.store')
+->middleware('auth');
 
 Route::put('/registrants/{registrant}', [RegistrantController::class, 'update'])
-        ->name('registrants.update')
-        ->middleware('auth');
+->name('registrants.update')
+->middleware('auth');
 
 Route::delete('/registrants/{registrant}', [RegistrantController::class, 'destroy'])
-        ->name('registrants.destroy')
-        ->middleware('auth');
+->name('registrants.destroy')
+->middleware('auth');
 
 Route::get('/registrants/create', [RegistrantController::class, 'create'])
-        ->name('registrants.create')
-        ->middleware('auth');
+->name('registrants.create')
+->middleware('auth');
 
 //participants
 
 Route::get('/part', [ParticipantController::class, 'index'])
-        ->name('participants')
-        ->middleware('auth');  
+->name('participants')
+->middleware('auth');  
 
 
 
 Route::get('/participants/create', [ParticipantController::class, 'create'])
-        ->name('participants.create')
-        ->middleware('auth');   
+->name('participants.create')
+->middleware('auth');   
 Route::post('/participants/filter', [ParticipantController::class, 'filteredParticipants'])
-        ->name('participants.filtered')
-        ->middleware('auth'); 
+->name('participants.filtered')
+->middleware('auth'); 
 
 Route::post('/participants', [ParticipantController::class, 'store'])
-        ->name('participants.store')
-        ->middleware('auth');
+->name('participants.store')
+->middleware('auth');
 
 Route::get('/participants/{registrant}/edit', [ParticipantController::class, 'edit'])
-        ->name('participants.edit')
-        ->middleware('auth');
+->name('participants.edit')
+->middleware('auth');
 Route::put('/participants/{registrant}', [ParticipantController::class, 'update'])
-        ->name('participants.update')
-        ->middleware('auth');
+->name('participants.update')
+->middleware('auth');
 
 Route::delete('/participants/{registrant}', [ParticipantController::class, 'destroy'])
-        ->name('participants.destroy')
-        ->middleware('auth');
+->name('participants.destroy')
+->middleware('auth');
 
 Route::get('/gradings', [GradingHistoryController::class, 'index'])
-        ->name('gradings')
-        ->middleware('auth');
+->name('gradings')
+->middleware('auth');
 
 Route::get('ap/members',[MemberController::class, 'api'])
-       ->name('ap.members')
-       ->middleware('auth');
+->name('ap.members')
+->middleware('auth');
 
- Route::get('/gradinghistory/{filename}',[GradingHistory::class,'fetchFile'] );
+Route::get('/gradinghistory/{filename}',[GradingHistory::class,'fetchFile'] );
 
 
 
