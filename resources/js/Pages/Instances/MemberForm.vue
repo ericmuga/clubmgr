@@ -28,15 +28,15 @@
       <tbody class="flex-1 sm:flex-none">
         <tr class="flex flex-col flex-no wrap sm:table-row  sm:mb-0"  v-for="member in members.data" :key="member.id">
          
-          <td class="border-grey-light border hover:bg-gray-100 p-1 truncate">
+          <td class="border-grey-light border hover:bg-gray-100 text-sm truncate">
              
             <!-- <inertia-link class="text-indigo-400 hover:text-indigo-600" :href="route('members.edit',member.id)"> -->
              {{ member.name }}
              
               <!-- </inertia-link> -->
              </td>
-          <td class="border-grey-light border hover:bg-gray-100 p-1 "> {{ member.email }}</td>
-          <td class="border-grey-light border hover:bg-gray-100 p-1 text-center"> 
+          <td class="border-grey-light border hover:bg-gray-100 text-sm  "> {{ member.email }}</td>
+          <td class="border-grey-light border hover:bg-gray-100 text-center text-sm" > 
           
 
           	<Link :href="route('instance.addParticipant')" 
@@ -61,6 +61,8 @@
         </tr>
       </tbody>
     </table>
+
+    <pagination class="mt-4" :links="members.links" /></pagination>
    </div>
         <div class="w-full p-4 m-2 bg-gray-50 justify-between">
     	 	<form  @submit.prevent="store">

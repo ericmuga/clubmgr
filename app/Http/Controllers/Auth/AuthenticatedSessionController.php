@@ -18,6 +18,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function create()
     {
+        // return Inertia::render('Auth/Login');
+     //return inertia('MakeUpEvents/Index',[]);
         return Inertia::render('Auth/Login');
     }
 
@@ -48,6 +50,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/makeups');
     }
 }

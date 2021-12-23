@@ -196,6 +196,7 @@ Route::get('/', [DashboardController::class, 'index'])
 ->name('dashboard')
 ->middleware('auth');
 
+
 Route::post('/dashboard/prospectiveInductees', [DashboardController::class, 'getProspectiveInductees'])
 ->name('dashboard.prospectiveInductees')
 ->middleware('auth');
@@ -425,6 +426,8 @@ Route::get('/makeups', [MakeUpEventController::class, 'index'])
 Route::get('/registerMakeup', [MakeUpEventController::class, 'makeUpEvent'])
         ->name('makeups.register');
 
+Route::post('/registerMakeup', [MakeUpEventController::class, 'store'])
+        ->name('makeups.store');
 
 // Route::get('/makeups/create', [MakeupController::class, 'create'])
 //         ->name('makeups.create');

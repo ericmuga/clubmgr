@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\MakeUpEvent;
 use Illuminate\Http\Request;
+use App\Models\MemberContacts;
+use App\Models\EventLine;
 
 class MakeUpEventController extends Controller
 {
@@ -16,9 +18,12 @@ class MakeUpEventController extends Controller
     {
         return inertia('MakeUpEvents/Index',[]);
     }
+
+
     public function makeUpEvent()
     {
         return inertia('MakeUpEvents/MakeUpEventCard',[]);
+        // return inertia('../Shared/MakeUpEventForm',[]);
     }
 
     /**
@@ -39,7 +44,44 @@ class MakeUpEventController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // /dd($request->all());
+
+        $request->validate([
+
+                       'email'=>'required|exists:member_contacts,contact',
+                       'name'=>'required'
+        ]);
+
+        
+        //register the events
+
+        //dd(MemberContacts::firstWhere('contact',$request->email)->member_id);
+
+        //add Makeup event
+         $eventId=MakeUpEvent::create([ 
+                              'member_id'=>MemberContacts::firstWhere('contact',$request->email)->member_id,
+                              'grader_email'=>'',
+
+                                  
+                     
+         ])->id;
+
+        // dd($request->rows);
+
+         foreach ($request->rows as $key => $value) 
+         {
+            EventLine::create([
+                               'makeup_event_id'=>$eventId,
+                               'event_type'=>$value['type'],
+                               'event_date'=>$value['date'],
+                               'event_description'=>$value['description'],
+                               'event_club'=>$value['club'],
+                               'comment'=>''
+                             ]);    
+         }
+
+        
+        return redirect(route('makeups'))->with('success','Your request has been submitted successfully! Please check your email for corresondence.');
     }
 
     /**

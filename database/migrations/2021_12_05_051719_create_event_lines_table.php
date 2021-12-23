@@ -19,7 +19,7 @@ class CreateEventLinesTable extends Migration
             $table->string('event_type');
             $table->string('event_description');
             $table->string('event_date');
-            $table->string('status')->default('Pending Approval');
+            $table->string('status')->default('Pending App');
             $table->boolean('comment');
             $table->timestamps();
         });

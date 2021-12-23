@@ -16,7 +16,7 @@ class CreateMakeUpEventsTable extends Migration
         Schema::create('make_up_events', function (Blueprint $table) {
             $table->id();
             $table->string('member_email');
-            $table->sting('member_phone')->nullable();
+            $table->string('member_phone')->nullable();
             $table->string('grader_email')->nullable();
             $table->string('graded')->default('Pending Review');
             $table->timestamps();

@@ -216,8 +216,8 @@ class InstanceController extends Controller
                         $notAttended=DB::table('members')
                             ->select('member_contacts.contact as email','members.name','members.id','member_contacts.contact_type')
                             ->where('members.name','like','%'.$request->search2.'%')
-                            ->orWhere('member_contacts.contact','like','%'.$request->search2.'%')
-                            ->join('member_contacts','member_contacts.member_id','=','members.id')
+                            // ->orWhere('member_contacts.contact','like','%'.$request->search2.'%')
+                            // ->join('member_contacts','member_contacts.member_id','=','members.id')
                             ->where('member_contacts.contact_type','email')
                             ->whereNotIn('member_contacts.member_id',$contacts)
                             ->get()
@@ -239,8 +239,8 @@ class InstanceController extends Controller
         foreach ($notAttended as $key=>$value) 
            {
                if ($value->contact_type=='phone') $notAttended->pull($key);
-               //if ($value->id==$prevId) {$notAttended->pull($key);}
-                //$prevId=$value->id;
+               if ($value->id==$prevId) {$notAttended->pull($key);}
+                $prevId=$value->id;
                
            }
 
@@ -260,8 +260,8 @@ class InstanceController extends Controller
                                           'filters' =>$request->all('search','trashed'),
                                           'filters2' =>$request->all('search2','trashed2'),
                                           
-                                    "members"=>$this->paginate($notAttended,5,null,[],$request->url()),
-                                    "participants"=>$this->paginate($list->sortBy('name'),5,null,[],$request->url()),
+                                    "members"=>$this->paginate($notAttended,20,null,[],$request->url()),
+                                    "participants"=>$this->paginate($list->sortBy('name'),30,null,[],$request->url()),
                                            "instance"=>[
                                                         'xlxs'=>$request->session()->get('instance_xls',''),
                                                         "guests"=>$list->where('category','Guest')->count(),
